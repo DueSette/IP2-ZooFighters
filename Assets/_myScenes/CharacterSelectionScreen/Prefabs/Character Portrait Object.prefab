@@ -201,7 +201,7 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
-  m_UseSpriteMesh: 0
+  m_UseSpriteMesh: 1
 --- !u!1 &6725734416041983254
 GameObject:
   m_ObjectHideFlags: 0
@@ -336,7 +336,6 @@ MonoBehaviour:
   button: {fileID: 3955761552808293617}
   portrait: {fileID: 6725734416007434542}
   text: {fileID: 6725734416041983254}
-  selectedPortraits: {fileID: 0}
   selectedCharacters:
   - {fileID: 0}
   - {fileID: 0}

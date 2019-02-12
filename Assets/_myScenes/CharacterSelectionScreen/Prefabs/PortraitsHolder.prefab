@@ -48,12 +48,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9aa5bfadf7513444fa6eb42afd871e15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  appearSpeed: 0.05
+  appearSpeed: 0
   characters:
   - name: AA
     portrait: {fileID: 21300000, guid: 755fd62702f71844da8d90d639eb1130, type: 3}
   - name: AA
-    portrait: {fileID: 21300000, guid: 755fd62702f71844da8d90d639eb1130, type: 3}
+    portrait: {fileID: 21300004, guid: f45a39483cf4f914a816af821c9262bb, type: 3}
+  - name: AA
+    portrait: {fileID: 21300000, guid: bc437c3d2b0b6ab42af06f1b37bc46ba, type: 3}
+  - name: AA
+    portrait: {fileID: 21300000, guid: c03c72978d15ecb4d91060d3a10d14f0, type: 3}
+  - name: AA
+    portrait: {fileID: 21300000, guid: eb5f6e2757c821940b69cf1456f7865a, type: 3}
   - name: AA
     portrait: {fileID: 21300000, guid: 755fd62702f71844da8d90d639eb1130, type: 3}
   - name: AA
@@ -84,11 +90,5 @@ MonoBehaviour:
     portrait: {fileID: 21300000, guid: 755fd62702f71844da8d90d639eb1130, type: 3}
   - name: AA
     portrait: {fileID: 21300000, guid: 755fd62702f71844da8d90d639eb1130, type: 3}
-  - name: AA
-    portrait: {fileID: 21300000, guid: 755fd62702f71844da8d90d639eb1130, type: 3}
-  - name: AA
-    portrait: {fileID: 21300000, guid: 755fd62702f71844da8d90d639eb1130, type: 3}
-  - name: AA
-    portrait: {fileID: 21300000, guid: 755fd62702f71844da8d90d639eb1130, type: 3}
-  charObject: {fileID: 6725734416969176706, guid: cfd5b3e8fd1869d42a60cdc972660534,
+  charObject: {fileID: 7784462310692306654, guid: e19c343d131249840b8868bce03dcdf4,
     type: 3}

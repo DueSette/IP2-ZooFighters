@@ -1,8 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
 
 public class InputManager : MonoBehaviour
 {
@@ -340,6 +338,8 @@ public class InputManager : MonoBehaviour
                     gameManager.StartGame();
                 }
                 #endregion
+
+                //Detects which selectors are active and manages the hover function
                 foreach (GameObject selector in selectors)
                 {
                     if (selector.activeSelf && !selector.GetComponent<SelectorBehaviour>().ready)

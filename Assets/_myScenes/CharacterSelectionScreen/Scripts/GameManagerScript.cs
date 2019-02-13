@@ -55,19 +55,15 @@ public class GameManagerScript : MonoBehaviour
     {
         if (CheckIfReady())
         {
-            SetGameState(gameState.inGame);
             spawnManager.StartCoroutine("SpawnCharacters");
 
-            //shoves the UI around
+            //shifts the UI away
             StartCoroutine(LerpUI(portraitsHolder, -400));
             StartCoroutine(LerpUI(selectedPortraits, 1200));
         }
-
-        //set up music
-        //make characterselect UI go away
     }
 
-    //moves the UI pieces at specific moments
+    //moves the UI pieces from view to outside view or viceversa
     private IEnumerator LerpUI(GameObject theObject, float destination)
     {
         float t = 0;
@@ -87,8 +83,6 @@ public class GameManagerScript : MonoBehaviour
         }
         //UnityEngine.Debug.Log("coroutine time taken: " + stp.Elapsed);
     }
-
-
 
     private bool CheckIfReady()
     {

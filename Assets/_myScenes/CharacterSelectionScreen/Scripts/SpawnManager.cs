@@ -45,6 +45,7 @@ public class SpawnManager : MonoBehaviour
         int spawnLocationNumber = 0;
         foreach(GameObject selector in selectors)
         {
+            yield return new WaitForSeconds(timeBetweenSpawns);
             SelectorBehaviour selScript;
             selScript = selector.GetComponent<SelectorBehaviour>();
 
@@ -63,10 +64,9 @@ public class SpawnManager : MonoBehaviour
                 //finally activates the character
                 selScript.chosenCharacter.SetActive(true);
                 spawnLocationNumber++;
-
-                yield return new WaitForSeconds(timeBetweenSpawns);
             }
         }
+        gmScript.SetGameState(GameManagerScript.gameState.inGame);
         yield return null;
     }
 }

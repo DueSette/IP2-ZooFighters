@@ -57,18 +57,38 @@ public class GameManagerScript : MonoBehaviour
         {
             SetGameState(gameState.inGame);
             spawnManager.StartCoroutine("SpawnCharacters");
+
+            //shoves the UI around
+            StartCoroutine(LerpUI(portraitsHolder, -400));
+            StartCoroutine(LerpUI(selectedPortraits, 1200));
         }
 
-        ExitCharacterSelect();
         //set up music
         //make characterselect UI go away
     }
 
-    private void ExitCharacterSelect()
+    //moves the UI pieces at specific moments
+    private IEnumerator LerpUI(GameObject theObject, float destination)
     {
-        //portraitsHolder.transform.position;
-        
+        float t = 0;
+        Vector3 startPos = theObject.transform.position;
+        while (t < 1)
+        {
+
+            t += Time.deltaTime;
+            //UnityEngine.Debug.Log(t);
+
+            theObject.transform.position = Vector3.Lerp(startPos, new Vector3(startPos.x, destination, startPos.z), t * t);
+            if (t >= 1)
+            {
+                theObject.transform.position = new Vector3(startPos.x, destination, startPos.z);
+            }
+            yield return null;
+        }
+        //UnityEngine.Debug.Log("coroutine time taken: " + stp.Elapsed);
     }
+
+
 
     private bool CheckIfReady()
     {

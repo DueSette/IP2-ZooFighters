@@ -8916,6 +8916,12 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!1 &1083667432 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5540182397193365390, guid: cba5df72d8e801949bfe280ff89ec64c,
+    type: 3}
+  m_PrefabInstance: {fileID: 7145518519989144154}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1164438479
 GameObject:
   m_ObjectHideFlags: 0
@@ -8982,6 +8988,12 @@ MonoBehaviour:
   m_FirstSelected: {fileID: 0}
   m_sendNavigationEvents: 1
   m_DragThreshold: 10
+--- !u!1 &1350096028 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3332476089939730806, guid: b218349650cb79a44a41b6d2b230dc9f,
+    type: 3}
+  m_PrefabInstance: {fileID: 8459542523633909759}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1869441641
 GameObject:
   m_ObjectHideFlags: 0
@@ -9015,6 +9027,8 @@ MonoBehaviour:
   theGameState: 0
   cam: {fileID: 836702120}
   canvas: {fileID: 734893873}
+  portraitsHolder: {fileID: 1350096028}
+  selectedPortraits: {fileID: 1083667432}
   selectors:
   - {fileID: 0}
   - {fileID: 0}

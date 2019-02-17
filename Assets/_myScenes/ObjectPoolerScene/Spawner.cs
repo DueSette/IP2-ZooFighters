@@ -11,8 +11,6 @@ public class Spawner : MonoBehaviour
         pooler = ObjectPooler.Instance;
     }
 
-    private int x = 0;
-
     private void FixedUpdate()
     {
         int x = Random.Range(1, 4);

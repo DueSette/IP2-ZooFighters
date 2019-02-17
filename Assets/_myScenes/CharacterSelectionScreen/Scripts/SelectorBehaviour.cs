@@ -45,22 +45,22 @@ public class SelectorBehaviour : MonoBehaviour
     public void CharSelect()
     {
         CharacterPortraitScript portraitScript = portraitsHolder.transform.GetChild(cursorPos).gameObject.GetComponent<CharacterPortraitScript>();
-        //Instantiates and populates the character reference. Spawning place is placeholder)
-        chosenCharacter = Instantiate(portraitScript.SelectCharacter(GetJoystickNum(), cursorPos), new Vector3(-2, -13, 26), Quaternion.identity);
+        //Instantiates and populates the character reference.
+        chosenCharacter = Instantiate(portraitScript.SelectCharacter(GetJoystickNum(), cursorPos), transform.position, Quaternion.identity);
 
         //character is inactive until the game starts
         chosenCharacter.SetActive(false);
 
         //ties this character to their specific controller
-        AssignJoystick(chosenCharacter);
+        chosenCharacter.GetComponent<BaseCharacterBehaviour>().ReceiveJoystick(GetJoystickNum());
         ready = true;
     }
 
     //destroys current instance of selected character and updates UI
     public void CharDeselect()
     {
-        //if there is an instantiated character
-        if(chosenCharacter != null)
+        //if there is an instantiated character and it is still not active (meaning the game didn't start)
+        if(chosenCharacter != null && !chosenCharacter.activeSelf)
         {
             //destroys it and empties the reference to it
             Destroy(chosenCharacter);
@@ -127,34 +127,5 @@ public class SelectorBehaviour : MonoBehaviour
     public void OnDisable()
     {
         portraitsHolder.transform.GetChild(cursorPos).gameObject.GetComponent<CharacterPortraitScript>().DeselectCharacter(GetJoystickNum());
-    }
-
-    public void AssignJoystick(GameObject character)
-    {
-        switch (GetJoystickNum())
-        {
-            case 0:
-                {
-                    character.AddComponent<JoystickInput1>();
-                }
-                break;
-            case 1:
-                {
-                    character.AddComponent<JoystickInput2>();
-                }
-                break;
-            case 2:
-                {
-                    character.AddComponent<JoystickInput3>();
-                }
-                break;
-            case 3:
-                {
-                    character.AddComponent<JoystickInput4>();
-                }
-                break;
-            default:
-                break;
-        }
     }
 }

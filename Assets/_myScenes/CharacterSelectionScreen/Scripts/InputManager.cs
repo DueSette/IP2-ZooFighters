@@ -46,7 +46,7 @@ public class InputManager : MonoBehaviour
         if (gameManager != null)
         {
             //CHARACTER SELECTION INPUTS
-            if (gameManager.GetGameState() == GameManagerScript.gameState.charSelect)
+            if (gameManager.GetGameState() == GameManagerScript.GameState.charSelect)
             {
                 #region CharacterSelectionInputs
                 //==================== CHARACTER SELECTION INPUT=========================

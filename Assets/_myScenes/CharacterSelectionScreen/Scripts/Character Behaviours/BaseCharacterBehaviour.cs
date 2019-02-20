@@ -41,13 +41,16 @@ public class BaseCharacterBehaviour : MonoBehaviour
     public float movSpeed;
     public float jumpPower;
     public float bodyMass;
-    public int damageMod = 1;
+    [Tooltip("Set 1 for default damage, go below one for below average damage and viceversa")]
+    public float damageMod = 1;
 
     //Additional variables
     public int livesLeft;
     public bool isArmed = false; 
-    public Image equippedWeaponImage;
+    public Sprite equippedWeaponSprite;
     public string equippedWeaponName;
+    private BaseWeaponScript weaponScript;
+    public GameObject weaponSlot;
 
     //Makes the character able to be controlled only by the passed joystick
     //this function is called by SelectorBehaviour
@@ -86,6 +89,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
     {
         gmScript = GameManagerScript.gmInstance;
         GetComponent<Rigidbody>().mass = bodyMass;
+
     }
 
     //Define here all the actual functions (shoot, jump, etc)
@@ -93,12 +97,13 @@ public class BaseCharacterBehaviour : MonoBehaviour
     public virtual void Update()
     {
         CheckInput();
-        if (gmScript.GetGameState() == GameManagerScript.GameState.inGame)
+        if (Input.GetKeyDown(KeyCode.J))
         {
-            if (Input.GetKeyDown(KeyCode.J))
-            {
-                StartCoroutine("UpdateHealth");
-            }
+            StartCoroutine(UpdateHealth());
+        }
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            StartCoroutine(gmScript.TogglePause());
         }
 
         //=====COMBAT GAME FUNCTIONS
@@ -123,6 +128,10 @@ public class BaseCharacterBehaviour : MonoBehaviour
             if (rTrig)
             {
                 print("BLAM");
+                if(isArmed)
+                {
+                    weaponScript.Fire(damageMod, Mathf.Sign(transform.rotation.y));
+                }
             }
 
             if(lStickHor > 0.4f || lStickHor < -0.4f)
@@ -131,10 +140,13 @@ public class BaseCharacterBehaviour : MonoBehaviour
             }
         }
     }
-
+    
     public virtual void Move(float stickDirection)
     {
-        GetComponent<Rigidbody>().AddForce(new Vector3 (2 * Mathf.Sign(stickDirection), 0, 0) * Time.deltaTime * movSpeed, ForceMode.VelocityChange);
+        
+        transform.Translate(new Vector3 (2 * Mathf.Sign(stickDirection), 0, 0) * Time.deltaTime * movSpeed, Space.World);
+        
+        transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.x, -90 * Mathf.Sign(stickDirection), transform.rotation.z));      
     }
 
     public virtual void Jump()
@@ -183,6 +195,8 @@ public class BaseCharacterBehaviour : MonoBehaviour
                     lBumper = Input.GetKeyDown(KeyCode.Joystick2Button4);
                     rBumper = Input.GetKeyDown(KeyCode.Joystick2Button5);
 
+                    lStickHor = Input.GetAxis("LeftJoy2Horizontal");
+
                     if (Input.GetAxis("J2RT") > 0.4f)
                     {
                         rTrig = true;
@@ -197,6 +211,8 @@ public class BaseCharacterBehaviour : MonoBehaviour
                     yButton = Input.GetKeyDown(KeyCode.Joystick3Button3);
                     lBumper = Input.GetKeyDown(KeyCode.Joystick3Button4);
                     rBumper = Input.GetKeyDown(KeyCode.Joystick3Button5);
+
+                    lStickHor = Input.GetAxis("LeftJoy3Horizontal");
 
                     if (Input.GetAxis("J3RT") > 0.4f)
                     {
@@ -213,6 +229,8 @@ public class BaseCharacterBehaviour : MonoBehaviour
                     lBumper = Input.GetKeyDown(KeyCode.Joystick4Button4);
                     rBumper = Input.GetKeyDown(KeyCode.Joystick4Button5);
 
+                    lStickHor = Input.GetAxis("LeftJoy4Horizontal");
+
                     if (Input.GetAxis("J4RT") > 0.4f)
                     {
                         rTrig = true;
@@ -224,6 +242,35 @@ public class BaseCharacterBehaviour : MonoBehaviour
         }
     }
 
+    public void OnCollisionEnter(Collision other)
+    {
+        if(other.gameObject.tag.Contains("Weapon"))
+        {
+            CollectWeapon(other.gameObject);
+        }
+    }
+
+    private void CollectWeapon(GameObject weapon)
+    {
+         weaponScript = weapon.GetComponent<BaseWeaponScript>();
+        //position weapon correctly
+        //tell the character everything it needs to know about the current weapon
+        weapon.transform.SetParent(weaponSlot.transform);
+        weapon.transform.position = weaponSlot.transform.position;
+        weapon.GetComponent<Collider>().isTrigger = true;
+
+        equippedWeaponName = weaponScript.weaponName;
+        equippedWeaponSprite = weaponScript.weaponSprite;
+
+        isArmed = true;
+    }
+
+    public void TossWeapon()
+    {
+        //called when manually tossing weapon away or when picking up another weapon
+    }
+
+    #region Health and Lives Methods
     //Makes displayed health stop-lerp to current health
     public IEnumerator UpdateHealth()
     {
@@ -247,7 +294,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
         SetHealth(GetHealth() - damage);
     }
 
-    //Usual getter/setter
+    //Usual getters/setters
     public int GetHealth()
     {
         return currHealth;
@@ -258,4 +305,15 @@ public class BaseCharacterBehaviour : MonoBehaviour
         currHealth = amount;
         StartCoroutine("UpdateHealth");
     }
+
+    public int GetRemainingLives()
+    {
+        return livesLeft;
+    }
+
+    public void SetRemainingLives(int amount)
+    {
+        livesLeft = amount;
+    }
+    #endregion
 }

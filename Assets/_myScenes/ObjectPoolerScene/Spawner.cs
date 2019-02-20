@@ -8,7 +8,7 @@ public class Spawner : MonoBehaviour
 
     private void Start()
     {
-        pooler = ObjectPooler.Instance;
+        pooler = ObjectPooler.instance;
     }
 
     private void FixedUpdate()

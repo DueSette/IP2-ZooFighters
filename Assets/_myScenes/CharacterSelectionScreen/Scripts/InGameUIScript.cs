@@ -10,14 +10,14 @@ public class InGameUIScript : MonoBehaviour
 
     public Slider slider;
     public Image fillImage;
-    public Image equippedWeaponSprite;
+    public Sprite equippedWeaponSprite;
     public string equippedWeaponName;
 
     public int theHealth;
     public int remainingLives;
 
-    private Color fullHealthColor = Color.green;
-    private Color zeroHealthColor = Color.red;
+    public Color fullHealthColor = Color.green;
+    public Color zeroHealthColor = Color.red;
 
     
     void Start()
@@ -32,9 +32,9 @@ public class InGameUIScript : MonoBehaviour
         slider.maxValue = charBehaviour.maxHealth;
         slider.value = charBehaviour.displayedHealth;
 
-        if(charBehaviour.equippedWeaponImage != null)
+        if(charBehaviour.equippedWeaponSprite != null)
         {
-            equippedWeaponSprite = charBehaviour.equippedWeaponImage;
+            equippedWeaponSprite = charBehaviour.equippedWeaponSprite;
         }
         if(charBehaviour.equippedWeaponName != null)
         {

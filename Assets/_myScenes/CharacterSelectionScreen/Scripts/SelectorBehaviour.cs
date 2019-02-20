@@ -9,7 +9,7 @@ public class SelectorBehaviour : MonoBehaviour
     private static GameObject portraitsHolder;      //the object that spawns the portraits
     private CharacterDisplayer charDispl;   //the script attached to the previous object
 
-    public int totalCharactersNum;     //how many portraits are there
+    public int totalCharactersNum;     //how many total portraits are there in the character selection UI
     private int cursorPos;             //which portrait the cursor should snap to
     private int joystickNumber;     //the joystick that controls this specific instance of the selector object
 
@@ -46,7 +46,7 @@ public class SelectorBehaviour : MonoBehaviour
     {
         CharacterPortraitScript portraitScript = portraitsHolder.transform.GetChild(cursorPos).gameObject.GetComponent<CharacterPortraitScript>();
         //Instantiates and populates the character reference.
-        chosenCharacter = Instantiate(portraitScript.SelectCharacter(GetJoystickNum(), cursorPos), transform.position, Quaternion.identity);
+        chosenCharacter = Instantiate(portraitScript.SelectCharacter(GetJoystickNum(), cursorPos), transform.localPosition, Quaternion.identity);
 
         //character is inactive until the game starts
         chosenCharacter.SetActive(false);

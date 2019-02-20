@@ -19,7 +19,6 @@ public class CharacterDisplayer : MonoBehaviour
     public GameObject charObject;   //the game object that will contain all the UI elements (image, name)
     private float portraitSize;     //the width of each sprite
 
-
     //keep "ShowCharacters()" on Awake, or it will conflict with SelectorBehaviour because it will not find the children of this.gameObject
     private void Awake()
     {

@@ -90,7 +90,7 @@ public class InputManager : MonoBehaviour
                         selectors[0].SetActive(false);
                     }
                 }
-
+                 
                 //===========JOYSTICK 1, REMEMBER TO TICK "FLIPPED" IN THE PROJECT INPUT SETTINGS=========
                 //ACTIVATING THE SELECTOR, SELECTING AND DESELECTING CHARACTER
                 if (Input.GetKeyDown(KeyCode.Joystick1Button0))
@@ -335,7 +335,7 @@ public class InputManager : MonoBehaviour
 
                 if (Input.GetKeyDown(KeyCode.Alpha1))
                 {
-                    gameManager.StartGame();
+                    gameManager.StartCoroutine("StartGameplayLoop");
                 }
                 #endregion
 

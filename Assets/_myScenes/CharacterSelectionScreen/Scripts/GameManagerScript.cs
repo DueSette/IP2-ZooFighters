@@ -17,12 +17,15 @@ public class GameManagerScript : MonoBehaviour
     public GameObject[] inGameChars = new GameObject[4];
     [Tooltip("The UI prefab that will be populated with info about the in game status")]
     public GameObject inGameUIObj;
-    [Tooltip("The (up to) 4 HUD boxes with the character info (hp, weapon)")]
+    [Tooltip("The (up to) 4 HUD boxes with the character info (hp, weapon, lives)")]
     public GameObject[] inGameUIObjects = new GameObject[4];
 
+    //Spawning character on game start variables
     public float timeBetweenCharSpawns = 0.2f;
     [Tooltip("Populate with all the desired spawning places. Make sure that they correspond to the transf of an empty object on the map for easier location")]
     public Transform[] spawnLocations = new Transform[4];
+
+    private bool paused = false;
 
     #region Singleton
     public static GameManagerScript gmInstance;
@@ -57,28 +60,35 @@ public class GameManagerScript : MonoBehaviour
             selectors[i] = gameObject.GetComponent<InputManager>().selectors[i];
         }
     }
-    
+
     //Sets everything for the transition from character selection to gameplay phase
-    public void StartGame()
+    public IEnumerator StartGameplayLoop()
     {
-        if (CheckIfReady())
+        if (GetGameState() == GameState.charSelect)
         {
-            StartCoroutine("SpawnCharacters");
+            if (CheckIfReadyToStartGame())
+            {
+                //shifts the UI away
+                StartCoroutine(LerpUI(portraitsHolder, -400));
+                StartCoroutine(LerpUI(selectedPortraits, 1200));
 
-            //shifts the UI away
-            StartCoroutine(LerpUI(portraitsHolder, -400));
-            StartCoroutine(LerpUI(selectedPortraits, 1200));
-
-            //Should ready the UI to work with each portrait
-            InitialiseInGameUI();
+                //waits until every char is spawned
+                yield return StartCoroutine(SpawnCharacters());
+              
+                //Should ready the UI to work with each portrait
+                InitialiseInGameUI();
+            }
+            //Waits until the coroutine below returns, which happens only when one character is left
+            yield return StartCoroutine(GameOngoing());
         }
     }
 
+    //Activates and positions the selected characters, also stores them in the InGameChars array
     public IEnumerator SpawnCharacters()
     {
         SetGameState(GameState.characterSpawning);
 
-        int spawnLocationNumber = 0;
+        int i = 0;
 
         foreach (GameObject selector in selectors)
         {
@@ -88,19 +98,38 @@ public class GameManagerScript : MonoBehaviour
 
             if (selScript.chosenCharacter != null)
             {
+                //Stores the chosen characters in the InGameCharacters array
+                inGameChars[i] = selScript.chosenCharacter;
+
                 //iterates through the SpawnLocations transforms...
-                Transform transform = spawnLocations[spawnLocationNumber].transform;
+                Transform transform = spawnLocations[i].transform;
 
                 //and assigns its position to the character's transform 
                 selScript.chosenCharacter.transform.position = transform.position;
 
                 //finally activates the character
                 selScript.chosenCharacter.SetActive(true);
-                spawnLocationNumber++;
+                i++;
             }
         }
         yield return null;
         SetGameState(GameState.inGame);
+    }
+
+    //Waits until only one character is left, then calls the endgame functions
+    public IEnumerator GameOngoing()
+    {
+        while (!OneCharacterLeft())
+        {
+            yield return null;
+        }
+
+        SetGameState(GameState.victoryScreen);
+
+        //When only one character is left this part of the code will execute:
+        //it should declare the winner, maybe tell the camera to do something cool
+        //after a while, call UI buttons to restart/go to character selection/go to main menu
+        print("we have a winner");
     }
 
     //Sets up UI
@@ -135,6 +164,20 @@ public class GameManagerScript : MonoBehaviour
         }
     }
 
+    //Counts how many characters are still alive
+    private bool OneCharacterLeft()
+    {
+        int charactersLeft = 0;
+        foreach (GameObject character in inGameChars)
+        {
+            if(character != null && character.GetComponent<BaseCharacterBehaviour>().GetRemainingLives() > -1)
+            {
+                charactersLeft++;
+            }
+        }
+        return charactersLeft <= 1;
+    }
+
     //moves the UI pieces from view to outside view or viceversa
     private IEnumerator LerpUI(GameObject theObject, float destination)
     {
@@ -153,7 +196,7 @@ public class GameManagerScript : MonoBehaviour
         }
     }
 
-    private bool CheckIfReady()
+    private bool CheckIfReadyToStartGame()
     {
         int playersActive = 0;
         int playersReady = 0;
@@ -183,6 +226,33 @@ public class GameManagerScript : MonoBehaviour
         {
             return false;
         }
+    }
+
+    public IEnumerator TogglePause()
+    {
+        if (!paused)
+        {
+            float t = 0;
+            float startTime = Time.timeScale;
+
+            while (t < 1)
+            {
+                t += 0.03f;
+
+                Time.timeScale = Mathf.Lerp(startTime, 0, 1 - (t - 1) * (t - 1));
+
+                if (t > 1)
+                {
+                    Time.timeScale = 0;
+                }
+                yield return null;
+            }
+        }
+        else
+        {
+            Time.timeScale = 1;
+        }
+        paused = !paused;
     }
 
     public GameState GetGameState()

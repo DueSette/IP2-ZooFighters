@@ -12,6 +12,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
     private bool bButton;
     private bool xButton;
     private bool yButton;
+    private bool startButton;
 
     //Analog sticks
     private float lStickHor;
@@ -24,9 +25,11 @@ public class BaseCharacterBehaviour : MonoBehaviour
 
     #endregion
 
+    #region General Data
     private enum JoyStick { J1, J2, J3, J4 };
     JoyStick jStick;
 
+    public CharacterController controller;
     private GameManagerScript gmScript;
 
     //Gameplay variables
@@ -41,6 +44,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
     public float movSpeed;
     public float jumpPower;
     public float bodyMass;
+    private float fallingMass;
     [Tooltip("Set 1 for default damage, go below one for below average damage and viceversa")]
     public float damageMod = 1;
 
@@ -51,6 +55,16 @@ public class BaseCharacterBehaviour : MonoBehaviour
     public string equippedWeaponName;
     private BaseWeaponScript weaponScript;
     public GameObject weaponSlot;
+
+    public float internalVel;
+    [SerializeField]
+    private float maxInternalHspeed = 20;
+    [SerializeField]
+    private float minInternalHspeed = -20;
+    public bool canMove = true;
+
+    Rigidbody rb;
+    #endregion
 
     //Makes the character able to be controlled only by the passed joystick
     //this function is called by SelectorBehaviour
@@ -89,23 +103,19 @@ public class BaseCharacterBehaviour : MonoBehaviour
     {
         gmScript = GameManagerScript.gmInstance;
         GetComponent<Rigidbody>().mass = bodyMass;
-
+        fallingMass = bodyMass * 3;
+        rb = GetComponent<Rigidbody>();
+        controller = GetComponent<CharacterController>();
     }
 
     //Define here all the actual functions (shoot, jump, etc)
     //Also update HP here
     public virtual void Update()
     {
-        CheckInput();
-        if (Input.GetKeyDown(KeyCode.J))
-        {
-            StartCoroutine(UpdateHealth());
-        }
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            StartCoroutine(gmScript.TogglePause());
-        }
+        internalVel = GetComponent<Rigidbody>().velocity.x;
 
+        CheckInput();
+        
         //=====COMBAT GAME FUNCTIONS
         if (gmScript.GetGameState() == GameManagerScript.GameState.inGame)
         {
@@ -125,33 +135,95 @@ public class BaseCharacterBehaviour : MonoBehaviour
             {
                 print("y pressed");
             }
+            if (startButton)
+            {
+                StartCoroutine(gmScript.TogglePause());
+            }
             if (rTrig)
             {
-                print("BLAM");
-                if(isArmed)
+                if (isArmed)
                 {
                     weaponScript.Fire(damageMod, Mathf.Sign(transform.rotation.y));
                 }
             }
 
-            if(lStickHor > 0.4f || lStickHor < -0.4f)
+            if (lStickHor != 0)
             {
                 Move(lStickHor);
             }
+
         }
     }
-    
+
+    public bool slowFall;
+
+    public virtual void FixedUpdate()
+    {
+        if(rb.velocity.y < 0)
+        {
+            rb.AddForce(Physics.gravity * 3);
+        }
+
+        if(!CheckIfGrounded())
+        {
+            print("notgrounded");
+
+            if(slowFall && rb.velocity.y > 0)
+            {
+                rb.AddForce(Physics.gravity);
+            }
+
+            else
+            {
+                rb.AddForce(Physics.gravity * 2.5f);
+            }
+        }
+        
+    }
+
     public virtual void Move(float stickDirection)
     {
-        
-        transform.Translate(new Vector3 (2 * Mathf.Sign(stickDirection), 0, 0) * Time.deltaTime * movSpeed, Space.World);
-        
-        transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.x, -90 * Mathf.Sign(stickDirection), transform.rotation.z));      
+        //transform.Translate(new Vector3(1 * Mathf.Sign(stickDirection), 0, 0) * Time.deltaTime * movSpeed, Space.World);
+        //can't move after 
+        print("movin");
+        if (internalVel < maxInternalHspeed && internalVel > minInternalHspeed)
+        {
+            if (stickDirection != 0 && canMove)
+            {
+                transform.Translate(new Vector3(1 * Mathf.Sign(stickDirection), 0, 0) * Time.deltaTime * movSpeed, Space.World);
+                //GetComponent<Rigidbody>().AddForce(new Vector3(10 * Mathf.Sign(stickDirection), 0, 0) * Time.deltaTime * movSpeed, ForceMode.Impulse);
+            }
+        }
+
+        if (internalVel > maxInternalHspeed)
+        {
+            internalVel = maxInternalHspeed - 0.5f;
+        }
+        if (internalVel < minInternalHspeed)
+        {
+            internalVel = minInternalHspeed + 0.5f;
+        }
+        transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.x, -90 * Mathf.Sign(stickDirection), transform.rotation.z));
     }
 
     public virtual void Jump()
     {
         GetComponent<Rigidbody>().AddForce(new Vector3(0, jumpPower, 0), ForceMode.Impulse);
+    }
+
+    private bool CheckIfGrounded()
+    {
+        RaycastHit hit;
+        Physics.Raycast(new Vector3(transform.position.x, transform.position.y + 0.4f, transform.position.z), Vector3.down, out hit);
+        
+        if(hit.distance < 1)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     //Performs some form of command pattern in relation to the current JoyStick Enum and GameState, checking which buttons have been pressed
@@ -163,6 +235,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
         yButton = false;
         lBumper = false;
         rBumper = false;
+        startButton = false;
         lStickHor = 0;
         rStickVer = 0;
         rTrig = false;
@@ -171,69 +244,98 @@ public class BaseCharacterBehaviour : MonoBehaviour
         {
             case JoyStick.J1:
                 {
-                    aButton = Input.GetKeyDown(KeyCode.Joystick1Button0);
-                    bButton = Input.GetKeyDown(KeyCode.Joystick1Button1);
-                    xButton = Input.GetKeyDown(KeyCode.Joystick1Button2);
-                    yButton = Input.GetKeyDown(KeyCode.Joystick1Button3);
-                    lBumper = Input.GetKeyDown(KeyCode.Joystick1Button4);
-                    rBumper = Input.GetKeyDown(KeyCode.Joystick1Button5);
+                    startButton = Input.GetKeyDown(KeyCode.Joystick1Button7);
 
-                    lStickHor = Input.GetAxis("LeftJoyHorizontal");
-
-                    if(Input.GetAxis("J1RT") > 0.4f)
+                    if (!gmScript.paused)
                     {
-                        rTrig = true;
+                        aButton = Input.GetKeyDown(KeyCode.Joystick1Button0);
+                        bButton = Input.GetKeyDown(KeyCode.Joystick1Button1);
+                        xButton = Input.GetKeyDown(KeyCode.Joystick1Button2);
+                        yButton = Input.GetKeyDown(KeyCode.Joystick1Button3);
+                        lBumper = Input.GetKeyDown(KeyCode.Joystick1Button4);
+                        rBumper = Input.GetKeyDown(KeyCode.Joystick1Button5);
+
+                        lStickHor = Input.GetAxis("LeftJoyHorizontal");
+
+                        if (Input.GetAxis("J1RT") > 0.4f)
+                        {
+                            rTrig = true;
+                        }
+
+                        if(Input.GetKeyDown(KeyCode.Joystick1Button0))
+                        {
+                            slowFall = true;
+                        }
+                        if(Input.GetKeyUp(KeyCode.Joystick1Button0))
+                        {
+                            slowFall = false;
+                        }
                     }
                 }
                 break;
             case JoyStick.J2:
                 {
-                    aButton = Input.GetKeyDown(KeyCode.Joystick2Button0);
-                    bButton = Input.GetKeyDown(KeyCode.Joystick2Button1);
-                    xButton = Input.GetKeyDown(KeyCode.Joystick2Button2);
-                    yButton = Input.GetKeyDown(KeyCode.Joystick2Button3);
-                    lBumper = Input.GetKeyDown(KeyCode.Joystick2Button4);
-                    rBumper = Input.GetKeyDown(KeyCode.Joystick2Button5);
+                    startButton = Input.GetKeyDown(KeyCode.Joystick2Button7);
 
-                    lStickHor = Input.GetAxis("LeftJoy2Horizontal");
+                    if (!gmScript.paused)
+                    {                      
+                        aButton = Input.GetKeyDown(KeyCode.Joystick2Button0);
+                        bButton = Input.GetKeyDown(KeyCode.Joystick2Button1);
+                        xButton = Input.GetKeyDown(KeyCode.Joystick2Button2);
+                        yButton = Input.GetKeyDown(KeyCode.Joystick2Button3);
+                        lBumper = Input.GetKeyDown(KeyCode.Joystick2Button4);
+                        rBumper = Input.GetKeyDown(KeyCode.Joystick2Button5);
 
-                    if (Input.GetAxis("J2RT") > 0.4f)
-                    {
-                        rTrig = true;
+                        lStickHor = Input.GetAxis("LeftJoy2Horizontal");
+
+                        if (Input.GetAxis("J2RT") > 0.4f)
+                        {
+                            rTrig = true;
+                        }
                     }
                 }
                 break;
             case JoyStick.J3:
                 {
-                    aButton = Input.GetKeyDown(KeyCode.Joystick3Button0);
-                    bButton = Input.GetKeyDown(KeyCode.Joystick3Button1);
-                    xButton = Input.GetKeyDown(KeyCode.Joystick3Button2);
-                    yButton = Input.GetKeyDown(KeyCode.Joystick3Button3);
-                    lBumper = Input.GetKeyDown(KeyCode.Joystick3Button4);
-                    rBumper = Input.GetKeyDown(KeyCode.Joystick3Button5);
+                    startButton = Input.GetKeyDown(KeyCode.Joystick3Button7);
 
-                    lStickHor = Input.GetAxis("LeftJoy3Horizontal");
-
-                    if (Input.GetAxis("J3RT") > 0.4f)
+                    if (!gmScript.paused)
                     {
-                        rTrig = true;
+                        aButton = Input.GetKeyDown(KeyCode.Joystick3Button0);
+                        bButton = Input.GetKeyDown(KeyCode.Joystick3Button1);
+                        xButton = Input.GetKeyDown(KeyCode.Joystick3Button2);
+                        yButton = Input.GetKeyDown(KeyCode.Joystick3Button3);
+                        lBumper = Input.GetKeyDown(KeyCode.Joystick3Button4);
+                        rBumper = Input.GetKeyDown(KeyCode.Joystick3Button5);
+
+                        lStickHor = Input.GetAxis("LeftJoy3Horizontal");
+
+                        if (Input.GetAxis("J3RT") > 0.4f)
+                        {
+                            rTrig = true;
+                        }
                     }
                 }
                 break;
             case JoyStick.J4:
                 {
-                    aButton = Input.GetKeyDown(KeyCode.Joystick4Button0);
-                    bButton = Input.GetKeyDown(KeyCode.Joystick4Button1);
-                    xButton = Input.GetKeyDown(KeyCode.Joystick4Button2);
-                    yButton = Input.GetKeyDown(KeyCode.Joystick4Button3);
-                    lBumper = Input.GetKeyDown(KeyCode.Joystick4Button4);
-                    rBumper = Input.GetKeyDown(KeyCode.Joystick4Button5);
+                    startButton = Input.GetKeyDown(KeyCode.Joystick4Button7);
 
-                    lStickHor = Input.GetAxis("LeftJoy4Horizontal");
-
-                    if (Input.GetAxis("J4RT") > 0.4f)
+                    if (!gmScript.paused)
                     {
-                        rTrig = true;
+                        aButton = Input.GetKeyDown(KeyCode.Joystick4Button0);
+                        bButton = Input.GetKeyDown(KeyCode.Joystick4Button1);
+                        xButton = Input.GetKeyDown(KeyCode.Joystick4Button2);
+                        yButton = Input.GetKeyDown(KeyCode.Joystick4Button3);
+                        lBumper = Input.GetKeyDown(KeyCode.Joystick4Button4);
+                        rBumper = Input.GetKeyDown(KeyCode.Joystick4Button5);
+
+                        lStickHor = Input.GetAxis("LeftJoy4Horizontal");
+
+                        if (Input.GetAxis("J4RT") > 0.4f)
+                        {
+                            rTrig = true;
+                        }
                     }
                 }
                 break;
@@ -268,6 +370,35 @@ public class BaseCharacterBehaviour : MonoBehaviour
     public void TossWeapon()
     {
         //called when manually tossing weapon away or when picking up another weapon
+    }
+
+    public void GetStopped(float direction)
+    {
+        if(Mathf.Sign(direction) == Mathf.Sign(internalVel))
+        {
+            rb.velocity = new Vector3(0, rb.velocity.y, rb.velocity.y);
+            print("stop");
+        }
+    }
+
+    public IEnumerator DisableMove(float duration)
+    {
+        print("disabling movement");
+        if (!canMove)
+        {
+            duration /= 3;
+        }
+        canMove = false;
+
+        yield return StartCoroutine(CoolDown(duration));
+        
+        canMove = true;
+        print("can move now");
+    }
+
+    private IEnumerator CoolDown(float num)
+    {
+        yield return new WaitForSeconds(num);
     }
 
     #region Health and Lives Methods

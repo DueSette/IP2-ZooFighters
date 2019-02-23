@@ -11,21 +11,25 @@ public class GameManagerScript : MonoBehaviour
     public Canvas canvas;
     public GameObject portraitsHolder;
     public GameObject selectedPortraits;
-    public GameObject[] selectors = new GameObject[4];
 
-    [Tooltip("The InGame spawned characters")]
-    public GameObject[] inGameChars = new GameObject[4];
+    [HideInInspector]
+    public GameObject[] selectors = new GameObject[4];      //the pointer game objects that players use to navigate the character selection screen
+
+    [HideInInspector]
+    public GameObject[] inGameUIObjects = new GameObject[4];    //The (up to) 4 HUD boxes with the character info (hp, weapon, lives)
+
+    [HideInInspector]
+    public GameObject[] inGameChars = new GameObject[4];    //The InGame spawned characters
+
     [Tooltip("The UI prefab that will be populated with info about the in game status")]
     public GameObject inGameUIObj;
-    [Tooltip("The (up to) 4 HUD boxes with the character info (hp, weapon, lives)")]
-    public GameObject[] inGameUIObjects = new GameObject[4];
 
     //Spawning character on game start variables
     public float timeBetweenCharSpawns = 0.2f;
     [Tooltip("Populate with all the desired spawning places. Make sure that they correspond to the transf of an empty object on the map for easier location")]
     public Transform[] spawnLocations = new Transform[4];
 
-    private bool paused = false;
+    public bool paused = false;
 
     #region Singleton
     public static GameManagerScript gmInstance;
@@ -77,9 +81,10 @@ public class GameManagerScript : MonoBehaviour
               
                 //Should ready the UI to work with each portrait
                 InitialiseInGameUI();
-            }
-            //Waits until the coroutine below returns, which happens only when one character is left
-            yield return StartCoroutine(GameOngoing());
+
+                //Waits until the coroutine below returns, which happens only when one character is left
+                yield return StartCoroutine(GameOngoing());
+            }           
         }
     }
 
@@ -217,7 +222,7 @@ public class GameManagerScript : MonoBehaviour
             }
         }
 
-        //cannot start if no one joined the game
+        //cannot start if no one joined the game/only one person started the game (implement this at the last moment)
         if (playersActive == playersReady && playersActive > 0)
         {
             return true;
@@ -231,13 +236,13 @@ public class GameManagerScript : MonoBehaviour
     public IEnumerator TogglePause()
     {
         if (!paused)
-        {
+        {         
             float t = 0;
             float startTime = Time.timeScale;
-
+           
             while (t < 1)
             {
-                t += 0.03f;
+                t += 0.06f;
 
                 Time.timeScale = Mathf.Lerp(startTime, 0, 1 - (t - 1) * (t - 1));
 
@@ -246,7 +251,8 @@ public class GameManagerScript : MonoBehaviour
                     Time.timeScale = 0;
                 }
                 yield return null;
-            }
+            }       
+            yield return null;
         }
         else
         {

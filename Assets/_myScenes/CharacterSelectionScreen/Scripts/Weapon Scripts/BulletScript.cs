@@ -7,12 +7,13 @@ using UnityEngine;
 public class BulletScript : MonoBehaviour
 {
     private BaseCharacterBehaviour charScript;
-    [Tooltip("This value will be modified by the weapon that's shooting it")]
+    [HideInInspector]
     public int damage;
     public Vector2 pushBack;
     [Tooltip("Don't touch, this is visible only for debugging purposes")]
     public float direction;
     public Vector2 bulletSpeed;
+    public float stopTargetDuration = 0;
 
     private Rigidbody rb;
 
@@ -36,16 +37,28 @@ public class BulletScript : MonoBehaviour
 
     public virtual void OnTriggerEnter(Collider collider)
     {
-        if (!collider.name.Contains("Weapon") || !collider.name.Contains("Destroyer"))
+        //if this collides with something THAT IS NEITHER the weapon or the destroyer volume (since they are almost always going to collide with them)
+        if (!collider.name.Contains("Weapon") && !collider.name.Contains("Destroyer"))
         {
+            //if this hits a character
             if (collider.gameObject.GetComponent<BaseCharacterBehaviour>())
             {
                 charScript = collider.gameObject.GetComponent<BaseCharacterBehaviour>();
                 charScript.TakeDamage(damage);
-                collider.GetComponent<Rigidbody>().AddForce(new Vector3(pushBack.x * -direction, pushBack.y, 0), ForceMode.Impulse);
-                gameObject.SetActive(false);
+                charScript.GetStopped(direction);
+                StartCoroutine(charScript.DisableMove(stopTargetDuration));
+                collider.GetComponent<Rigidbody>().AddForce(new Vector3(pushBack.x * -direction, pushBack.y, 0), ForceMode.VelocityChange);
             }
-            
+            OnImpact();
         }
+    }
+
+    public virtual void OnImpact()
+    {
+        gameObject.SetActive(false);
+        //play sound
+        //release particle
+
+        //do additional stuff if need be
     }
 }

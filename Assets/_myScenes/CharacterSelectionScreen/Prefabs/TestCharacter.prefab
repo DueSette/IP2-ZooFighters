@@ -89,9 +89,9 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 309400239323390698}
   serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
+  m_Mass: 2
+  m_Drag: 0.35
+  m_AngularDrag: 0
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -109,12 +109,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a01c9b2583109fd4c85b8ddb4dc0e607, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  controller: {fileID: 0}
   maxHealth: 100
   displayedHealth: 100
-  currHealth: 54
+  currHealth: 100
   totalLives: 3
   movSpeed: 20
-  jumpPower: 25
+  jumpPower: 60
   bodyMass: 1
   damageMod: 1
   livesLeft: 3
@@ -122,6 +123,9 @@ MonoBehaviour:
   equippedWeaponSprite: {fileID: 0}
   equippedWeaponName: 
   weaponSlot: {fileID: 8992051651629404603}
+  internalVel: 0
+  maxInternalHspeed: 17
+  minInternalHspeed: -17
 --- !u!65 &6049960051746726509
 BoxCollider:
   m_ObjectHideFlags: 0

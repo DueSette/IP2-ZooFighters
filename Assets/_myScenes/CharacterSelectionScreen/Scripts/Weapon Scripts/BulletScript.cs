@@ -6,16 +6,22 @@ using UnityEngine;
 
 public class BulletScript : MonoBehaviour
 {
+    #region Data
+
     private BaseCharacterBehaviour charScript;
+    private Rigidbody rb;
+
     [HideInInspector]
     public int damage;
-    public Vector2 pushBack;
-    [Tooltip("Don't touch, this is visible only for debugging purposes")]
+    [HideInInspector]
     public float direction;
+
+    public Vector2 pushBack;  
     public Vector2 bulletSpeed;
+    [Tooltip("How long should this stop the players from moving when they are hit")]
     public float stopTargetDuration = 0;
 
-    private Rigidbody rb;
+    #endregion
 
     // Start is called before the first frame update
     void Awake()
@@ -30,7 +36,7 @@ public class BulletScript : MonoBehaviour
     }
 
     //This is called manually by the weapon script after it is done doing the initilisation stuff. Otherwise it can and will update info in the wrong order.
-    public virtual void LateOnEnable()
+    public virtual void AfterEnable()
     {
         rb.AddForce(new Vector3(bulletSpeed.x * -direction, bulletSpeed.y, 0), ForceMode.VelocityChange);
     }
@@ -46,8 +52,8 @@ public class BulletScript : MonoBehaviour
                 charScript = collider.gameObject.GetComponent<BaseCharacterBehaviour>();
                 charScript.TakeDamage(damage);
                 charScript.GetStopped(direction);
-                StartCoroutine(charScript.DisableMove(stopTargetDuration));
                 collider.GetComponent<Rigidbody>().AddForce(new Vector3(pushBack.x * -direction, pushBack.y, 0), ForceMode.VelocityChange);
+                charScript.SetDisablingMovementTime(stopTargetDuration);
             }
             OnImpact();
         }

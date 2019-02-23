@@ -44,16 +44,16 @@ public class BaseCharacterBehaviour : MonoBehaviour
     public float movSpeed;
     public float jumpPower;
     public float bodyMass;
-    private float fallingMass;
     [Tooltip("Set 1 for default damage, go below one for below average damage and viceversa")]
     public float damageMod = 1;
 
     //Additional variables
     public int livesLeft;
-    public bool isArmed = false; 
+    public bool isArmed = false;
     public Sprite equippedWeaponSprite;
     public string equippedWeaponName;
     private BaseWeaponScript weaponScript;
+    [Tooltip("The game object that the weapon will be childed too")]
     public GameObject weaponSlot;
 
     public float internalVel;
@@ -62,6 +62,10 @@ public class BaseCharacterBehaviour : MonoBehaviour
     [SerializeField]
     private float minInternalHspeed = -20;
     public bool canMove = true;
+    [HideInInspector]
+    public float moveDisableDuration = 0;
+    [HideInInspector]
+    public float moveDisableTimeElapsed = 0;
 
     Rigidbody rb;
     #endregion
@@ -103,7 +107,6 @@ public class BaseCharacterBehaviour : MonoBehaviour
     {
         gmScript = GameManagerScript.gmInstance;
         GetComponent<Rigidbody>().mass = bodyMass;
-        fallingMass = bodyMass * 3;
         rb = GetComponent<Rigidbody>();
         controller = GetComponent<CharacterController>();
     }
@@ -115,6 +118,17 @@ public class BaseCharacterBehaviour : MonoBehaviour
         internalVel = GetComponent<Rigidbody>().velocity.x;
 
         CheckInput();
+
+        //Movement disabling/enabling algorithm
+        if(!canMove)
+        {
+            moveDisableTimeElapsed += Time.deltaTime;
+            if(moveDisableTimeElapsed >= moveDisableDuration)
+            {
+                canMove = true;
+                moveDisableTimeElapsed = 0;
+            }
+        }
         
         //=====COMBAT GAME FUNCTIONS
         if (gmScript.GetGameState() == GameManagerScript.GameState.inGame)
@@ -184,8 +198,6 @@ public class BaseCharacterBehaviour : MonoBehaviour
     public virtual void Move(float stickDirection)
     {
         //transform.Translate(new Vector3(1 * Mathf.Sign(stickDirection), 0, 0) * Time.deltaTime * movSpeed, Space.World);
-        //can't move after 
-        print("movin");
         if (internalVel < maxInternalHspeed && internalVel > minInternalHspeed)
         {
             if (stickDirection != 0 && canMove)
@@ -208,6 +220,10 @@ public class BaseCharacterBehaviour : MonoBehaviour
 
     public virtual void Jump()
     {
+        if(rb.velocity.y < 0)
+        {
+            rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+        }
         GetComponent<Rigidbody>().AddForce(new Vector3(0, jumpPower, 0), ForceMode.Impulse);
     }
 
@@ -377,28 +393,17 @@ public class BaseCharacterBehaviour : MonoBehaviour
         if(Mathf.Sign(direction) == Mathf.Sign(internalVel))
         {
             rb.velocity = new Vector3(0, rb.velocity.y, rb.velocity.y);
-            print("stop");
         }
     }
 
-    public IEnumerator DisableMove(float duration)
-    {
-        print("disabling movement");
-        if (!canMove)
+    public void SetDisablingMovementTime(float duration)
+    {   
+        if(!canMove)
         {
-            duration /= 3;
+            duration += duration/2;
         }
         canMove = false;
-
-        yield return StartCoroutine(CoolDown(duration));
-        
-        canMove = true;
-        print("can move now");
-    }
-
-    private IEnumerator CoolDown(float num)
-    {
-        yield return new WaitForSeconds(num);
+        moveDisableDuration = duration;             
     }
 
     #region Health and Lives Methods

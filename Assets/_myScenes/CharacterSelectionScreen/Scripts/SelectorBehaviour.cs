@@ -74,7 +74,8 @@ public class SelectorBehaviour : MonoBehaviour
     public void CharHover()
     {
         portraitsHolder.transform.GetChild(cursorPos).gameObject.GetComponent<CharacterPortraitScript>().HoverCharacter(GetJoystickNum(), cursorPos);
-    }
+    }    
+    
 
     //assigns an image to this object (the images should be "P1, P2, P3, P4")
     public void SetImage(Sprite sprite)

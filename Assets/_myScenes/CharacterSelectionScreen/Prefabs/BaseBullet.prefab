@@ -112,7 +112,7 @@ MonoBehaviour:
   pushBack: {x: 60, y: 12}
   direction: 0
   bulletSpeed: {x: 50, y: 3}
-  stopTargetDuration: 0.7
+  stopTargetDuration: 0.6
 --- !u!64 &4992043639563492958
 MeshCollider:
   m_ObjectHideFlags: 0

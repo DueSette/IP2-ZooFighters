@@ -33,7 +33,7 @@ public class BaseWeaponScript : MonoBehaviour
 
             bScript.damage = (int)(weaponDamage * (damageMod));
             bScript.direction = direction;
-            bScript.LateOnEnable();
+            bScript.AfterEnable();
         }
     }
 

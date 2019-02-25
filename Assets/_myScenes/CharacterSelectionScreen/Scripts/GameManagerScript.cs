@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class GameManagerScript : MonoBehaviour
 {
+    #region Data
     public enum GameState { mainMenu, charSelect, characterSpawning, inGame, victoryScreen };
     public GameState theGameState;
+    public bool paused = false;
 
     public Camera cam;
     public Canvas canvas;
@@ -29,7 +31,7 @@ public class GameManagerScript : MonoBehaviour
     [Tooltip("Populate with all the desired spawning places. Make sure that they correspond to the transf of an empty object on the map for easier location")]
     public Transform[] spawnLocations = new Transform[4];
 
-    public bool paused = false;
+    #endregion
 
     #region Singleton
     public static GameManagerScript gmInstance;
@@ -137,7 +139,7 @@ public class GameManagerScript : MonoBehaviour
         print("we have a winner");
     }
 
-    //Sets up UI
+    //Sets up UI based on the selected characters
     public void InitialiseInGameUI()
     {
         int i = 0;
@@ -146,9 +148,8 @@ public class GameManagerScript : MonoBehaviour
             if (selector.activeSelf)
             {
                 //Creates and positions the UI objects, then it communicates to them the character they are portraying
-                inGameUIObjects[i] = Instantiate(inGameUIObj, transform.position + new Vector3 (225 + (i * 450), 85, 0), Quaternion.identity);
+                inGameUIObjects[i] = Instantiate(inGameUIObj, transform.position + new Vector3 (225 + (i * 450), 100, 0), Quaternion.Euler(0, 0, -90));
                 inGameUIObjects[i].transform.SetParent(canvas.transform);
-
                 inGameUIObjects[i].GetComponent<InGameUIScript>().representedCharacter = selector.GetComponent<SelectorBehaviour>().chosenCharacter;                
             }
             i++;

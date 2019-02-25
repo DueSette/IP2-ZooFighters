@@ -114,7 +114,7 @@ MonoBehaviour:
   displayedHealth: 100
   currHealth: 100
   totalLives: 3
-  movSpeed: 20
+  movSpeed: 30
   jumpPower: 60
   bodyMass: 1
   damageMod: 1
@@ -126,6 +126,10 @@ MonoBehaviour:
   internalVel: 0
   maxInternalHspeed: 17
   minInternalHspeed: -17
+  canMove: 1
+  moveDisableDuration: 0
+  moveDisableTimeElapsed: 0
+  slowFall: 0
 --- !u!65 &6049960051746726509
 BoxCollider:
   m_ObjectHideFlags: 0

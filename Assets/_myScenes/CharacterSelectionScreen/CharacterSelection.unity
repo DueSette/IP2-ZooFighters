@@ -911,7 +911,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pooler: {fileID: 0}
   weaponDamage: 10
-  pushbackPower: 50
   rateOfFire: 0.2
   weaponName: 
   weaponSprite: {fileID: 0}
@@ -931,7 +930,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1381672903}
   - component: {fileID: 1381672902}
-  - component: {fileID: 1381672901}
   - component: {fileID: 1381672899}
   - component: {fileID: 1381672900}
   m_Layer: 0
@@ -966,43 +964,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.12358013, y: 3.452474, z: 0.16623232}
   m_Center: {x: -0.005851136, y: 1.226239, z: 0.008150473}
---- !u!23 &1381672901
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1381672898}
-  m_Enabled: 0
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 0
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
 --- !u!33 &1381672902
 MeshFilter:
   m_ObjectHideFlags: 0

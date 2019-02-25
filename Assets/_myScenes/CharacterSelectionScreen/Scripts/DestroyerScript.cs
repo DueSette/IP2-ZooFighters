@@ -6,8 +6,13 @@ public class DestroyerScript : MonoBehaviour
 {
     void OnTriggerExit(Collider collider)
     {
-        collider.gameObject.SetActive(false);
-        
-        //SHOULD DO SOMETHING IF COLLIDING WITH PLAYER RESETTING HP AND REMOVING ONE LIFE, THEN CALLING THE RESPAWN FUNCTION
+        if (collider.gameObject.GetComponent<BaseCharacterBehaviour>() != null)
+        {
+            collider.gameObject.GetComponent<BaseCharacterBehaviour>().TakeDamage(collider.gameObject.GetComponent<BaseCharacterBehaviour>().GetHealth());
+        }
+        else
+        {
+            collider.gameObject.SetActive(false);
+        }
     }
 }

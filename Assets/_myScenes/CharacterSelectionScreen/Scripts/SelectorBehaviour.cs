@@ -9,11 +9,12 @@ public class SelectorBehaviour : MonoBehaviour
     private static GameObject portraitsHolder;      //the object that spawns the portraits
     private CharacterDisplayer charDispl;   //the script attached to the previous object
 
+    [HideInInspector]
     public int totalCharactersNum;     //how many total portraits are there in the character selection UI
     private int cursorPos;             //which portrait the cursor should snap to
     private int joystickNumber;     //the joystick that controls this specific instance of the selector object
 
-    public GameObject chosenCharacter;     //the character that will be spawned when the game starts
+    public GameObject chosenCharacter;     //the character that will be activated when the game starts
     public bool ready = false;     //if the player has locked their character or not
 
     private void OnEnable()
@@ -76,7 +77,6 @@ public class SelectorBehaviour : MonoBehaviour
         portraitsHolder.transform.GetChild(cursorPos).gameObject.GetComponent<CharacterPortraitScript>().HoverCharacter(GetJoystickNum(), cursorPos);
     }    
     
-
     //assigns an image to this object (the images should be "P1, P2, P3, P4")
     public void SetImage(Sprite sprite)
     {

@@ -40,6 +40,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
     public int currHealth;
 
     //Base stats
+    public bool alive = true;
     public int totalLives;
     public float movSpeed;
     public float jumpPower;
@@ -119,6 +120,12 @@ public class BaseCharacterBehaviour : MonoBehaviour
 
         CheckInput();
 
+        //Checking if character is still alive
+        if(GetHealth() <= 0 && alive)
+        {
+            StartCoroutine(CharacterDeath());
+        }
+
         //Movement disabling/enabling algorithm
         if(!canMove)
         {
@@ -131,7 +138,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
         }
         
         //=====COMBAT GAME FUNCTIONS
-        if (gmScript.GetGameState() == GameManagerScript.GameState.inGame)
+        if (gmScript.GetGameState() == GameManagerScript.GameState.inGame && alive)
         {
             if (aButton)
             {
@@ -185,11 +192,13 @@ public class BaseCharacterBehaviour : MonoBehaviour
             if(slowFall && rb.velocity.y > 0)
             {
                 rb.AddForce(Physics.gravity);
+                print("adding 1x gravity");
             }
 
             else
             {
                 rb.AddForce(Physics.gravity * 2.5f);
+                print("adding 2.5x gravity");
             }
         }
         
@@ -231,11 +240,19 @@ public class BaseCharacterBehaviour : MonoBehaviour
     {
         RaycastHit hit;
         Physics.Raycast(new Vector3(transform.position.x, transform.position.y + 0.4f, transform.position.z), Vector3.down, out hit);
-        
-        if(hit.distance < 1)
+
+        if (hit.collider == null)
+        {
+            //this can happen when the character is jumping and there's absolutely nothing below it.
+            //Without this if statement the program will think we are grounded.
+            return false;
+        }
+
+        if (hit.distance < 1)
         {
             return true;
         }
+        
         else
         {
             return false;
@@ -388,6 +405,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
         //called when manually tossing weapon away or when picking up another weapon
     }
 
+    //when hit by a bullet that's moving in the opposite direction, drop speed to zero
     public void GetStopped(float direction)
     {
         if(Mathf.Sign(direction) == Mathf.Sign(internalVel))
@@ -395,7 +413,8 @@ public class BaseCharacterBehaviour : MonoBehaviour
             rb.velocity = new Vector3(0, rb.velocity.y, rb.velocity.y);
         }
     }
-
+    
+    //set how long a character should be stopped upon bullet collision
     public void SetDisablingMovementTime(float duration)
     {   
         if(!canMove)
@@ -425,9 +444,22 @@ public class BaseCharacterBehaviour : MonoBehaviour
         }
     }
 
+    //use this when doing damage
     public void TakeDamage(int damage)
     {
         SetHealth(GetHealth() - damage);
+    }
+
+    public IEnumerator CharacterDeath()
+    {
+        alive = false;
+        while (displayedHealth != GetHealth())
+        {
+            yield return null;
+        }
+        SetRemainingLives(GetRemainingLives() - 1);
+        gameObject.SetActive(false);
+        yield return new WaitForSeconds(2.5f);        
     }
 
     //Usual getters/setters
@@ -436,7 +468,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
         return currHealth;
     }
 
-    public void SetHealth(int amount)
+    private void SetHealth(int amount)
     {
         currHealth = amount;
         StartCoroutine("UpdateHealth");

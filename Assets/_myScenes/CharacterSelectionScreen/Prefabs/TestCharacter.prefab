@@ -112,25 +112,27 @@ MonoBehaviour:
   maxHealth: 100
   displayedHealth: 100
   currHealth: 100
+  livesLeft: 3
   alive: 1
   totalLives: 3
   movSpeed: 30
   jumpPower: 60
   bodyMass: 1
   damageMod: 1
-  livesLeft: 3
   isArmed: 0
+  flingPower: {x: 20, y: 40}
   equippedWeaponSprite: {fileID: 0}
-  equippedWeaponName: 
   weaponScript: {fileID: 0}
   weaponSlot: {fileID: 8992051651629404603}
+  slowFall: 0
   internalVel: 0
   maxInternalHspeed: 17
   minInternalHspeed: -17
   canMove: 1
+  grounded: 1
+  canExtraJump: 1
   moveDisableDuration: 0
   moveDisableTimeElapsed: 0
-  slowFall: 0
 --- !u!65 &6049960051746726509
 BoxCollider:
   m_ObjectHideFlags: 0

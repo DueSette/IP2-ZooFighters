@@ -319,8 +319,7 @@ MonoBehaviour:
   livesLeftText: {fileID: 382408461830550858}
   slider: {fileID: 8221210307842628489}
   fillImage: {fileID: 7178173876429834969}
-  equippedWeaponSprite: {fileID: 0}
-  equippedWeaponName: 
+  equippedWeaponImage: {fileID: 6677241644557759354}
   theHealth: 0
   remainingLives: 0
   fullHealthColor: {r: 0, g: 1, b: 0, a: 1}
@@ -433,9 +432,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4673438241005739781}
   - component: {fileID: 3811389713145964421}
-  - component: {fileID: 4323043514353913574}
+  - component: {fileID: 4865941928562788472}
   m_Layer: 5
-  m_Name: Weapon
+  m_Name: Weapon Picture
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -450,14 +449,14 @@ RectTransform:
   m_GameObject: {fileID: 6677241644557759354}
   m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.3, y: 1.3, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4854920906239728564}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 18, y: -57}
+  m_AnchoredPosition: {x: 18, y: -52.9}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3811389713145964421
@@ -468,7 +467,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6677241644557759354}
   m_CullTransparentMesh: 0
---- !u!114 &4323043514353913574
+--- !u!114 &4865941928562788472
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -488,7 +487,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: fcd8bfbe079fe6a489373a101eaddd04, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

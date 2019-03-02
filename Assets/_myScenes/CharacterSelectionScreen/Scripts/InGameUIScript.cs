@@ -11,8 +11,7 @@ public class InGameUIScript : MonoBehaviour
 
     public Slider slider;
     public Image fillImage;
-    public Sprite equippedWeaponSprite;
-    public string equippedWeaponName;
+    public GameObject equippedWeaponImage;
 
     public int theHealth;
     public int remainingLives;
@@ -33,11 +32,12 @@ public class InGameUIScript : MonoBehaviour
     {   
         if(charBehaviour.equippedWeaponSprite != null)
         {
-            equippedWeaponSprite = charBehaviour.equippedWeaponSprite;
+            equippedWeaponImage.GetComponent<Image>().sprite = charBehaviour.equippedWeaponSprite;
+            equippedWeaponImage.GetComponent<Image>().color = new Color(255, 255, 255, 255);
         }
-        if(charBehaviour.equippedWeaponName != null)
+        else
         {
-            equippedWeaponName = charBehaviour.equippedWeaponName;
+            equippedWeaponImage.GetComponent<Image>().color = new Color(0, 0, 0, 0);
         }
 
         UpdateLivesLeft();
@@ -62,6 +62,4 @@ public class InGameUIScript : MonoBehaviour
             fillImage.color = Color.black;
         }
     }
-
-
 }

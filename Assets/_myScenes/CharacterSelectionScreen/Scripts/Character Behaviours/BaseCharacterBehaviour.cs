@@ -50,9 +50,9 @@ public class BaseCharacterBehaviour : MonoBehaviour
 
     //Weapon related variables
     public bool isArmed = false;
+    public Vector2 flingPower;
     private GameObject equippedWeapon;
     public Sprite equippedWeaponSprite;
-    public string equippedWeaponName;
     public BaseWeaponScript weaponScript;
     [Tooltip("The game object that the weapon will be childed too")]
     public GameObject weaponSlot;
@@ -115,7 +115,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
         GetComponent<Rigidbody>().mass = bodyMass;
         rb = GetComponent<Rigidbody>();
     }
-
+    
     //Define here all the actual commands (shoot, jump, etc)
     //Also update HP here
     public virtual void Update()
@@ -246,36 +246,10 @@ public class BaseCharacterBehaviour : MonoBehaviour
     }
 
     public virtual void Jump()
-    {
-        if(rb.velocity.y < 0)
-        {
-            rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
-        }
+    {     
+        rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);    
         rb.AddForce(new Vector3(0, jumpPower, 0), ForceMode.Impulse);
     }
-
-    /*
-    private bool CheckIfGrounded()
-    {
-        RaycastHit hit;
-        Physics.Raycast(new Vector3(transform.position.x, transform.position.y + 0.4f, transform.position.z), Vector3.down, out hit);
-
-        if (hit.collider == null)
-        {
-            //this can happen when the character is jumping and there's absolutely nothing below it.
-            //Without this if statement the program will think we are grounded.
-            return false;
-        }
-        if (hit.distance < 1)
-        {
-            return true;
-        }  
-        else
-        {
-            return false;
-        }
-    }
-    */
 
     //Performs some form of command pattern in relation to the current JoyStick Enum and GameState, checking which buttons have been pressed
     public void CheckInput()
@@ -432,6 +406,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
     //For managing character-weapon collision
     public void OnCollisionEnter(Collision other)
     {
+        //Colliding with a weapon
         if (other.gameObject.tag.Contains("Weapon"))
         {
             if (other.gameObject.GetComponent<BaseWeaponScript>().canBeCollected)
@@ -441,7 +416,8 @@ public class BaseCharacterBehaviour : MonoBehaviour
             }
         }
 
-        if (other.gameObject.tag == "Floor")
+        //when touching a platform (but not with the "head" of the character)
+        if (other.gameObject.tag == "Floor" && other.gameObject.transform.position.y < transform.position.y)
         {
             canExtraJump = true;
         }
@@ -464,16 +440,16 @@ public class BaseCharacterBehaviour : MonoBehaviour
         equippedWeapon.transform.rotation = Quaternion.Euler(weaponSlot.transform.rotation.eulerAngles * -1);
         equippedWeapon.GetComponent<Collider>().isTrigger = true;
 
-        equippedWeaponName = weaponScript.weaponName;
         equippedWeaponSprite = weaponScript.weaponSprite;
 
         isArmed = true;
         yield return null;
     }
 
+    //called when manually tossing weapon away or when picking up another weapon
     public void TossWeapon()
     {
-        //called when manually tossing weapon away or when picking up another weapon
+        equippedWeaponSprite = null;
 
         //unparenting weapon
         equippedWeapon.transform.SetParent(null);
@@ -484,8 +460,9 @@ public class BaseCharacterBehaviour : MonoBehaviour
 
         //Tossess the weapon away while also telling the weapon not to immediately collide with the character
         StartCoroutine(weaponScript.Flung(gameObject.GetComponent<Collider>()));
-        StartCoroutine(weaponScript.PickableCD());
-        equippedWeapon.GetComponent<Rigidbody>().AddForce(new Vector3(35, 10, 0), ForceMode.VelocityChange);
+        equippedWeapon.GetComponent<Rigidbody>().AddForce(new Vector3(flingPower.x * -Mathf.Sign(transform.rotation.y), flingPower.y, 0), ForceMode.VelocityChange);
+        equippedWeapon.GetComponent<Rigidbody>().AddTorque(transform.right * 27 * -Mathf.Sign(transform.rotation.y), ForceMode.VelocityChange);
+
         equippedWeapon.GetComponent<Collider>().isTrigger = false;        
         weaponScript.isEquipped = false;
         weaponScript.canBeCollected = false;
@@ -496,8 +473,9 @@ public class BaseCharacterBehaviour : MonoBehaviour
     //when hit by a bullet that's moving in the opposite direction, drop speed to zero
     public void GetStopped(float direction)
     {
-        if(Mathf.Sign(direction) == Mathf.Sign(internalVel))
+        if(Mathf.Sign(direction) == -Mathf.Sign(transform.rotation.y))
         {
+            print("get stopped method called");
             rb.velocity = new Vector3(0, rb.velocity.y, rb.velocity.y);
         }
     }
@@ -514,6 +492,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
     }
 
     #region Health and Lives Methods
+
     //Makes displayed health stop-lerp to current health
     public IEnumerator UpdateHealth()
     {

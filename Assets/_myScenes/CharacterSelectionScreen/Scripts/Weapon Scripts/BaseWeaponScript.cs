@@ -8,7 +8,6 @@ public class BaseWeaponScript : MonoBehaviour
 
     public int weaponDamage;
     public float rateOfFire;
-    public string weaponName;
     public Sprite weaponSprite;
     private Canvas canvas;
 
@@ -22,6 +21,7 @@ public class BaseWeaponScript : MonoBehaviour
     {
         pooler = ObjectPooler.instance;
         canvas = GameManagerScript.gmInstance.canvas;
+        gameObject.GetComponent<Rigidbody>().maxAngularVelocity = 200;
     }
 
     private void Update()
@@ -63,7 +63,7 @@ public class BaseWeaponScript : MonoBehaviour
         {
             Physics.IgnoreCollision(collision.collider, gameObject.GetComponent<Collider>());
         }
-        else
+        else if (collision.collider.gameObject.layer == 9 && collision.gameObject.transform.position.y < transform.position.y)
         {
             StopOnGround();
         }
@@ -71,30 +71,29 @@ public class BaseWeaponScript : MonoBehaviour
 
     private void StopOnGround()
     {
-        RaycastHit hit;
-        Physics.Raycast(new Vector3(transform.position.x, transform.position.y, transform.position.z), Vector3.down, out hit);
-
-        if (hit.distance < 0.4f && hit.collider.gameObject.layer == 9)
+        float yRot = 0;
+        if(transform.rotation.y < 0)
         {
-            GetComponent<Rigidbody>().useGravity = false;
-            GetComponent<Rigidbody>().velocity = Vector3.zero;
-            GetComponent<Rigidbody>().isKinematic = true;
-
-            canSpin = true;
+            yRot = -90;
         }
+        else
+        {
+            yRot = 90;
+        }
+
+        transform.SetPositionAndRotation(transform.position, Quaternion.Euler(0, yRot, transform.rotation.z));
+        GetComponent<Rigidbody>().useGravity = false;
+        GetComponent<Rigidbody>().velocity = Vector3.zero;
+        GetComponent<Rigidbody>().isKinematic = true;
+
+        canBeCollected = true;
+        canSpin = true;
     }
 
     public IEnumerator Flung(Collider coll)
     {
         Physics.IgnoreCollision(coll, gameObject.GetComponent<Collider>());
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1);
         Physics.IgnoreCollision(coll, gameObject.GetComponent<Collider>(), false);
-    }
-
-    public IEnumerator PickableCD()
-    {
-        yield return new WaitForSeconds(1.1f);
-        canBeCollected = true;
-        canSpin = true;
     }
 }

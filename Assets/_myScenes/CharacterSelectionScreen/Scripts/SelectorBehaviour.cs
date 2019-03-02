@@ -74,6 +74,7 @@ public class SelectorBehaviour : MonoBehaviour
     //when hovering character portraits (called in update)
     public void CharHover()
     {
+        
         portraitsHolder.transform.GetChild(cursorPos).gameObject.GetComponent<CharacterPortraitScript>().HoverCharacter(GetJoystickNum(), cursorPos);
     }    
     

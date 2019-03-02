@@ -29,7 +29,6 @@ public class BaseCharacterBehaviour : MonoBehaviour
     private enum JoyStick { J1, J2, J3, J4 };
     JoyStick jStick;
 
-    public CharacterController controller;
     private GameManagerScript gmScript;
 
     //Gameplay variables
@@ -38,6 +37,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
     public int displayedHealth;
     [Tooltip("This is the actual real health of the character, it's updated BEFORE the UI")]
     public int currHealth;
+    public int livesLeft;
 
     //Base stats
     public bool alive = true;
@@ -48,21 +48,26 @@ public class BaseCharacterBehaviour : MonoBehaviour
     [Tooltip("Set 1 for default damage, go below one for below average damage and viceversa")]
     public float damageMod = 1;
 
-    //Additional variables
-    public int livesLeft;
+    //Weapon related variables
     public bool isArmed = false;
+    private GameObject equippedWeapon;
     public Sprite equippedWeaponSprite;
     public string equippedWeaponName;
-    private BaseWeaponScript weaponScript;
+    public BaseWeaponScript weaponScript;
     [Tooltip("The game object that the weapon will be childed too")]
     public GameObject weaponSlot;
 
+    //Physics related variables
+    public bool slowFall;
     public float internalVel;
     [SerializeField]
     private float maxInternalHspeed = 20;
     [SerializeField]
     private float minInternalHspeed = -20;
     public bool canMove = true;
+    public bool grounded = true;
+    public bool canExtraJump = true;
+    private bool drag = false;
     [HideInInspector]
     public float moveDisableDuration = 0;
     [HideInInspector]
@@ -109,14 +114,13 @@ public class BaseCharacterBehaviour : MonoBehaviour
         gmScript = GameManagerScript.gmInstance;
         GetComponent<Rigidbody>().mass = bodyMass;
         rb = GetComponent<Rigidbody>();
-        controller = GetComponent<CharacterController>();
     }
 
-    //Define here all the actual functions (shoot, jump, etc)
+    //Define here all the actual commands (shoot, jump, etc)
     //Also update HP here
     public virtual void Update()
     {
-        internalVel = GetComponent<Rigidbody>().velocity.x;
+        internalVel = rb.velocity.x;
 
         CheckInput();
 
@@ -133,6 +137,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
             if(moveDisableTimeElapsed >= moveDisableDuration)
             {
                 canMove = true;
+                rb.velocity = new Vector3(0, rb.velocity.y, 0);
                 moveDisableTimeElapsed = 0;
             }
         }
@@ -142,11 +147,19 @@ public class BaseCharacterBehaviour : MonoBehaviour
         {
             if (aButton)
             {
-                Jump();
+                if (grounded)
+                {
+                    Jump();
+                }
+                else if (canExtraJump)
+                {
+                    Jump();
+                    canExtraJump = false;
+                }
             }
-            if (bButton)
+            if (bButton && isArmed)
             {
-                print("b pressed");
+                TossWeapon();
             }
             if (xButton)
             {
@@ -167,47 +180,51 @@ public class BaseCharacterBehaviour : MonoBehaviour
                     weaponScript.Fire(damageMod, Mathf.Sign(transform.rotation.y));
                 }
             }
-
-            if (lStickHor != 0)
+            if (lStickHor != 0 && canMove)
             {
                 Move(lStickHor);
             }
-
         }
     }
-
-    public bool slowFall;
-
+    
     public virtual void FixedUpdate()
     {
-        if(rb.velocity.y < 0)
+        //Generally makes gravity stronger when already falling
+        if (rb.velocity.y < 0)
         {
             rb.AddForce(Physics.gravity * 3);
         }
 
-        if(!CheckIfGrounded())
+        //Mimics air resistance outside of the rigidbody class
+        if (drag)
         {
-            print("notgrounded");
+            rb.velocity -= -rb.velocity * 1.5f;
+        }
 
+        //Determines if the character is NOT on a platform, then adds extra gravity
+        if (!grounded)
+        {
             if(slowFall && rb.velocity.y > 0)
             {
                 rb.AddForce(Physics.gravity);
-                print("adding 1x gravity");
             }
-
             else
             {
                 rb.AddForce(Physics.gravity * 2.5f);
-                print("adding 2.5x gravity");
             }
-        }
-        
+        }       
     }
-
+    
     public virtual void Move(float stickDirection)
     {
-        //transform.Translate(new Vector3(1 * Mathf.Sign(stickDirection), 0, 0) * Time.deltaTime * movSpeed, Space.World);
-        if (internalVel < maxInternalHspeed && internalVel > minInternalHspeed)
+        transform.Translate(new Vector3(1 * Mathf.Sign(stickDirection), 0, 0) * Time.deltaTime * movSpeed, Space.World);
+
+        if (Mathf.Sign(stickDirection) == rb.velocity.x)
+        {
+            drag = true;
+        }
+
+        /*if (internalVel < maxInternalHspeed && internalVel > minInternalHspeed)
         {
             if (stickDirection != 0 && canMove)
             {
@@ -215,6 +232,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
                 //GetComponent<Rigidbody>().AddForce(new Vector3(10 * Mathf.Sign(stickDirection), 0, 0) * Time.deltaTime * movSpeed, ForceMode.Impulse);
             }
         }
+        */
 
         if (internalVel > maxInternalHspeed)
         {
@@ -233,9 +251,10 @@ public class BaseCharacterBehaviour : MonoBehaviour
         {
             rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
         }
-        GetComponent<Rigidbody>().AddForce(new Vector3(0, jumpPower, 0), ForceMode.Impulse);
+        rb.AddForce(new Vector3(0, jumpPower, 0), ForceMode.Impulse);
     }
 
+    /*
     private bool CheckIfGrounded()
     {
         RaycastHit hit;
@@ -247,30 +266,20 @@ public class BaseCharacterBehaviour : MonoBehaviour
             //Without this if statement the program will think we are grounded.
             return false;
         }
-
         if (hit.distance < 1)
         {
             return true;
-        }
-        
+        }  
         else
         {
             return false;
         }
     }
+    */
 
     //Performs some form of command pattern in relation to the current JoyStick Enum and GameState, checking which buttons have been pressed
     public void CheckInput()
     {
-        aButton = false;
-        bButton = false;
-        xButton = false;
-        yButton = false;
-        lBumper = false;
-        rBumper = false;
-        startButton = false;
-        lStickHor = 0;
-        rStickVer = 0;
         rTrig = false;
 
         switch (jStick)
@@ -325,6 +334,15 @@ public class BaseCharacterBehaviour : MonoBehaviour
                         {
                             rTrig = true;
                         }
+
+                        if (Input.GetKeyDown(KeyCode.Joystick2Button0))
+                        {
+                            slowFall = true;
+                        }
+                        if (Input.GetKeyUp(KeyCode.Joystick2Button0))
+                        {
+                            slowFall = false;
+                        }
                     }
                 }
                 break;
@@ -346,6 +364,15 @@ public class BaseCharacterBehaviour : MonoBehaviour
                         if (Input.GetAxis("J3RT") > 0.4f)
                         {
                             rTrig = true;
+                        }
+
+                        if (Input.GetKeyDown(KeyCode.Joystick3Button0))
+                        {
+                            slowFall = true;
+                        }
+                        if (Input.GetKeyUp(KeyCode.Joystick3Button0))
+                        {
+                            slowFall = false;
                         }
                     }
                 }
@@ -369,6 +396,15 @@ public class BaseCharacterBehaviour : MonoBehaviour
                         {
                             rTrig = true;
                         }
+
+                        if (Input.GetKeyDown(KeyCode.Joystick4Button0))
+                        {
+                            slowFall = true;
+                        }
+                        if (Input.GetKeyUp(KeyCode.Joystick4Button0))
+                        {
+                            slowFall = false;
+                        }
                     }
                 }
                 break;
@@ -377,32 +413,84 @@ public class BaseCharacterBehaviour : MonoBehaviour
         }
     }
 
-    public void OnCollisionEnter(Collision other)
+    public void OnCollisionStay(Collision other)
     {
-        if(other.gameObject.tag.Contains("Weapon"))
+        if(other.collider.tag == "Floor")
         {
-            CollectWeapon(other.gameObject);
+            grounded = true;
         }
     }
 
-    private void CollectWeapon(GameObject weapon)
+    public void OnCollisionExit(Collision other)
     {
-         weaponScript = weapon.GetComponent<BaseWeaponScript>();
-        //position weapon correctly
-        //tell the character everything it needs to know about the current weapon
-        weapon.transform.SetParent(weaponSlot.transform);
-        weapon.transform.position = weaponSlot.transform.position;
-        weapon.GetComponent<Collider>().isTrigger = true;
+        if (other.collider.tag == "Floor")
+        {
+            grounded = false;
+        }
+    }
+
+    //For managing character-weapon collision
+    public void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.tag.Contains("Weapon"))
+        {
+            if (other.gameObject.GetComponent<BaseWeaponScript>().canBeCollected)
+            {
+                StartCoroutine(CollectWeapon(other.gameObject));
+                isArmed = true;
+            }
+        }
+
+        if (other.gameObject.tag == "Floor")
+        {
+            canExtraJump = true;
+        }
+    }
+
+    private IEnumerator CollectWeapon(GameObject weapon)
+    {
+        if(isArmed)
+        {
+            TossWeapon();
+            weaponScript = null;
+        }
+        equippedWeapon = weapon;
+        weaponScript = weapon.GetComponent<BaseWeaponScript>();
+        equippedWeapon.GetComponent<Rigidbody>().isKinematic = true;
+        weaponScript.canBeCollected = false;
+
+        equippedWeapon.transform.SetParent(weaponSlot.transform);
+        equippedWeapon.transform.position = weaponSlot.transform.position;
+        equippedWeapon.transform.rotation = Quaternion.Euler(weaponSlot.transform.rotation.eulerAngles * -1);
+        equippedWeapon.GetComponent<Collider>().isTrigger = true;
 
         equippedWeaponName = weaponScript.weaponName;
         equippedWeaponSprite = weaponScript.weaponSprite;
 
         isArmed = true;
+        yield return null;
     }
 
     public void TossWeapon()
     {
         //called when manually tossing weapon away or when picking up another weapon
+
+        //unparenting weapon
+        equippedWeapon.transform.SetParent(null);
+
+        //removing some movement constraints
+        equippedWeapon.GetComponent<Rigidbody>().useGravity = true;
+        equippedWeapon.GetComponent<Rigidbody>().isKinematic = false;
+
+        //Tossess the weapon away while also telling the weapon not to immediately collide with the character
+        StartCoroutine(weaponScript.Flung(gameObject.GetComponent<Collider>()));
+        StartCoroutine(weaponScript.PickableCD());
+        equippedWeapon.GetComponent<Rigidbody>().AddForce(new Vector3(35, 10, 0), ForceMode.VelocityChange);
+        equippedWeapon.GetComponent<Collider>().isTrigger = false;        
+        weaponScript.isEquipped = false;
+        weaponScript.canBeCollected = false;
+
+        isArmed = false;
     }
 
     //when hit by a bullet that's moving in the opposite direction, drop speed to zero
@@ -458,6 +546,8 @@ public class BaseCharacterBehaviour : MonoBehaviour
             yield return null;
         }
         SetRemainingLives(GetRemainingLives() - 1);
+
+        //Replace line below with | play death animation --> teleport out of sight --> wait a bit --> make it spawn on the spawning platform
         gameObject.SetActive(false);
         yield return new WaitForSeconds(2.5f);        
     }

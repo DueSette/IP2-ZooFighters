@@ -46,13 +46,15 @@ public class BulletScript : MonoBehaviour
         //if this collides with something THAT IS NEITHER the weapon or the destroyer volume (since they are almost always going to collide with them)
         if (!collider.name.Contains("Weapon") && !collider.name.Contains("Destroyer"))
         {
-            //if this hits a character
+            //HITTING A CHARACTER
             if (collider.gameObject.GetComponent<BaseCharacterBehaviour>())
             {
                 charScript = collider.gameObject.GetComponent<BaseCharacterBehaviour>();
+
                 charScript.TakeDamage(damage);
                 charScript.GetStopped(direction);
-                collider.GetComponent<Rigidbody>().AddForce(new Vector3(pushBack.x * -direction, pushBack.y, 0), ForceMode.VelocityChange);
+
+                collider.GetComponent<Rigidbody>().AddForce(new Vector3(pushBack.x * -direction, pushBack.y, 0), ForceMode.Impulse);
                 charScript.SetDisablingMovementTime(stopTargetDuration);
             }
             OnImpact();

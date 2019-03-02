@@ -238,12 +238,12 @@ public class GameManagerScript : MonoBehaviour
     {
         if (!paused)
         {         
-            float t = 0;
+            float t = 0.4f;
             float startTime = Time.timeScale;
            
             while (t < 1)
             {
-                t += 0.06f;
+                t += 0.04f;
 
                 Time.timeScale = Mathf.Lerp(startTime, 0, 1 - (t - 1) * (t - 1));
 

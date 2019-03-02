@@ -56,21 +56,24 @@ public class InputManager : MonoBehaviour
                 {
                     selectors[0].SetActive(true);
                 }
-                if (Input.GetKeyDown(KeyCode.A))
+                if (selectors[0].GetComponent<SelectorBehaviour>().chosenCharacter == null)
                 {
-                    selectors[0].GetComponent<SelectorBehaviour>().SetCursorPos(-1, false);
-                }
-                if (Input.GetKeyDown(KeyCode.D))
-                {
-                    selectors[0].GetComponent<SelectorBehaviour>().SetCursorPos(1, false);
-                }
-                if (Input.GetKeyDown(KeyCode.W))
-                {
-                    selectors[0].GetComponent<SelectorBehaviour>().SetCursorPos(1, true);
-                }
-                if (Input.GetKeyDown(KeyCode.S))
-                {
-                    selectors[0].GetComponent<SelectorBehaviour>().SetCursorPos(-1, true);
+                    if (Input.GetKeyDown(KeyCode.A))
+                    {
+                        selectors[0].GetComponent<SelectorBehaviour>().SetCursorPos(-1, false);
+                    }
+                    if (Input.GetKeyDown(KeyCode.D))
+                    {
+                        selectors[0].GetComponent<SelectorBehaviour>().SetCursorPos(1, false);
+                    }
+                    if (Input.GetKeyDown(KeyCode.W))
+                    {
+                        selectors[0].GetComponent<SelectorBehaviour>().SetCursorPos(1, true);
+                    }
+                    if (Input.GetKeyDown(KeyCode.S))
+                    {
+                        selectors[0].GetComponent<SelectorBehaviour>().SetCursorPos(-1, true);
+                    }
                 }
                 if (Input.GetKeyDown(KeyCode.Space))
                 {
@@ -125,42 +128,44 @@ public class InputManager : MonoBehaviour
                     stick1VIdle = true;
                 }
                 //RIGHT
-                if ((Input.GetAxis("LeftJoyHorizontal") > 0.5f))
+                if (selectors[0].GetComponent<SelectorBehaviour>().chosenCharacter == null)
                 {
-                    if (stick1HIdle)
+                    if ((Input.GetAxis("LeftJoyHorizontal") > 0.5f))
                     {
-                        selectors[0].GetComponent<SelectorBehaviour>().SetCursorPos(1, false);
-                        stick1HIdle = false;
+                        if (stick1HIdle)
+                        {
+                            selectors[0].GetComponent<SelectorBehaviour>().SetCursorPos(1, false);
+                            stick1HIdle = false;
+                        }
+                    }
+                    //LEFT
+                    if ((Input.GetAxis("LeftJoyHorizontal") < -0.5f))
+                    {
+                        if (stick1HIdle)
+                        {
+                            selectors[0].GetComponent<SelectorBehaviour>().SetCursorPos(-1, false);
+                            stick1HIdle = false;
+                        }
+                    }
+                    //UP
+                    if ((Input.GetAxis("LeftJoyVertical") > 0.4f))
+                    {
+                        if (stick1VIdle)
+                        {
+                            selectors[0].GetComponent<SelectorBehaviour>().SetCursorPos(1, true);
+                            stick1VIdle = false;
+                        }
+                    }
+                    //DOWN
+                    if ((Input.GetAxis("LeftJoyVertical") < -0.4f))
+                    {
+                        if (stick1VIdle)
+                        {
+                            selectors[0].GetComponent<SelectorBehaviour>().SetCursorPos(-1, true);
+                            stick1VIdle = false;
+                        }
                     }
                 }
-                //LEFT
-                if ((Input.GetAxis("LeftJoyHorizontal") < -0.5f))
-                {
-                    if (stick1HIdle)
-                    {
-                        selectors[0].GetComponent<SelectorBehaviour>().SetCursorPos(-1, false);
-                        stick1HIdle = false;
-                    }
-                }
-                //UP
-                if ((Input.GetAxis("LeftJoyVertical") > 0.4f))
-                {
-                    if (stick1VIdle)
-                    {
-                        selectors[0].GetComponent<SelectorBehaviour>().SetCursorPos(1, true);
-                        stick1VIdle = false;
-                    }
-                }
-                //DOWN
-                if ((Input.GetAxis("LeftJoyVertical") < -0.4f))
-                {
-                    if (stick1VIdle)
-                    {
-                        selectors[0].GetComponent<SelectorBehaviour>().SetCursorPos(-1, true);
-                        stick1VIdle = false;
-                    }
-                }
-
                 //========= JOYSTICK 2 ===========
                 if (Input.GetKeyDown(KeyCode.Joystick2Button0))
                 {
@@ -171,6 +176,13 @@ public class InputManager : MonoBehaviour
                     if (selectors[1].activeSelf && selectors[1].GetComponent<SelectorBehaviour>().chosenCharacter == null)
                     {
                         selectors[1].GetComponent<SelectorBehaviour>().CharSelect();
+                    }
+                }
+                if (Input.GetKeyDown(KeyCode.Joystick2Button1))
+                {
+                    if (selectors[1].activeSelf)
+                    {
+                        selectors[1].GetComponent<SelectorBehaviour>().CharDeselect();
                     }
                 }
                 if (Input.GetKeyDown(KeyCode.Joystick2Button7))
@@ -187,42 +199,45 @@ public class InputManager : MonoBehaviour
                     stick2VIdle = true;
                 }
                 //RIGHT
-                if ((Input.GetAxis("LeftJoy2Horizontal") > 0.5f))
+                if (selectors[2].GetComponent<SelectorBehaviour>().chosenCharacter == null)
                 {
-                    if (stick2HIdle)
-                    {
-                        selectors[1].GetComponent<SelectorBehaviour>().SetCursorPos(1, false);
-                        stick2HIdle = false;
-                    }
-                }
-                //LEFT
-                if ((Input.GetAxis("LeftJoy2Horizontal") < -0.5f))
-                {
-                    if (stick2HIdle)
-                    {
-                        selectors[1].GetComponent<SelectorBehaviour>().SetCursorPos(-1, false);
-                        stick2HIdle = false;
-                    }
-                }
-                //UP
-                if ((Input.GetAxis("LeftJoy2Vertical") > 0.4f))
-                {
-                    if (stick2VIdle)
-                    {
-                        selectors[1].GetComponent<SelectorBehaviour>().SetCursorPos(1, true);
-                        stick2VIdle = false;
-                    }
-                }
-                //DOWN
-                if ((Input.GetAxis("LeftJoy2Vertical") < -0.4f))
-                {
-                    if (stick2VIdle)
-                    {
-                        selectors[1].GetComponent<SelectorBehaviour>().SetCursorPos(-1, true);
-                        stick2VIdle = false;
-                    }
-                }
 
+                    if ((Input.GetAxis("LeftJoy2Horizontal") > 0.5f))
+                    {
+                        if (stick2HIdle)
+                        {
+                            selectors[1].GetComponent<SelectorBehaviour>().SetCursorPos(1, false);
+                            stick2HIdle = false;
+                        }
+                    }
+                    //LEFT
+                    if ((Input.GetAxis("LeftJoy2Horizontal") < -0.5f))
+                    {
+                        if (stick2HIdle)
+                        {
+                            selectors[1].GetComponent<SelectorBehaviour>().SetCursorPos(-1, false);
+                            stick2HIdle = false;
+                        }
+                    }
+                    //UP
+                    if ((Input.GetAxis("LeftJoy2Vertical") > 0.4f))
+                    {
+                        if (stick2VIdle)
+                        {
+                            selectors[1].GetComponent<SelectorBehaviour>().SetCursorPos(1, true);
+                            stick2VIdle = false;
+                        }
+                    }
+                    //DOWN
+                    if ((Input.GetAxis("LeftJoy2Vertical") < -0.4f))
+                    {
+                        if (stick2VIdle)
+                        {
+                            selectors[1].GetComponent<SelectorBehaviour>().SetCursorPos(-1, true);
+                            stick2VIdle = false;
+                        }
+                    }
+                }
                 //=========== JOYSTICK 3 ========
                 if (Input.GetKeyDown(KeyCode.Joystick3Button0))
                 {
@@ -233,6 +248,13 @@ public class InputManager : MonoBehaviour
                     if (selectors[2].activeSelf && selectors[2].GetComponent<SelectorBehaviour>().chosenCharacter == null)
                     {
                         selectors[2].GetComponent<SelectorBehaviour>().CharSelect();
+                    }
+                }
+                if (Input.GetKeyDown(KeyCode.Joystick3Button1))
+                {
+                    if (selectors[2].activeSelf)
+                    {
+                        selectors[2].GetComponent<SelectorBehaviour>().CharDeselect();
                     }
                 }
                 if (Input.GetKeyDown(KeyCode.Joystick3Button7))
@@ -250,42 +272,44 @@ public class InputManager : MonoBehaviour
                     stick3VIdle = true;
                 }
                 //RIGHT
-                if ((Input.GetAxis("LeftJoy3Horizontal") > 0.5f))
+                if (selectors[2].GetComponent<SelectorBehaviour>().chosenCharacter == null)
                 {
-                    if (stick3HIdle)
+                    if ((Input.GetAxis("LeftJoy3Horizontal") > 0.5f))
                     {
-                        selectors[2].GetComponent<SelectorBehaviour>().SetCursorPos(1, false);
-                        stick3HIdle = false;
+                        if (stick3HIdle)
+                        {
+                            selectors[2].GetComponent<SelectorBehaviour>().SetCursorPos(1, false);
+                            stick3HIdle = false;
+                        }
+                    }
+                    //LEFT
+                    if ((Input.GetAxis("LeftJoy3Horizontal") < -0.5f))
+                    {
+                        if (stick3HIdle)
+                        {
+                            selectors[2].GetComponent<SelectorBehaviour>().SetCursorPos(-1, false);
+                            stick3HIdle = false;
+                        }
+                    }
+                    //UP
+                    if ((Input.GetAxis("LeftJoy3Vertical") > 0.4f))
+                    {
+                        if (stick3VIdle)
+                        {
+                            selectors[2].GetComponent<SelectorBehaviour>().SetCursorPos(1, true);
+                            stick3VIdle = false;
+                        }
+                    }
+                    //DOWN
+                    if ((Input.GetAxis("LeftJoy3Vertical") < -0.4f))
+                    {
+                        if (stick3VIdle)
+                        {
+                            selectors[2].GetComponent<SelectorBehaviour>().SetCursorPos(-1, true);
+                            stick3VIdle = false;
+                        }
                     }
                 }
-                //LEFT
-                if ((Input.GetAxis("LeftJoy3Horizontal") < -0.5f))
-                {
-                    if (stick3HIdle)
-                    {
-                        selectors[2].GetComponent<SelectorBehaviour>().SetCursorPos(-1, false);
-                        stick3HIdle = false;
-                    }
-                }
-                //UP
-                if ((Input.GetAxis("LeftJoy3Vertical") > 0.4f))
-                {
-                    if (stick3VIdle)
-                    {
-                        selectors[2].GetComponent<SelectorBehaviour>().SetCursorPos(1, true);
-                        stick3VIdle = false;
-                    }
-                }
-                //DOWN
-                if ((Input.GetAxis("LeftJoy3Vertical") < -0.4f))
-                {
-                    if (stick3VIdle)
-                    {
-                        selectors[2].GetComponent<SelectorBehaviour>().SetCursorPos(-1, true);
-                        stick3VIdle = false;
-                    }
-                }
-
                 //================= JOYSTICK 4 =================
 
                 if (Input.GetKeyDown(KeyCode.Joystick4Button0))
@@ -297,6 +321,13 @@ public class InputManager : MonoBehaviour
                     if (selectors[3].activeSelf && selectors[3].GetComponent<SelectorBehaviour>().chosenCharacter == null)
                     {
                         selectors[3].GetComponent<SelectorBehaviour>().CharSelect();
+                    }
+                }
+                if (Input.GetKeyDown(KeyCode.Joystick4Button1))
+                {
+                    if (selectors[3].activeSelf)
+                    {
+                        selectors[3].GetComponent<SelectorBehaviour>().CharDeselect();
                     }
                 }
                 if (Input.GetKeyDown(KeyCode.Joystick4Button7))
@@ -312,46 +343,50 @@ public class InputManager : MonoBehaviour
                 {
                     stick4VIdle = true;
                 }
-                //RIGHT
-                if ((Input.GetAxis("LeftJoy4Horizontal") > 0.5f))
-                {
-                    if (stick4HIdle)
-                    {
-                        selectors[3].GetComponent<SelectorBehaviour>().SetCursorPos(1, false);
-                        stick4HIdle = false;
-                    }
-                }
-                //LEFT
-                if ((Input.GetAxis("LeftJoy4Horizontal") < -0.5f))
-                {
-                    if (stick4HIdle)
-                    {
-                        selectors[3].GetComponent<SelectorBehaviour>().SetCursorPos(-1, false);
-                        stick4HIdle = false;
-                    }
-                }
-                //UP
-                if ((Input.GetAxis("LeftJoy4Vertical") > 0.4f))
-                {
-                    if (stick4VIdle)
-                    {
-                        selectors[3].GetComponent<SelectorBehaviour>().SetCursorPos(1, true);
-                        stick4VIdle = false;
-                    }
-                }
-                //DOWN
-                if ((Input.GetAxis("LeftJoy4Vertical") < -0.4f))
-                {
-                    if (stick4VIdle)
-                    {
-                        selectors[3].GetComponent<SelectorBehaviour>().SetCursorPos(-1, true);
-                        stick4VIdle = false;
-                    }
-                }
 
-                if (Input.GetKeyDown(KeyCode.Alpha1))
+                if (selectors[3].GetComponent<SelectorBehaviour>().chosenCharacter == null)
                 {
-                    gameManager.StartCoroutine("StartGameplayLoop");
+                    //RIGHT
+                    if ((Input.GetAxis("LeftJoy4Horizontal") > 0.5f))
+                    {
+                        if (stick4HIdle)
+                        {
+                            selectors[3].GetComponent<SelectorBehaviour>().SetCursorPos(1, false);
+                            stick4HIdle = false;
+                        }
+                    }
+                    //LEFT
+                    if ((Input.GetAxis("LeftJoy4Horizontal") < -0.5f))
+                    {
+                        if (stick4HIdle)
+                        {
+                            selectors[3].GetComponent<SelectorBehaviour>().SetCursorPos(-1, false);
+                            stick4HIdle = false;
+                        }
+                    }
+                    //UP
+                    if ((Input.GetAxis("LeftJoy4Vertical") > 0.4f))
+                    {
+                        if (stick4VIdle)
+                        {
+                            selectors[3].GetComponent<SelectorBehaviour>().SetCursorPos(1, true);
+                            stick4VIdle = false;
+                        }
+                    }
+                    //DOWN
+                    if ((Input.GetAxis("LeftJoy4Vertical") < -0.4f))
+                    {
+                        if (stick4VIdle)
+                        {
+                            selectors[3].GetComponent<SelectorBehaviour>().SetCursorPos(-1, true);
+                            stick4VIdle = false;
+                        }
+                    }
+
+                    if (Input.GetKeyDown(KeyCode.Alpha1))
+                    {
+                        gameManager.StartCoroutine("StartGameplayLoop");
+                    }
                 }
                 #endregion
 

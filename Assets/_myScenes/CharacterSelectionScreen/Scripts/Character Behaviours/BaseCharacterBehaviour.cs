@@ -18,7 +18,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
     private float lStickHor;
     private float rStickVer;
 
-    //bumpers and triggers
+    //Bumpers and triggers
     private bool rBumper;
     private bool lBumper;
     private bool rTrig;
@@ -159,7 +159,14 @@ public class BaseCharacterBehaviour : MonoBehaviour
             }
             if (bButton && isArmed)
             {
-                TossWeapon();
+                if (weaponScript.ammo < 1)
+                {
+                    TossWeaponEmpty();
+                }
+                else
+                {
+                    TossWeapon();
+                }
             }
             if (xButton)
             {
@@ -423,6 +430,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
         }
     }
 
+    //Manages the process of picking up a weapon from the ground
     private IEnumerator CollectWeapon(GameObject weapon)
     {
         if(isArmed)
@@ -446,9 +454,10 @@ public class BaseCharacterBehaviour : MonoBehaviour
         yield return null;
     }
 
-    //called when manually tossing weapon away or when picking up another weapon
+    //Called when manually tossing a non-empty weapon away or when picking up another weapon
     public void TossWeapon()
     {
+        //UI info
         equippedWeaponSprite = null;
 
         //unparenting weapon
@@ -466,6 +475,29 @@ public class BaseCharacterBehaviour : MonoBehaviour
         equippedWeapon.GetComponent<Collider>().isTrigger = false;        
         weaponScript.isEquipped = false;
         weaponScript.canBeCollected = false;
+
+        isArmed = false;
+    }
+
+    //Called when tossing a weapon with no ammo, which executes a power throw that can damage people
+    public void TossWeaponEmpty()
+    {
+        //UI info
+        equippedWeaponSprite = null;
+
+        //unparenting weapon and updating physics constraints
+        equippedWeapon.transform.SetParent(null);
+        equippedWeapon.GetComponent<Rigidbody>().isKinematic = false;
+
+        //Tossess the weapon away while also telling the weapon not to immediately collide with the character
+        StartCoroutine(weaponScript.Flung(gameObject.GetComponent<Collider>()));
+        equippedWeapon.GetComponent<Rigidbody>().AddForce(new Vector3(80 * -Mathf.Sign(transform.rotation.y), 0, 0), ForceMode.VelocityChange);
+        equippedWeapon.GetComponent<Rigidbody>().AddTorque(transform.right * 27 * -Mathf.Sign(transform.rotation.y), ForceMode.VelocityChange);
+
+        //equippedWeapon.GetComponent<Collider>().isTrigger = false;
+        weaponScript.isEquipped = false;
+        weaponScript.canBeCollected = false;
+        weaponScript.actAsBullet = true;
 
         isArmed = false;
     }
@@ -526,9 +558,32 @@ public class BaseCharacterBehaviour : MonoBehaviour
         }
         SetRemainingLives(GetRemainingLives() - 1);
 
-        //Replace line below with | play death animation --> teleport out of sight --> wait a bit --> make it spawn on the spawning platform
-        gameObject.SetActive(false);
-        yield return new WaitForSeconds(2.5f);        
+        //DEACTIVATION PROCESS
+        isArmed = false;
+        rb.collisionDetectionMode = CollisionDetectionMode.Discrete;
+        rb.isKinematic = true;
+        //Play death animation, when it's over execute lines below
+        GetComponent<MeshRenderer>().enabled = false;        
+        rb.velocity = Vector3.zero;
+        yield return new WaitForSeconds(1.5f);
+        StartCoroutine(CharacterRespawn());
+    }
+
+    public IEnumerator CharacterRespawn()
+    {
+        SetHealth(maxHealth);
+        StartCoroutine(UpdateHealth());
+        //position on a respawn platform
+        GetComponent<MeshRenderer>().enabled = true;
+        rb.isKinematic = false;
+        rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+
+        transform.position = new Vector3(-2, 20, 0); //this is temporary
+        //make the platform appear on screen
+        alive = true;
+        //maybe give a jump boost
+        //have the platform lerp away/deactivate
+        yield return null;
     }
 
     //Usual getters/setters

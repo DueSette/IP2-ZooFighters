@@ -12,7 +12,7 @@ public class DestroyerScript : MonoBehaviour
         }
         else
         {
-            collider.gameObject.SetActive(false);
+            Destroy(collider.gameObject);
         }
     }
 }

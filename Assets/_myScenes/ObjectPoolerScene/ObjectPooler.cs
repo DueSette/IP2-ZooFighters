@@ -28,6 +28,7 @@ public class ObjectPooler : MonoBehaviour
     public List<Pool> pools;    
     public Dictionary<string, Queue<GameObject>> poolDictionary;
 
+
     void Start()
     {
         poolDictionary = new Dictionary<string, Queue<GameObject>>();
@@ -40,6 +41,7 @@ public class ObjectPooler : MonoBehaviour
             {
                 GameObject obj = Instantiate(pool.prefab); //set an object called obj as a new obj, which is instantiated on the moment
                 obj.SetActive(false);   //deactivate obj
+                obj.transform.SetParent(gameObject.transform);
                 objectPool.Enqueue(obj);    //put it in queue
             }
             poolDictionary.Add(pool.tag, objectPool); //add the newly created objectpool to the dictionary (previously empty), its name is going to be the content of the pool
@@ -62,6 +64,5 @@ public class ObjectPooler : MonoBehaviour
         poolDictionary[tag].Enqueue(objectToSpawn);
 
         return objectToSpawn;
-    }
-    
+    }  
 }

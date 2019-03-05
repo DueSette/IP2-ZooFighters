@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1274041841}
   - component: {fileID: 1274041846}
   - component: {fileID: 1274041842}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Asparagun Weapon
   m_TagString: Weapon
   m_Icon: {fileID: 0}
@@ -104,12 +104,12 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1274041840}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 0.6303769
-  m_Height: 4.457881
+  m_Radius: 0.8839364
+  m_Height: 3.4464314
   m_Direction: 2
-  m_Center: {x: -0.07372975, y: 0.11842203, z: 1.5958461e-16}
+  m_Center: {x: -0.07372975, y: -0.13513756, z: 0.0641973}
 --- !u!114 &1274041842
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -123,9 +123,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pooler: {fileID: 0}
-  weaponDamage: 10
+  weaponDamage: 25
   rateOfFire: 0.2
-  weaponName: 
-  weaponSprite: {fileID: 0}
+  ammo: 9
+  weaponSprite: {fileID: 21300000, guid: d40c191aa46654db7a426d6a1fa3aa30, type: 3}
   isEquipped: 0
   canBeCollected: 1
+  canSpin: 0
+  actAsBullet: 0

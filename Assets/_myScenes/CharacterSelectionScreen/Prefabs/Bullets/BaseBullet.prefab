@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 4992043639563492958}
   m_Layer: 0
   m_Name: BaseBullet
-  m_TagString: Untagged
+  m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -111,7 +111,7 @@ MonoBehaviour:
   damage: 0
   direction: 0
   pushBack: {x: 100, y: 12}
-  bulletSpeed: {x: 50, y: 3}
+  bulletSpeed: {x: 90, y: 3}
   stopTargetDuration: 0.6
 --- !u!64 &4992043639563492958
 MeshCollider:

@@ -10,7 +10,6 @@ public class BaseWeaponScript : MonoBehaviour
     public float rateOfFire;
     public int ammo;
     public Sprite weaponSprite;
-    private Canvas canvas;
 
     public bool isEquipped = false;
     public bool canBeCollected = true;
@@ -18,15 +17,15 @@ public class BaseWeaponScript : MonoBehaviour
     private bool canShoot = true;
     public bool actAsBullet = false;
 
+
     private void Start()
     {
         pooler = ObjectPooler.instance;
-        canvas = GameManagerScript.gmInstance.canvas;
-        gameObject.GetComponent<Rigidbody>().maxAngularVelocity = 200;
+        gameObject.GetComponent<Rigidbody>().maxAngularVelocity = 150;
     }
 
     private void Update()
-    {
+    {      
         if(canBeCollected)
         {
             transform.Rotate(Vector3.up * 30 * Time.deltaTime, Space.World);
@@ -77,6 +76,18 @@ public class BaseWeaponScript : MonoBehaviour
 
     private void OnTriggerEnter(Collider collider)
     {
+        if (!actAsBullet)
+        {
+            //if touches floor and floor is beneath it
+            if (collider.gameObject.layer == 9 && collider.gameObject.transform.position.y < transform.position.y)
+            {
+                if (!isEquipped)
+                {
+                    StopOnGround();
+                }
+            }
+        }
+        
         //if being thrown as the result of being out of ammo, this kind of collision will take place
         if (actAsBullet)
         {
@@ -112,7 +123,6 @@ public class BaseWeaponScript : MonoBehaviour
         transform.SetPositionAndRotation(transform.position, Quaternion.Euler(0, yRot, transform.rotation.z));
 
         //stops the object
-        GetComponent<Rigidbody>().useGravity = false;
         GetComponent<Rigidbody>().velocity = Vector3.zero;
         GetComponent<Rigidbody>().isKinematic = true;
 
@@ -125,7 +135,10 @@ public class BaseWeaponScript : MonoBehaviour
     {
         Physics.IgnoreCollision(coll, gameObject.GetComponent<Collider>());
         yield return new WaitForSeconds(1);
-        Physics.IgnoreCollision(coll, gameObject.GetComponent<Collider>(), false);
+        if (coll.gameObject != null)
+        {
+            Physics.IgnoreCollision(coll, gameObject.GetComponent<Collider>(), false);
+        }
         if (ammo > 0)
         {
             canBeCollected = true;

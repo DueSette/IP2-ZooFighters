@@ -168,9 +168,9 @@ public class BaseCharacterBehaviour : MonoBehaviour
                     TossWeapon();
                 }
             }
-            if (xButton)
+            if (xButton && isArmed)
             {
-                print("x pressed");
+                TossWeaponEmpty();
             }
             if (yButton)
             {
@@ -410,19 +410,22 @@ public class BaseCharacterBehaviour : MonoBehaviour
         }
     }
 
-    //For managing character-weapon collision
-    public void OnCollisionEnter(Collision other)
+    public void OnTriggerStay(Collider coll)
     {
         //Colliding with a weapon
-        if (other.gameObject.tag.Contains("Weapon"))
+        if (coll.gameObject.tag.Contains("Weapon") && !isArmed)
         {
-            if (other.gameObject.GetComponent<BaseWeaponScript>().canBeCollected)
+            if (coll.gameObject.GetComponent<BaseWeaponScript>().canBeCollected)
             {
-                StartCoroutine(CollectWeapon(other.gameObject));
+                StartCoroutine(CollectWeapon(coll.gameObject));
                 isArmed = true;
             }
         }
+    }
 
+    //For managing character-weapon collision
+    public void OnCollisionEnter(Collision other)
+    {       
         //when touching a platform (but not with the "head" of the character)
         if (other.gameObject.tag == "Floor" && other.gameObject.transform.position.y < transform.position.y)
         {
@@ -433,20 +436,22 @@ public class BaseCharacterBehaviour : MonoBehaviour
     //Manages the process of picking up a weapon from the ground
     private IEnumerator CollectWeapon(GameObject weapon)
     {
-        if(isArmed)
-        {
-            TossWeapon();
-            weaponScript = null;
-        }
         equippedWeapon = weapon;
+
         weaponScript = weapon.GetComponent<BaseWeaponScript>();
         equippedWeapon.GetComponent<Rigidbody>().isKinematic = true;
+        
+        //Reset their velocity, rotational velocity and rotation. Looks strange but prevents a bug that would otherwise pop every time.
+        equippedWeapon.GetComponent<Rigidbody>().velocity = Vector3.zero;
+        equippedWeapon.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+        equippedWeapon.transform.rotation = Quaternion.Euler(Vector3.zero);
+        
+        weaponScript.isEquipped = true;
         weaponScript.canBeCollected = false;
 
         equippedWeapon.transform.SetParent(weaponSlot.transform);
         equippedWeapon.transform.position = weaponSlot.transform.position;
-        equippedWeapon.transform.rotation = Quaternion.Euler(weaponSlot.transform.rotation.eulerAngles * -1);
-        equippedWeapon.GetComponent<Collider>().isTrigger = true;
+        equippedWeapon.transform.rotation = Quaternion.Euler(weaponSlot.transform.rotation.eulerAngles * -1);       
 
         equippedWeaponSprite = weaponScript.weaponSprite;
 
@@ -464,7 +469,6 @@ public class BaseCharacterBehaviour : MonoBehaviour
         equippedWeapon.transform.SetParent(null);
 
         //removing some movement constraints
-        equippedWeapon.GetComponent<Rigidbody>().useGravity = true;
         equippedWeapon.GetComponent<Rigidbody>().isKinematic = false;
 
         //Tossess the weapon away while also telling the weapon not to immediately collide with the character
@@ -472,7 +476,6 @@ public class BaseCharacterBehaviour : MonoBehaviour
         equippedWeapon.GetComponent<Rigidbody>().AddForce(new Vector3(flingPower.x * -Mathf.Sign(transform.rotation.y), flingPower.y, 0), ForceMode.VelocityChange);
         equippedWeapon.GetComponent<Rigidbody>().AddTorque(transform.right * 27 * -Mathf.Sign(transform.rotation.y), ForceMode.VelocityChange);
 
-        equippedWeapon.GetComponent<Collider>().isTrigger = false;        
         weaponScript.isEquipped = false;
         weaponScript.canBeCollected = false;
 
@@ -488,6 +491,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
         //unparenting weapon and updating physics constraints
         equippedWeapon.transform.SetParent(null);
         equippedWeapon.GetComponent<Rigidbody>().isKinematic = false;
+        equippedWeapon.GetComponent<Rigidbody>().useGravity = false;
 
         //Tossess the weapon away while also telling the weapon not to immediately collide with the character
         StartCoroutine(weaponScript.Flung(gameObject.GetComponent<Collider>()));

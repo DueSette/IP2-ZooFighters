@@ -47,7 +47,7 @@ public class SelectorBehaviour : MonoBehaviour
     {
         CharacterPortraitScript portraitScript = portraitsHolder.transform.GetChild(cursorPos).gameObject.GetComponent<CharacterPortraitScript>();
         //Instantiates and populates the character reference.
-        chosenCharacter = Instantiate(portraitScript.SelectCharacter(GetJoystickNum(), cursorPos), transform.localPosition, Quaternion.identity);
+        chosenCharacter = Instantiate(portraitScript.SelectCharacter(GetJoystickNum(), cursorPos), transform.localPosition, Quaternion.Euler(0, 90, 0));
 
         //character is inactive until the game starts
         chosenCharacter.SetActive(false);
@@ -73,8 +73,7 @@ public class SelectorBehaviour : MonoBehaviour
 
     //when hovering character portraits (called in update)
     public void CharHover()
-    {
-        
+    {       
         portraitsHolder.transform.GetChild(cursorPos).gameObject.GetComponent<CharacterPortraitScript>().HoverCharacter(GetJoystickNum(), cursorPos);
     }    
     

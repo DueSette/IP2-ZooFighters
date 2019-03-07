@@ -15,6 +15,8 @@ public class BulletScript : MonoBehaviour
     public int damage;
     [HideInInspector]
     public float direction;
+    [HideInInspector]
+    public Collider shooterCollider;    //reference to the character shooting this bullet
 
     public Vector2 pushBack;  
     public Vector2 bulletSpeed;
@@ -38,7 +40,8 @@ public class BulletScript : MonoBehaviour
     //This is called manually by the weapon script after it is done doing the initilisation stuff. Otherwise it can and will update info in the wrong order.
     public virtual void AfterEnable()
     {
-        rb.AddForce(new Vector3(bulletSpeed.x * -direction, bulletSpeed.y, 0), ForceMode.VelocityChange);
+        rb.AddForce(new Vector3(bulletSpeed.x * direction, bulletSpeed.y, 0), ForceMode.VelocityChange);
+        Physics.IgnoreCollision(shooterCollider, GetComponent<Collider>());
     }
 
     public virtual void OnTriggerEnter(Collider collider)
@@ -54,7 +57,7 @@ public class BulletScript : MonoBehaviour
                 charScript.TakeDamage(damage);
                 charScript.GetStopped(direction);
 
-                collider.GetComponent<Rigidbody>().AddForce(new Vector3(pushBack.x * -direction, pushBack.y, 0), ForceMode.Impulse);
+                collider.GetComponent<Rigidbody>().AddForce(new Vector3(pushBack.x * direction, pushBack.y, 0), ForceMode.Impulse);
                 charScript.SetDisablingMovementTime(stopTargetDuration);
             }
             OnImpact();
@@ -64,6 +67,7 @@ public class BulletScript : MonoBehaviour
     public virtual void OnImpact()
     {
         gameObject.SetActive(false);
+        Physics.IgnoreCollision(shooterCollider, GetComponent<Collider>(), false); //reset collision immunity
         //play sound
         //release particle
 

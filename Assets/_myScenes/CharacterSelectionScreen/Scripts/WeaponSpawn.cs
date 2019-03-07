@@ -4,19 +4,27 @@ using UnityEngine;
 
 public class WeaponSpawn : MonoBehaviour
 {
-    public GameObject weaponToSpawn;
-    public float time = 5;
+    public GameObject[] weaponsToSpawn = new GameObject[1];
+    public float timeBetweenSpawns = 3;
+    private Vector3 transf;
 
     // Start is called before the first frame update
-    void Start()
+    void OnEnable()
     {
-        StartCoroutine(Spawn(weaponToSpawn));
+        StartCoroutine(Spawn(weaponsToSpawn[Random.Range(0, weaponsToSpawn.Length)]));
+    }
+
+    private void Update()
+    {
+        
     }
 
    private IEnumerator Spawn(GameObject weap)
     {
-        yield return new WaitForSeconds(time);
-        Instantiate(weap, transform.position, Quaternion.Euler(0, 90, 0));
+        yield return new WaitForSeconds(timeBetweenSpawns);
+        timeBetweenSpawns = Random.Range(2.5f, 8.5f);
+        Instantiate(weap, transf, Quaternion.Euler(0, 90, 0));
         StartCoroutine(Spawn(weap));
+        transf = new Vector3(Random.Range(-57, 57), transform.position.y, transform.position.z);
     }
 }

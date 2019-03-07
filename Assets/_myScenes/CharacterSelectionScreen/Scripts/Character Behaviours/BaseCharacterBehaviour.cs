@@ -29,7 +29,11 @@ public class BaseCharacterBehaviour : MonoBehaviour
     private enum JoyStick { J1, J2, J3, J4 };
     JoyStick jStick;
 
+    private enum CharacterStates { Unarmed, Melee, Pistol, Rifle };
+    CharacterStates charState;
+
     private GameManagerScript gmScript;
+    public Animator anim;
 
     //Gameplay variables
     public int maxHealth = 100;
@@ -114,13 +118,16 @@ public class BaseCharacterBehaviour : MonoBehaviour
         gmScript = GameManagerScript.gmInstance;
         GetComponent<Rigidbody>().mass = bodyMass;
         rb = GetComponent<Rigidbody>();
+        anim = GetComponent<Animator>();
+        anim.SetBool("Unarmed", true);
     }
-    
+
     //Define here all the actual commands (shoot, jump, etc)
     //Also update HP here
     public virtual void Update()
     {
         internalVel = rb.velocity.x;
+        anim.SetBool("isGrounded", grounded);            
 
         CheckInput();
 
@@ -191,9 +198,18 @@ public class BaseCharacterBehaviour : MonoBehaviour
             {
                 Move(lStickHor);
             }
+            else
+            {
+                anim.SetBool("isRunning", false);
+            }
         }
     }
     
+    public virtual void LateUpdate()
+    {
+        
+    }
+
     public virtual void FixedUpdate()
     {
         //Generally makes gravity stronger when already falling
@@ -225,21 +241,12 @@ public class BaseCharacterBehaviour : MonoBehaviour
     public virtual void Move(float stickDirection)
     {
         transform.Translate(new Vector3(1 * Mathf.Sign(stickDirection), 0, 0) * Time.deltaTime * movSpeed, Space.World);
+        anim.SetBool("isRunning", true);
 
         if (Mathf.Sign(stickDirection) == rb.velocity.x)
         {
             drag = true;
-        }
-
-        /*if (internalVel < maxInternalHspeed && internalVel > minInternalHspeed)
-        {
-            if (stickDirection != 0 && canMove)
-            {
-                transform.Translate(new Vector3(1 * Mathf.Sign(stickDirection), 0, 0) * Time.deltaTime * movSpeed, Space.World);
-                //GetComponent<Rigidbody>().AddForce(new Vector3(10 * Mathf.Sign(stickDirection), 0, 0) * Time.deltaTime * movSpeed, ForceMode.Impulse);
-            }
-        }
-        */
+        }       
 
         if (internalVel > maxInternalHspeed)
         {
@@ -249,13 +256,16 @@ public class BaseCharacterBehaviour : MonoBehaviour
         {
             internalVel = minInternalHspeed + 0.5f;
         }
-        transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.x, -90 * Mathf.Sign(stickDirection), transform.rotation.z));
+
+        transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.x, 90 * Mathf.Sign(stickDirection), transform.rotation.z));
     }
 
     public virtual void Jump()
     {     
         rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);    
         rb.AddForce(new Vector3(0, jumpPower, 0), ForceMode.Impulse);
+        anim.SetTrigger("Jump");
+        grounded = false;
     }
 
     //Performs some form of command pattern in relation to the current JoyStick Enum and GameState, checking which buttons have been pressed
@@ -406,8 +416,14 @@ public class BaseCharacterBehaviour : MonoBehaviour
     {
         if (other.collider.tag == "Floor")
         {
-            grounded = false;
+            StartCoroutine(CoyoteTime());
         }
+    }
+
+    private IEnumerator CoyoteTime()
+    {
+        yield return new WaitForSeconds(.20f);
+        grounded = false;
     }
 
     public void OnTriggerStay(Collider coll)
@@ -419,6 +435,9 @@ public class BaseCharacterBehaviour : MonoBehaviour
             {
                 StartCoroutine(CollectWeapon(coll.gameObject));
                 isArmed = true;
+                anim.SetBool("Unarmed", false);
+                anim.SetBool("Melee", false);
+                anim.SetBool("Rifle", true);
             }
         }
     }
@@ -430,7 +449,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
         if (other.gameObject.tag == "Floor" && other.gameObject.transform.position.y < transform.position.y)
         {
             canExtraJump = true;
-        }
+        }        
     }
 
     //Manages the process of picking up a weapon from the ground
@@ -448,6 +467,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
         
         weaponScript.isEquipped = true;
         weaponScript.canBeCollected = false;
+        weaponScript.weaponHolderCollider = GetComponent<Collider>();
 
         equippedWeapon.transform.SetParent(weaponSlot.transform);
         equippedWeapon.transform.position = weaponSlot.transform.position;
@@ -473,13 +493,19 @@ public class BaseCharacterBehaviour : MonoBehaviour
 
         //Tossess the weapon away while also telling the weapon not to immediately collide with the character
         StartCoroutine(weaponScript.Flung(gameObject.GetComponent<Collider>()));
-        equippedWeapon.GetComponent<Rigidbody>().AddForce(new Vector3(flingPower.x * -Mathf.Sign(transform.rotation.y), flingPower.y, 0), ForceMode.VelocityChange);
-        equippedWeapon.GetComponent<Rigidbody>().AddTorque(transform.right * 27 * -Mathf.Sign(transform.rotation.y), ForceMode.VelocityChange);
+        weaponScript.weaponHolderCollider = null;
+        equippedWeapon.GetComponent<Rigidbody>().AddForce(new Vector3(flingPower.x * Mathf.Sign(transform.rotation.y), flingPower.y, 0), ForceMode.VelocityChange);
+        equippedWeapon.GetComponent<Rigidbody>().AddTorque(transform.right * 27 * Mathf.Sign(transform.rotation.y), ForceMode.VelocityChange);
 
         weaponScript.isEquipped = false;
         weaponScript.canBeCollected = false;
 
         isArmed = false;
+
+        anim.SetBool("Unarmed", true);
+        anim.SetBool("Melee", false);
+        anim.SetBool("Rifle", false);
+        anim.SetTrigger("Throw");
     }
 
     //Called when tossing a weapon with no ammo, which executes a power throw that can damage people
@@ -495,8 +521,9 @@ public class BaseCharacterBehaviour : MonoBehaviour
 
         //Tossess the weapon away while also telling the weapon not to immediately collide with the character
         StartCoroutine(weaponScript.Flung(gameObject.GetComponent<Collider>()));
-        equippedWeapon.GetComponent<Rigidbody>().AddForce(new Vector3(80 * -Mathf.Sign(transform.rotation.y), 0, 0), ForceMode.VelocityChange);
-        equippedWeapon.GetComponent<Rigidbody>().AddTorque(transform.right * 27 * -Mathf.Sign(transform.rotation.y), ForceMode.VelocityChange);
+        weaponScript.weaponHolderCollider = null;
+        equippedWeapon.GetComponent<Rigidbody>().AddForce(new Vector3(80 * Mathf.Sign(transform.rotation.y), 0, 0), ForceMode.VelocityChange);
+        equippedWeapon.GetComponent<Rigidbody>().AddTorque(transform.right * 27 * Mathf.Sign(transform.rotation.y), ForceMode.VelocityChange);
 
         //equippedWeapon.GetComponent<Collider>().isTrigger = false;
         weaponScript.isEquipped = false;
@@ -504,12 +531,19 @@ public class BaseCharacterBehaviour : MonoBehaviour
         weaponScript.actAsBullet = true;
 
         isArmed = false;
+
+        anim.SetBool("Unarmed", true);
+        anim.SetBool("Melee", false);
+        anim.SetBool("Rifle", false);
+
+        anim.SetTrigger("Throw");
+
     }
 
     //when hit by a bullet that's moving in the opposite direction, drop speed to zero
     public void GetStopped(float direction)
     {
-        if(Mathf.Sign(direction) == -Mathf.Sign(transform.rotation.y))
+        if(Mathf.Sign(direction) == Mathf.Sign(transform.rotation.y))
         {
             print("get stopped method called");
             rb.velocity = new Vector3(0, rb.velocity.y, rb.velocity.y);
@@ -563,14 +597,21 @@ public class BaseCharacterBehaviour : MonoBehaviour
         SetRemainingLives(GetRemainingLives() - 1);
 
         //DEACTIVATION PROCESS
-        isArmed = false;
+        if (isArmed)
+        {
+            isArmed = false;
+            Destroy(equippedWeapon);
+        }
         rb.collisionDetectionMode = CollisionDetectionMode.Discrete;
         rb.isKinematic = true;
         //Play death animation, when it's over execute lines below
-        GetComponent<MeshRenderer>().enabled = false;        
+        //GetComponent<MeshRenderer>().enabled = false;        //this is okay to turn off cubes but models are more complex than this
         rb.velocity = Vector3.zero;
         yield return new WaitForSeconds(1.5f);
-        StartCoroutine(CharacterRespawn());
+        if (GetRemainingLives() > -1)
+        {
+            StartCoroutine(CharacterRespawn());
+        }
     }
 
     public IEnumerator CharacterRespawn()
@@ -578,7 +619,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
         SetHealth(maxHealth);
         StartCoroutine(UpdateHealth());
         //position on a respawn platform
-        GetComponent<MeshRenderer>().enabled = true;
+        //GetComponent<MeshRenderer>().enabled = true;
         rb.isKinematic = false;
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
 

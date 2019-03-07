@@ -11,6 +11,8 @@ public class BaseWeaponScript : MonoBehaviour
     public int ammo;
     public Sprite weaponSprite;
 
+    public Collider weaponHolderCollider;
+
     public bool isEquipped = false;
     public bool canBeCollected = true;
     public bool canSpin = false;
@@ -42,14 +44,16 @@ public class BaseWeaponScript : MonoBehaviour
             GameObject bullet;
 
             //the tag, meaning the first parameter, is the name of the kind of bullet that will be pulled out of the object pooler
-            bullet = pooler.SpawnFromPool("Bullet1", transform.position, Quaternion.Euler(0, 90 * -direction, 0));
+            bullet = pooler.SpawnFromPool("Bullet1", transform.position, Quaternion.Euler(0, 90 * direction, 0));
             BulletScript bScript = bullet.GetComponent<BulletScript>();
 
+            //this informs the bullet about what collider to ignore when shooting
+            bScript.shooterCollider = weaponHolderCollider;
             bScript.damage = (int)(weaponDamage * (damageMod));
             bScript.direction = direction;
             bScript.AfterEnable();
 
-            //stuff about the shot: sound, muzzle flash? animation??
+            //TO ADD: stuff about the shot: sound, muzzle flash? animation??
         }
     }
 

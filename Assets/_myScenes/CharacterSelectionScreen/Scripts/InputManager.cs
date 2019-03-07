@@ -199,7 +199,7 @@ public class InputManager : MonoBehaviour
                     stick2VIdle = true;
                 }
                 //RIGHT
-                if (selectors[2].GetComponent<SelectorBehaviour>().chosenCharacter == null)
+                if (selectors[1].GetComponent<SelectorBehaviour>().chosenCharacter == null)
                 {
 
                     if ((Input.GetAxis("LeftJoy2Horizontal") > 0.5f))

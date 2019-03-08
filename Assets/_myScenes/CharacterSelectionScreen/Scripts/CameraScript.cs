@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class CameraScript : MonoBehaviour
 {
+    private GameManagerScript gmScript;
+
     public float dampTime = 0.5f;
     public float decreaseAmount = 1.0f;
     public float amount;
     public float shakeSpeed;
-    public float distanceApart;
 
     public int activeTime = 0;
 
@@ -20,9 +21,9 @@ public class CameraScript : MonoBehaviour
     float yOffset;
     float seed;
 
-    public Transform[] players;
+    private Transform[] players = new Transform[4];
+    public bool targetsAcquired = false;
 
-    private Camera cam;
     private Vector3 centrePos;
     private Vector3 moveVelocity;
     private Vector3 cameraStartPos;
@@ -35,7 +36,7 @@ public class CameraScript : MonoBehaviour
         {
             t += Time.deltaTime;
             Debug.Log(t);
-            transform.position = transform.position + (endPosition - transform.position) * (1 - (1 - t) * (1 - t));
+            transform.position = new Vector3(transform.position.x + (endPosition.x - transform.position.x) * (1 - (1 - t) * (1 - t)), 31, -44);
             if (t >= 1)
             {
                 transform.position = endPosition;
@@ -46,10 +47,23 @@ public class CameraScript : MonoBehaviour
 
     private void Start()
     {
-        cam = GetComponent<Camera>();
+        gmScript = GameManagerScript.gmInstance;
         seed = Random.Range(0, 100000);
         current = transform.position;
-        cameraStartPos = transform.position;
+        cameraStartPos = transform.position;               
+    }
+
+    public void SetUpTargets()
+    {
+        
+        for (int i = 0; i < gmScript.inGameChars.Length; i++)
+        {
+            if(gmScript.inGameChars[i] != null)
+                players[i] = gmScript.inGameChars[i].transform;
+
+            print(i);
+        }
+        targetsAcquired = true;      
     }
 
     public void Update()
@@ -71,41 +85,13 @@ public class CameraScript : MonoBehaviour
             activeTime = 0;
         }
 
-        FindCentre();
-
-        transform.position = Vector3.SmoothDamp(transform.position, centrePos, ref moveVelocity, dampTime);
-
-        if (players[0].position.x < players[1].position.x)
+        if (targetsAcquired)
         {
-            distanceApart = players[0].position.x - players[1].position.x;
+            FindCentre();
+            transform.position = Vector3.SmoothDamp(transform.position, new Vector3(centrePos.x, centrePos.y, transform.position.z), ref moveVelocity, dampTime);
         }
-        else
-        {
-            distanceApart = players[1].position.x - players[0].position.x;
-        }
-
-        if (distanceApart < 10)
-        {
-            cam.transform.position = new Vector3(cam.transform.position.x, cam.transform.position.y, distanceApart - 5);
-        }
-        else if (distanceApart < 20)
-        {
-            cam.transform.position = new Vector3(cam.transform.position.x, cam.transform.position.y, distanceApart / 4);
-        }
-        else if (distanceApart < 30)
-        {
-            cam.transform.position = new Vector3(cam.transform.position.x, cam.transform.position.y, distanceApart / 8);
-        }
-        else
-        {
-            cam.transform.position = new Vector3(cam.transform.position.x, cam.transform.position.y, distanceApart / 12);
-        }
-
-        if (cam.transform.position.z > -10)
-        {
-            cam.transform.position = new Vector3(cam.transform.position.x, cam.transform.position.y, -10);
-        }
-
+        
+        //may want to add a little zoom-in here if needed   
     }
 
     public void FindCentre()
@@ -115,17 +101,27 @@ public class CameraScript : MonoBehaviour
 
         for (int i = 0; i < players.Length; i++)
         {
-            if (!players[i].gameObject.activeSelf)
+            if (gmScript.inGameChars[i]!= null && !gmScript.inGameChars[i].gameObject.GetComponent<BaseCharacterBehaviour>().alive)
                 continue;
 
-            averagePos += players[i].position;
+            if(players[i] != null)
+                averagePos += players[i].position;
+
             numTargets++;
         }
 
         if (numTargets > 0)
             averagePos /= numTargets;
 
-        averagePos.y = 0;
+        if(averagePos.y < 22)
+        {
+            averagePos.y = 22;
+        }
+
+        if(averagePos.y > 33)
+        {
+            averagePos.y = 33;
+        }
 
         centrePos = averagePos;
     }

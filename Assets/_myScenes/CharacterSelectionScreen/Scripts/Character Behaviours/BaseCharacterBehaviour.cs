@@ -61,13 +61,11 @@ public class BaseCharacterBehaviour : MonoBehaviour
     [Tooltip("The game object that the weapon will be childed too")]
     public GameObject weaponSlot;
 
+    //Weapons list
+    public GameObject asparagun;
+
     //Physics related variables
-    public bool slowFall;
-    public float internalVel;
-    [SerializeField]
-    private float maxInternalHspeed = 20;
-    [SerializeField]
-    private float minInternalHspeed = -20;
+    public bool slowFall;    
     public bool canMove = true;
     public bool grounded = true;
     public bool canExtraJump = true;
@@ -116,18 +114,18 @@ public class BaseCharacterBehaviour : MonoBehaviour
     public virtual void Start()
     {
         gmScript = GameManagerScript.gmInstance;
-        GetComponent<Rigidbody>().mass = bodyMass;
         rb = GetComponent<Rigidbody>();
+        rb.mass = bodyMass;
         anim = GetComponent<Animator>();
         anim.SetBool("Unarmed", true);
+        asparagun.SetActive(false);
     }
 
     //Define here all the actual commands (shoot, jump, etc)
     //Also update HP here
     public virtual void Update()
     {
-        internalVel = rb.velocity.x;
-        anim.SetBool("isGrounded", grounded);            
+        anim.SetBool("isGrounded", grounded);
 
         CheckInput();
 
@@ -168,16 +166,16 @@ public class BaseCharacterBehaviour : MonoBehaviour
             {
                 if (weaponScript.ammo < 1)
                 {
-                    TossWeaponEmpty();
+                    StartCoroutine(TossWeaponEmpty());
                 }
                 else
                 {
-                    TossWeapon();
+                    StartCoroutine(TossWeapon());
                 }
             }
             if (xButton && isArmed)
             {
-                TossWeaponEmpty();
+                StartCoroutine(TossWeaponEmpty());
             }
             if (yButton)
             {
@@ -189,9 +187,10 @@ public class BaseCharacterBehaviour : MonoBehaviour
             }
             if (rTrig)
             {
-                if (isArmed)
+                if (isArmed && weaponScript.canShoot && weaponScript.ammo > 0)
                 {
                     weaponScript.Fire(damageMod, Mathf.Sign(transform.rotation.y));
+                    anim.SetTrigger("Shoot");
                 }
             }
             if (lStickHor != 0 && canMove)
@@ -205,11 +204,6 @@ public class BaseCharacterBehaviour : MonoBehaviour
         }
     }
     
-    public virtual void LateUpdate()
-    {
-        
-    }
-
     public virtual void FixedUpdate()
     {
         //Generally makes gravity stronger when already falling
@@ -247,15 +241,6 @@ public class BaseCharacterBehaviour : MonoBehaviour
         {
             drag = true;
         }       
-
-        if (internalVel > maxInternalHspeed)
-        {
-            internalVel = maxInternalHspeed - 0.5f;
-        }
-        if (internalVel < minInternalHspeed)
-        {
-            internalVel = minInternalHspeed + 0.5f;
-        }
 
         transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.x, 90 * Mathf.Sign(stickDirection), transform.rotation.z));
     }
@@ -406,7 +391,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
 
     public void OnCollisionStay(Collision other)
     {
-        if(other.collider.tag == "Floor")
+        if(other.collider.tag == "Floor" && other.transform.position.y < transform.position.y)
         {
             grounded = true;
         }
@@ -471,17 +456,19 @@ public class BaseCharacterBehaviour : MonoBehaviour
 
         equippedWeapon.transform.SetParent(weaponSlot.transform);
         equippedWeapon.transform.position = weaponSlot.transform.position;
-        equippedWeapon.transform.rotation = Quaternion.Euler(weaponSlot.transform.rotation.eulerAngles * -1);       
+        equippedWeapon.transform.rotation = Quaternion.Euler(weaponSlot.transform.rotation.eulerAngles * -1);
 
         equippedWeaponSprite = weaponScript.weaponSprite;
-
+        equippedWeapon.GetComponent<MeshRenderer>().enabled = false;
+        asparagun.SetActive(true);
         isArmed = true;
         yield return null;
     }
 
     //Called when manually tossing a non-empty weapon away or when picking up another weapon
-    public void TossWeapon()
+    public IEnumerator TossWeapon()
     {
+        yield return new WaitForSeconds(0.1f);
         //UI info
         equippedWeaponSprite = null;
 
@@ -490,6 +477,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
 
         //removing some movement constraints
         equippedWeapon.GetComponent<Rigidbody>().isKinematic = false;
+        equippedWeapon.transform.rotation = Quaternion.Euler(equippedWeapon.transform.rotation.x, 90, equippedWeapon.transform.rotation.z); //resetting rotation
 
         //Tossess the weapon away while also telling the weapon not to immediately collide with the character
         StartCoroutine(weaponScript.Flung(gameObject.GetComponent<Collider>()));
@@ -502,6 +490,9 @@ public class BaseCharacterBehaviour : MonoBehaviour
 
         isArmed = false;
 
+        equippedWeapon.GetComponent<MeshRenderer>().enabled = true;
+        asparagun.SetActive(false);
+
         anim.SetBool("Unarmed", true);
         anim.SetBool("Melee", false);
         anim.SetBool("Rifle", false);
@@ -509,8 +500,9 @@ public class BaseCharacterBehaviour : MonoBehaviour
     }
 
     //Called when tossing a weapon with no ammo, which executes a power throw that can damage people
-    public void TossWeaponEmpty()
+    public IEnumerator TossWeaponEmpty()
     {
+        yield return new WaitForSeconds(0.1f);
         //UI info
         equippedWeaponSprite = null;
 
@@ -518,10 +510,13 @@ public class BaseCharacterBehaviour : MonoBehaviour
         equippedWeapon.transform.SetParent(null);
         equippedWeapon.GetComponent<Rigidbody>().isKinematic = false;
         equippedWeapon.GetComponent<Rigidbody>().useGravity = false;
+        equippedWeapon.transform.rotation = Quaternion.Euler(equippedWeapon.transform.rotation.x, 90, equippedWeapon.transform.rotation.z); //resetting rotation
 
         //Tossess the weapon away while also telling the weapon not to immediately collide with the character
         StartCoroutine(weaponScript.Flung(gameObject.GetComponent<Collider>()));
         weaponScript.weaponHolderCollider = null;
+        equippedWeapon.GetComponent<MeshRenderer>().enabled = true;
+        asparagun.SetActive(false);
         equippedWeapon.GetComponent<Rigidbody>().AddForce(new Vector3(80 * Mathf.Sign(transform.rotation.y), 0, 0), ForceMode.VelocityChange);
         equippedWeapon.GetComponent<Rigidbody>().AddTorque(transform.right * 27 * Mathf.Sign(transform.rotation.y), ForceMode.VelocityChange);
 
@@ -537,7 +532,6 @@ public class BaseCharacterBehaviour : MonoBehaviour
         anim.SetBool("Rifle", false);
 
         anim.SetTrigger("Throw");
-
     }
 
     //when hit by a bullet that's moving in the opposite direction, drop speed to zero
@@ -600,6 +594,10 @@ public class BaseCharacterBehaviour : MonoBehaviour
         if (isArmed)
         {
             isArmed = false;
+            anim.SetBool("Unarmed", true);
+            anim.SetBool("Melee", false);
+            anim.SetBool("Rifle", false);
+            asparagun.SetActive(false);
             Destroy(equippedWeapon);
         }
         rb.collisionDetectionMode = CollisionDetectionMode.Discrete;

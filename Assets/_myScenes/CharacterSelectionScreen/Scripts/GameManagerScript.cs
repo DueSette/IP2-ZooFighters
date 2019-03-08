@@ -14,8 +14,7 @@ public class GameManagerScript : MonoBehaviour
     public GameObject portraitsHolder;
     public GameObject selectedPortraits;
 
-    [HideInInspector]
-    public GameObject[] selectors = new GameObject[4];      //the pointer game objects that players use to navigate the character selection screen
+    private GameObject[] selectors = new GameObject[4];      //the pointer game objects that players use to navigate the character selection screen
 
     [HideInInspector]
     public GameObject[] inGameUIObjects = new GameObject[4];    //The (up to) 4 HUD boxes with the character info (hp, weapon, lives)
@@ -80,6 +79,8 @@ public class GameManagerScript : MonoBehaviour
 
                 //waits until every char is spawned
                 yield return StartCoroutine(SpawnCharacters());
+
+                
               
                 //Should ready the UI to work with each portrait
                 InitialiseInGameUI();
@@ -120,6 +121,8 @@ public class GameManagerScript : MonoBehaviour
             }
         }
         yield return null;
+        //tell the camera what to look at
+        cam.gameObject.GetComponent<CameraScript>().SetUpTargets();
         SetGameState(GameState.inGame);
     }
 

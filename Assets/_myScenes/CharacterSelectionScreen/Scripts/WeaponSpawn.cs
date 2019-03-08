@@ -22,9 +22,9 @@ public class WeaponSpawn : MonoBehaviour
    private IEnumerator Spawn(GameObject weap)
     {
         yield return new WaitForSeconds(timeBetweenSpawns);
+        transf = new Vector3(Random.Range(-57, 57), transform.position.y, transform.position.z);
         timeBetweenSpawns = Random.Range(2.5f, 8.5f);
         Instantiate(weap, transf, Quaternion.Euler(0, 90, 0));
-        StartCoroutine(Spawn(weap));
-        transf = new Vector3(Random.Range(-57, 57), transform.position.y, transform.position.z);
+        StartCoroutine(Spawn(weaponsToSpawn[Random.Range(0, weaponsToSpawn.Length)]));
     }
 }

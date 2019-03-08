@@ -16,14 +16,19 @@ public class BaseWeaponScript : MonoBehaviour
     public bool isEquipped = false;
     public bool canBeCollected = true;
     public bool canSpin = false;
-    private bool canShoot = true;
+    public bool canShoot = true;
     public bool actAsBullet = false;
+
+    [HideInInspector]
+    public Rigidbody rb;
+    private Vector3 velo;
 
 
     private void Start()
     {
+        rb = GetComponent<Rigidbody>();
         pooler = ObjectPooler.instance;
-        gameObject.GetComponent<Rigidbody>().maxAngularVelocity = 150;
+        rb.maxAngularVelocity = 150;
     }
 
     private void Update()
@@ -34,27 +39,35 @@ public class BaseWeaponScript : MonoBehaviour
         }
     }
 
+    private void FixedUpdate()
+    {
+        velo = rb.velocity;
+        if(velo.y < -45)
+        {
+            rb.AddForce(new Vector3(0, 2.7f, 0), ForceMode.Impulse);
+        }
+    }
+
     //shooting a bullet (instantiating it from the pool)
     public void Fire(float damageMod, float direction)
     {
-        if (canShoot && ammo > 0)
-        {
-            StartCoroutine(FireCD());
-            ammo--;
-            GameObject bullet;
 
-            //the tag, meaning the first parameter, is the name of the kind of bullet that will be pulled out of the object pooler
-            bullet = pooler.SpawnFromPool("Bullet1", transform.position, Quaternion.Euler(0, 90 * direction, 0));
-            BulletScript bScript = bullet.GetComponent<BulletScript>();
+        StartCoroutine(FireCD());
+        ammo--;
+        GameObject bullet;
 
-            //this informs the bullet about what collider to ignore when shooting
-            bScript.shooterCollider = weaponHolderCollider;
-            bScript.damage = (int)(weaponDamage * (damageMod));
-            bScript.direction = direction;
-            bScript.AfterEnable();
+        //the tag, meaning the first parameter, is the name of the kind of bullet that will be pulled out of the object pooler
+        bullet = pooler.SpawnFromPool("Bullet1", transform.position, Quaternion.Euler(0, 90 * direction, 0));
+        BulletScript bScript = bullet.GetComponent<BulletScript>();
 
-            //TO ADD: stuff about the shot: sound, muzzle flash? animation??
-        }
+        //this informs the bullet about what collider to ignore when shooting
+        bScript.shooterCollider = weaponHolderCollider;
+        //this sets damage, direction and post-on enable stuff
+        bScript.damage = (int)(weaponDamage * (damageMod));
+        bScript.direction = direction;
+        bScript.AfterEnable();
+
+        //TO ADD: stuff about the shot: sound, muzzle flash? animation
     }
 
     //manages the rate of fire
@@ -125,10 +138,10 @@ public class BaseWeaponScript : MonoBehaviour
 
         //makes the landing look smooth but also snappy and clean
         transform.SetPositionAndRotation(transform.position, Quaternion.Euler(0, yRot, transform.rotation.z));
-
+        transform.position = new Vector3(transform.position.x, transform.position.y + GetComponent<Collider>().bounds.extents.y, transform.position.z);
         //stops the object
-        GetComponent<Rigidbody>().velocity = Vector3.zero;
-        GetComponent<Rigidbody>().isKinematic = true;
+        rb.velocity = Vector3.zero;
+        rb.isKinematic = true;
 
         canBeCollected = true;
         canSpin = true;

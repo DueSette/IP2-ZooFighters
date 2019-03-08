@@ -17,7 +17,9 @@ public class DestroyerScript : MonoBehaviour
         {
             collider.gameObject.SetActive(false);
         }
+
         //add stuff that shouldn't be destroyed via tag search, the rest can be destroyed
+
         else
         {
             Destroy(collider.gameObject);

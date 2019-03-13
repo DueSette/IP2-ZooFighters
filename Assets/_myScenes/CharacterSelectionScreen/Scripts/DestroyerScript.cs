@@ -12,6 +12,7 @@ public class DestroyerScript : MonoBehaviour
         {
             collider.gameObject.GetComponent<BaseCharacterBehaviour>().TakeDamage(collider.gameObject.GetComponent<BaseCharacterBehaviour>().GetHealth());
         }
+
         //if it is a bullet (DON'T DESTROY BULLETS PLS)
         else if (collider.tag == "Bullet")
         {
@@ -19,6 +20,7 @@ public class DestroyerScript : MonoBehaviour
         }
 
         //add stuff that shouldn't be destroyed via tag search, the rest can be destroyed
+        else if(collider.tag == "SlapObject") {}
 
         else
         {

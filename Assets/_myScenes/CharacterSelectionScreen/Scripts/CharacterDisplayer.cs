@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 public class CharacterDisplayer : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class CharacterDisplayer : MonoBehaviour
         public string name;
         public Sprite portrait;
         public Sprite selectedImage;
+        public VideoClip introClip;
     }
 
     public float appearSpeed;   //how long between each character portrait instancing
@@ -29,26 +31,27 @@ public class CharacterDisplayer : MonoBehaviour
     private IEnumerator ShowCharacters()    //generates the clickable character portraits
     {
         for (int i = 0; i < characters.Length; i++)
-        {         
+        {
+            CharacterPortraitScript chScript;
+            
             if (i > characters.Length/2 - 1)    //basically, if half of the characters have already been displayed, displays the others in the row below
             {
-                GameObject charObj = Instantiate(charObject, transform.position + new Vector3( -(portraitSize  * characters.Length / 2) + (portraitSize * i), -175, 0), Quaternion.identity);
-                charObj.transform.SetParent(this.transform);
-
-                CharacterPortraitScript chScript = charObj.GetComponent<CharacterPortraitScript>();
-                chScript.SetImage(characters[i].portrait);
-                chScript.SetName(characters[i].name);
+                GameObject charObj = Instantiate(charObject, transform.position + new Vector3(-(portraitSize * characters.Length / 2) + (portraitSize * i), -175, 0), Quaternion.identity);
+                chScript = charObj.GetComponent<CharacterPortraitScript>();               
+                charObj.transform.SetParent(this.transform);                                            
             }
 
             else
-            {
+            {              
                 GameObject charObj = Instantiate(charObject, transform.position + new Vector3((portraitSize * i), 0, 0), Quaternion.identity);
+                chScript = charObj.GetComponent<CharacterPortraitScript>();
                 charObj.transform.SetParent(this.transform);
-
-                CharacterPortraitScript chScript = charObj.GetComponent<CharacterPortraitScript>();
-                chScript.SetImage(characters[i].portrait);
-                chScript.SetName(characters[i].name);
             }
+
+            chScript.SetImage(characters[i].portrait);
+            chScript.SetName(characters[i].name);
+
+            chScript.SetClip(characters[i].introClip);
             yield return new WaitForSeconds(appearSpeed);
         }
         yield return null;

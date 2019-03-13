@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2643588752788299642}
   - component: {fileID: 1458080007547976243}
   - component: {fileID: 7270871499920885734}
-  - component: {fileID: 4992043639563492958}
+  - component: {fileID: 1475494812551558224}
   m_Layer: 0
   m_Name: BaseBullet
   m_TagString: Bullet
@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 2643588752786096314}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -42,7 +42,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2643588752786096314}
-  m_Mesh: {fileID: 4300000, guid: ee3f0b52fe10f194fb33c1423defa973, type: 3}
+  m_Mesh: {fileID: 4300002, guid: 103612e5e1ff43a4e896c567a2cb3ae1, type: 3}
 --- !u!23 &2643588752788299642
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -110,11 +110,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 0
   direction: 0
+  shooterCollider: {fileID: 0}
   pushBack: {x: 100, y: 12}
   bulletSpeed: {x: 90, y: 3}
   stopTargetDuration: 0.6
---- !u!64 &4992043639563492958
-MeshCollider:
+--- !u!135 &1475494812551558224
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -123,7 +124,6 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  serializedVersion: 3
-  m_Convex: 1
-  m_CookingOptions: 14
-  m_Mesh: {fileID: 4300000, guid: ee3f0b52fe10f194fb33c1423defa973, type: 3}
+  serializedVersion: 2
+  m_Radius: 1
+  m_Center: {x: -0.000000059604645, y: 0, z: 0.000000029802322}

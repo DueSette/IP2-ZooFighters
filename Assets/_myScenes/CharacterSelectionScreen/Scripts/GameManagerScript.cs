@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManagerScript : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class GameManagerScript : MonoBehaviour
 
     public Camera cam;
     public Canvas canvas;
+    public GameObject weaponSpawner;
     public GameObject portraitsHolder;
     public GameObject selectedPortraits;
 
@@ -53,6 +55,10 @@ public class GameManagerScript : MonoBehaviour
         {
             UpdateInGameUI();
         }
+        if(GetGameState() == GameState.victoryScreen && Input.anyKeyDown)
+        {
+            StartCoroutine(RestartGame());
+        }
     }
 
     private void Start()
@@ -62,7 +68,7 @@ public class GameManagerScript : MonoBehaviour
         //populates the selectors array
         for (int i = 0; i < selectors.Length; i++)
         {
-            selectors[i] = gameObject.GetComponent<InputManager>().selectors[i];
+            selectors[i] = gameObject.GetComponent<SelectionInputManager>().selectors[i];
         }
     }
 
@@ -80,8 +86,9 @@ public class GameManagerScript : MonoBehaviour
                 //waits until every char is spawned
                 yield return StartCoroutine(SpawnCharacters());
 
-                
-              
+                //Activates the object that spawns weapons
+                weaponSpawner.SetActive(true);
+                              
                 //Should ready the UI to work with each portrait
                 InitialiseInGameUI();
 
@@ -136,6 +143,7 @@ public class GameManagerScript : MonoBehaviour
 
         SetGameState(GameState.victoryScreen);
 
+        weaponSpawner.SetActive(false);
         //When only one character is left this part of the code will execute:
         //it should declare the winner, maybe tell the camera to do something cool
         //after a while, call UI buttons to restart/go to character selection/go to main menu
@@ -185,6 +193,19 @@ public class GameManagerScript : MonoBehaviour
             }
         }
         return charactersLeft <= 1;
+    }
+
+    public int CountCharacters()
+    {
+        int x = 0;
+        foreach(GameObject character in inGameChars)
+        {
+            if(character != null)
+            {
+                x++;
+            }
+        }
+        return x;
     }
 
     //moves the UI pieces from view to outside view or viceversa
@@ -263,6 +284,12 @@ public class GameManagerScript : MonoBehaviour
             Time.timeScale = 1;
         }
         paused = !paused;
+    }
+
+    private IEnumerator RestartGame()
+    {
+        yield return new WaitForSeconds(3);
+        SceneManager.LoadScene("CharacterSelection");
     }
 
     public GameState GetGameState()

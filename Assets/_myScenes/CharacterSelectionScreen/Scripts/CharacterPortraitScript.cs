@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Diagnostics;
+using UnityEngine.Video;
 
 public class CharacterPortraitScript : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class CharacterPortraitScript : MonoBehaviour
     public GameObject button;   //Assign all the children of the Character Object
     public GameObject portrait;
     public GameObject text;
+    public VideoClip introVid;
+    public VideoPlayer videoPlayer;
 
     [Tooltip("the object that contains the four panels representing the player's selected character")]
     public static GameObject selectedPortraits;
@@ -21,7 +24,7 @@ public class CharacterPortraitScript : MonoBehaviour
     {
         if (selectedPortraits == null)
         {
-            selectedPortraits = GameObject.Find("Selected Portraits");
+            selectedPortraits = GameObject.Find("Selected Banners"); //BE CAREFUL WITH NAME SEARCH
         }
 
         for (int i = 0; i < 4; i++)
@@ -41,13 +44,23 @@ public class CharacterPortraitScript : MonoBehaviour
         text.GetComponent<Text>().text = name;
     }
 
-    public GameObject SelectCharacter(int joystickNum, int characterToSpawn)
+    public void SetClip(VideoClip clip)
     {
-        //shows the selected character in the SelectedPortraits object, keeping track of what joystick called this
-        //e.g: if joystick 0 calls the function, it's going to access the first portrait of the array
+        introVid = clip;
+    }
+
+    //Shows the selected character in the SelectedPortraits object, keeping track of what joystick called this
+    //e.g: if joystick 0 calls the function, it's going to access the first portrait of the array
+    public GameObject SelectCharacter(int joystickNum, int characterToSpawn)
+    {     
         //returns the gameobject that will be spawned
         selectedCharactersPanels[joystickNum].GetComponent<Image>().color = Color.white;
-        selectedCharactersPanels[joystickNum].GetComponent<Image>().sprite = this.portrait.GetComponent<Image>().sprite;
+        selectedCharactersPanels[joystickNum].GetComponent<Image>().sprite = portrait.GetComponent<Image>().sprite;
+
+        //Setting up the introductory videoclip
+        videoPlayer = selectedCharactersPanels[joystickNum].transform.GetChild(0).gameObject.GetComponent<VideoPlayer>();
+        videoPlayer.clip = introVid;
+        videoPlayer.gameObject.SetActive(true);
 
         return characters[characterToSpawn];
     }
@@ -57,6 +70,9 @@ public class CharacterPortraitScript : MonoBehaviour
     {
         selectedCharactersPanels[joystickNum].GetComponent<Image>().sprite = null;
         selectedCharactersPanels[joystickNum].GetComponent<Image>().color = Color.white - new Color(0, 0, 0, 0.42f);
+
+        if(videoPlayer != null)
+            videoPlayer.gameObject.SetActive(false);
     }
 
     //called when hovering over a portrait while not locked onto any character

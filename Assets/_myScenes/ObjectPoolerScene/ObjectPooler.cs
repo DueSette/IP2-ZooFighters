@@ -21,13 +21,11 @@ public class ObjectPooler : MonoBehaviour
     {
         instance = this;
     }
-
     #endregion  
 
     [Tooltip("All the different types of objects (bullets / platforms), anything that spawns")]
     public List<Pool> pools;    
     public Dictionary<string, Queue<GameObject>> poolDictionary;
-
 
     void Start()
     {
@@ -61,7 +59,7 @@ public class ObjectPooler : MonoBehaviour
         objectToSpawn.transform.position = position;
         objectToSpawn.transform.rotation = rotation;
 
-        poolDictionary[tag].Enqueue(objectToSpawn);
+        poolDictionary[tag].Enqueue(objectToSpawn); //puts it at the end of the queue
 
         return objectToSpawn;
     }  

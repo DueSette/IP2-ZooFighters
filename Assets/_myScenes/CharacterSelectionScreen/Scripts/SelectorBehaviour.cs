@@ -6,7 +6,7 @@ using UnityEngine;
 public class SelectorBehaviour : MonoBehaviour
 {
     //variables needed to retrieve data from other scripts
-    private static GameObject portraitsHolder;      //the object that spawns the portraits
+    private static GameObject portraitsDisplayer;      //the object that spawns the portraits
     private CharacterDisplayer charDispl;   //the script attached to the previous object
 
     [HideInInspector]
@@ -19,13 +19,13 @@ public class SelectorBehaviour : MonoBehaviour
 
     private void OnEnable()
     {
-        if (portraitsHolder == null)
+        if (portraitsDisplayer == null)
         {
-            portraitsHolder = GameObject.Find("PortraitsHolder");
+            portraitsDisplayer = GameObject.Find("Portraits Displayer");   //CAREFUL WITH NAME SEARCH
         }
-        charDispl = portraitsHolder.GetComponent<CharacterDisplayer>();
+        charDispl = portraitsDisplayer.GetComponent<CharacterDisplayer>();
         totalCharactersNum = charDispl.characters.Length;
-        gameObject.transform.position = portraitsHolder.transform.GetChild(0).transform.position;
+        gameObject.transform.position = portraitsDisplayer.transform.GetChild(0).transform.position;
         cursorPos = 0;
     }
 
@@ -33,19 +33,19 @@ public class SelectorBehaviour : MonoBehaviour
     {
         if (joystickNumber < 2)
         {
-            gameObject.transform.position = portraitsHolder.transform.GetChild(cursorPos).transform.position + new Vector3(joystickNumber * 100, 0, 0);
+            gameObject.transform.position = portraitsDisplayer.transform.GetChild(cursorPos).transform.position + new Vector3(joystickNumber * 100, 0, 0);
         }
 
         else
         {
-            gameObject.transform.position = portraitsHolder.transform.GetChild(cursorPos).transform.position + new Vector3((joystickNumber - 2) * 100, -100, 0);
+            gameObject.transform.position = portraitsDisplayer.transform.GetChild(cursorPos).transform.position + new Vector3((joystickNumber - 2) * 100, -100, 0);
         }
     }
 
     //accesses the portrait that this selector is currently standing on and calls the SelectCharacter function, also keeping track of what joystick number called this
     public void CharSelect()
     {
-        CharacterPortraitScript portraitScript = portraitsHolder.transform.GetChild(cursorPos).gameObject.GetComponent<CharacterPortraitScript>();
+        CharacterPortraitScript portraitScript = portraitsDisplayer.transform.GetChild(cursorPos).gameObject.GetComponent<CharacterPortraitScript>();
         //Instantiates and populates the character reference.
         chosenCharacter = Instantiate(portraitScript.SelectCharacter(GetJoystickNum(), cursorPos), transform.localPosition, Quaternion.Euler(0, 90, 0));
 
@@ -55,6 +55,8 @@ public class SelectorBehaviour : MonoBehaviour
         //ties this character to their specific controller
         chosenCharacter.GetComponent<BaseCharacterBehaviour>().ReceiveJoystick(GetJoystickNum());
         ready = true;
+
+
     }
 
     //destroys current instance of selected character and updates UI
@@ -67,14 +69,15 @@ public class SelectorBehaviour : MonoBehaviour
             Destroy(chosenCharacter);
             chosenCharacter = null;
         }
-        portraitsHolder.transform.GetChild(cursorPos).gameObject.GetComponent<CharacterPortraitScript>().DeselectCharacter(GetJoystickNum());
+        portraitsDisplayer.transform.GetChild(cursorPos).gameObject.GetComponent<CharacterPortraitScript>().DeselectCharacter(GetJoystickNum());
+        
         ready = false;
     }
 
     //when hovering character portraits (called in update)
     public void CharHover()
     {       
-        portraitsHolder.transform.GetChild(cursorPos).gameObject.GetComponent<CharacterPortraitScript>().HoverCharacter(GetJoystickNum(), cursorPos);
+        portraitsDisplayer.transform.GetChild(cursorPos).gameObject.GetComponent<CharacterPortraitScript>().HoverCharacter(GetJoystickNum(), cursorPos);
     }    
     
     //assigns an image to this object (the images should be "P1, P2, P3, P4")
@@ -127,6 +130,6 @@ public class SelectorBehaviour : MonoBehaviour
 
     public void OnDisable()
     {
-        portraitsHolder.transform.GetChild(cursorPos).gameObject.GetComponent<CharacterPortraitScript>().DeselectCharacter(GetJoystickNum());
+        portraitsDisplayer.transform.GetChild(cursorPos).gameObject.GetComponent<CharacterPortraitScript>().DeselectCharacter(GetJoystickNum());
     }
 }

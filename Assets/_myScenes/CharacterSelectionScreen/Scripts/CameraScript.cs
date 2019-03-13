@@ -60,8 +60,6 @@ public class CameraScript : MonoBehaviour
         {
             if(gmScript.inGameChars[i] != null)
                 players[i] = gmScript.inGameChars[i].transform;
-
-            print(i);
         }
         targetsAcquired = true;      
     }

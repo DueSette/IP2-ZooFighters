@@ -11,12 +11,18 @@ public class BaseWeaponScript : MonoBehaviour
     public int ammo;
     public Sprite weaponSprite;
 
+    [HideInInspector]
     public Collider weaponHolderCollider;
 
+    [HideInInspector]
     public bool isEquipped = false;
+    [HideInInspector]
     public bool canBeCollected = true;
+    [HideInInspector]
     public bool canSpin = false;
+    [HideInInspector]
     public bool canShoot = true;
+    [HideInInspector]
     public bool actAsBullet = false;
 
     [HideInInspector]
@@ -51,7 +57,6 @@ public class BaseWeaponScript : MonoBehaviour
     //shooting a bullet (instantiating it from the pool)
     public void Fire(float damageMod, float direction)
     {
-
         StartCoroutine(FireCD());
         ammo--;
         GameObject bullet;
@@ -139,6 +144,7 @@ public class BaseWeaponScript : MonoBehaviour
         //makes the landing look smooth but also snappy and clean
         transform.SetPositionAndRotation(transform.position, Quaternion.Euler(0, yRot, transform.rotation.z));
         transform.position = new Vector3(transform.position.x, transform.position.y + GetComponent<Collider>().bounds.extents.y, transform.position.z);
+
         //stops the object
         rb.velocity = Vector3.zero;
         rb.isKinematic = true;
@@ -151,8 +157,8 @@ public class BaseWeaponScript : MonoBehaviour
     public IEnumerator Flung(Collider coll)
     {
         Physics.IgnoreCollision(coll, gameObject.GetComponent<Collider>());
-        yield return new WaitForSeconds(1);
-        if (coll.gameObject != null)
+        yield return new WaitForSeconds(0.5f);
+        if (coll.gameObject != null && this != null)
         {
             Physics.IgnoreCollision(coll, gameObject.GetComponent<Collider>(), false);
         }

@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class BaseCharacterBehaviour : MonoBehaviour
 {
@@ -26,7 +25,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
     #endregion
 
     #region General Data
-    private enum JoyStick { J1, J2, J3, J4 };
+    enum JoyStick { J1, J2, J3, J4 };
     JoyStick jStick;
 
     private enum CharacterStates { Unarmed, Melee, Pistol, Rifle };
@@ -40,7 +39,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
     [Tooltip("This represents health but is updated with the UI, meaning more slowly")]
     public int displayedHealth;
     [Tooltip("This is the actual real health of the character, it's updated BEFORE the UI")]
-    public int currHealth;
+    public int currentHealth;
     public int livesLeft;
 
     //Base stats
@@ -49,7 +48,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
     public float movSpeed;
     public float jumpPower;
     public float bodyMass;
-    [Tooltip("Set 1 for default damage, go below one for below average damage and viceversa")]
+    [Tooltip("Set 1 for default damage, go below one for below average damage and vice versa")]
     public float damageMod = 1;
 
     //Weapon related variables
@@ -58,18 +57,31 @@ public class BaseCharacterBehaviour : MonoBehaviour
     private GameObject equippedWeapon;
     public Sprite equippedWeaponSprite;
     public BaseWeaponScript weaponScript;
+    //public MeleeWeaponScript
     [Tooltip("The game object that the weapon will be childed too")]
     public GameObject weaponSlot;
+    public GameObject slapObject;
 
-    //Weapons list
-    public GameObject asparagun;
+    public bool rTrigReleased = true;
+    public bool canSlap = true;
+
+    //Weapons list data
+    public GameObject[] weaponArray;
+    protected GameObject equippedWeaponInventory;
+
+    protected Dictionary<string, GameObject> weaponDictionary = new Dictionary<string, GameObject>();
 
     //Physics related variables
-    public bool slowFall;    
-    public bool canMove = true;
-    public bool grounded = true;
-    public bool canExtraJump = true;
-    private bool drag = false;
+    protected bool slowFall;
+    [SerializeField]
+    protected bool canMove = true;
+    [SerializeField]
+    protected bool stunned;
+    protected bool grounded = true;
+    protected bool canExtraJump = true;
+    protected bool drag = false;
+    
+    protected bool slapping = false;
     [HideInInspector]
     public float moveDisableDuration = 0;
     [HideInInspector]
@@ -82,7 +94,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
     //this function is called by SelectorBehaviour
     public void ReceiveJoystick(int joyNum)
     {
-        print("joystick num \"" + joyNum +"\" selected its character");
+        print("joystick num \"" + joyNum + "\" selected its character");
 
         switch (joyNum)
         {
@@ -118,7 +130,18 @@ public class BaseCharacterBehaviour : MonoBehaviour
         rb.mass = bodyMass;
         anim = GetComponent<Animator>();
         anim.SetBool("Unarmed", true);
-        asparagun.SetActive(false);
+
+        //equippedWeaponInventory.SetActive(false); //this might come in handy but is unnecessary as of now
+
+        //Inventory system initialisation
+        foreach (GameObject weapon in weaponArray)
+        {
+            if (weapon != null)
+            {
+                weapon.SetActive(false);
+                weaponDictionary.Add(weapon.name, weapon);
+            }
+        }
     }
 
     //Define here all the actual commands (shoot, jump, etc)
@@ -130,39 +153,39 @@ public class BaseCharacterBehaviour : MonoBehaviour
         CheckInput();
 
         //Checking if character is still alive
-        if(GetHealth() <= 0 && alive)
+        if (GetHealth() <= 0 && alive)
         {
             StartCoroutine(CharacterDeath());
         }
 
         //Movement disabling/enabling algorithm
-        if(!canMove)
+        if (!canMove)
         {
             moveDisableTimeElapsed += Time.deltaTime;
-            if(moveDisableTimeElapsed >= moveDisableDuration)
+            if (moveDisableTimeElapsed >= moveDisableDuration)
             {
                 canMove = true;
                 rb.velocity = new Vector3(0, rb.velocity.y, 0);
                 moveDisableTimeElapsed = 0;
             }
         }
-        
+
         //=====COMBAT GAME FUNCTIONS
         if (gmScript.GetGameState() == GameManagerScript.GameState.inGame && alive)
         {
             if (aButton)
             {
-                if (grounded)
+                if (grounded && !stunned)
                 {
                     Jump();
                 }
-                else if (canExtraJump)
+                else if (canExtraJump && !stunned)
                 {
                     Jump();
                     canExtraJump = false;
                 }
             }
-            if (bButton && isArmed)
+            if (bButton && isArmed && !stunned)
             {
                 if (weaponScript.ammo < 1)
                 {
@@ -173,7 +196,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
                     StartCoroutine(TossWeapon());
                 }
             }
-            if (xButton && isArmed)
+            if (xButton && isArmed && !stunned)
             {
                 StartCoroutine(TossWeaponEmpty());
             }
@@ -187,23 +210,82 @@ public class BaseCharacterBehaviour : MonoBehaviour
             }
             if (rTrig)
             {
-                if (isArmed && weaponScript.canShoot && weaponScript.ammo > 0)
+                rTrigReleased = false;
+
+                //SLAPPING
+                if (!isArmed && canSlap && !stunned)
+                {
+                    if (grounded)
+                    {
+                        slapping = true;
+                        StartCoroutine(Slap(false));
+                    }
+                    else
+                    {
+                        StartCoroutine(Slap(true));
+                    }
+                }
+                //SHOOTING
+                if (isArmed && weaponScript.canShoot && weaponScript.ammo > 0 && !stunned)
                 {
                     weaponScript.Fire(damageMod, Mathf.Sign(transform.rotation.y));
                     anim.SetTrigger("Shoot");
                 }
-            }
-            if (lStickHor != 0 && canMove)
-            {
-                Move(lStickHor);
+                //else if(isArmed && meleeWeaponScript.canSwing && !stunned)
             }
             else
             {
+                rTrigReleased = true;
+                anim.SetBool("IsSlapping", false);
+            }
+
+            if (lStickHor != 0 && canMove && !slapping)
+            {
+                Move(lStickHor);
+            }
+            else 
+            {
                 anim.SetBool("isRunning", false);
+                anim.SetBool("isIdle", true);
             }
         }
     }
-    
+
+    private IEnumerator Slap(bool inAir)
+    {
+        StartCoroutine(MeleeHit(false));
+
+        canSlap = false;
+        if(!inAir)
+            slapping = true;
+
+        anim.SetBool("IsSlapping", true);
+        yield return new WaitForSeconds(0.50f);
+        anim.SetBool("IsSlapping", false);
+
+        yield return new WaitUntil(() => rTrigReleased == true);
+        canSlap = true;
+        slapping = false;
+    }
+
+    private IEnumerator MeleeHit(bool hasWeapon)
+    {
+        if(!hasWeapon)  //when slapping bare handed
+        {
+            yield return new WaitForSeconds(0.15f);
+            slapObject.SetActive(true);
+            yield return new WaitForSeconds(0.35f);
+            slapObject.SetActive(false);
+
+        }
+        else    //when swinging a melee weapon
+        {
+
+        }
+
+        yield return null;
+    }
+
     public virtual void FixedUpdate()
     {
         //Generally makes gravity stronger when already falling
@@ -221,7 +303,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
         //Determines if the character is NOT on a platform, then adds extra gravity
         if (!grounded)
         {
-            if(slowFall && rb.velocity.y > 0)
+            if (slowFall && rb.velocity.y > 0)
             {
                 rb.AddForce(Physics.gravity);
             }
@@ -229,25 +311,28 @@ public class BaseCharacterBehaviour : MonoBehaviour
             {
                 rb.AddForce(Physics.gravity * 2.5f);
             }
-        }       
+        }
+
     }
-    
+
     public virtual void Move(float stickDirection)
     {
         transform.Translate(new Vector3(1 * Mathf.Sign(stickDirection), 0, 0) * Time.deltaTime * movSpeed, Space.World);
         anim.SetBool("isRunning", true);
+        anim.SetBool("isIdle", false);
+
 
         if (Mathf.Sign(stickDirection) == rb.velocity.x)
         {
             drag = true;
-        }       
+        }
 
         transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.x, 90 * Mathf.Sign(stickDirection), transform.rotation.z));
     }
 
     public virtual void Jump()
-    {     
-        rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);    
+    {
+        rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
         rb.AddForce(new Vector3(0, jumpPower, 0), ForceMode.Impulse);
         anim.SetTrigger("Jump");
         grounded = false;
@@ -280,11 +365,11 @@ public class BaseCharacterBehaviour : MonoBehaviour
                             rTrig = true;
                         }
 
-                        if(Input.GetKeyDown(KeyCode.Joystick1Button0))
+                        if (Input.GetKeyDown(KeyCode.Joystick1Button0))
                         {
                             slowFall = true;
                         }
-                        if(Input.GetKeyUp(KeyCode.Joystick1Button0))
+                        if (Input.GetKeyUp(KeyCode.Joystick1Button0))
                         {
                             slowFall = false;
                         }
@@ -296,7 +381,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
                     startButton = Input.GetKeyDown(KeyCode.Joystick2Button7);
 
                     if (!gmScript.paused)
-                    {                      
+                    {
                         aButton = Input.GetKeyDown(KeyCode.Joystick2Button0);
                         bButton = Input.GetKeyDown(KeyCode.Joystick2Button1);
                         xButton = Input.GetKeyDown(KeyCode.Joystick2Button2);
@@ -391,7 +476,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
 
     public void OnCollisionStay(Collision other)
     {
-        if(other.collider.tag == "Floor" && other.transform.position.y < transform.position.y)
+        if (other.collider.tag == "Floor" && other.transform.position.y < transform.position.y)
         {
             grounded = true;
         }
@@ -405,36 +490,53 @@ public class BaseCharacterBehaviour : MonoBehaviour
         }
     }
 
+    //It's literally just coyote time
     private IEnumerator CoyoteTime()
     {
-        yield return new WaitForSeconds(.20f);
+        yield return new WaitForSeconds(0.1f);
         grounded = false;
     }
 
+    //For managing CHARACTER-WEAPON collisions
     public void OnTriggerStay(Collider coll)
     {
         //Colliding with a weapon
-        if (coll.gameObject.tag.Contains("Weapon") && !isArmed)
+        if (coll.gameObject.layer == 11 && !isArmed)
         {
             if (coll.gameObject.GetComponent<BaseWeaponScript>().canBeCollected)
             {
+                ActivateWeapon(coll.name);
                 StartCoroutine(CollectWeapon(coll.gameObject));
+                
                 isArmed = true;
                 anim.SetBool("Unarmed", false);
                 anim.SetBool("Melee", false);
-                anim.SetBool("Rifle", true);
+                anim.SetBool("Rifle", true);                
             }
         }
     }
 
-    //For managing character-weapon collision
+    private void ActivateWeapon(string weaponName)
+    {
+        if (!weaponDictionary.ContainsKey("my" + weaponName))
+        {
+            print("don't have any " + "my" + weaponName + " here");
+        }
+        else
+        {
+            weaponDictionary["my" + weaponName].SetActive(true);
+            equippedWeaponInventory = weaponDictionary["my" + weaponName];
+        }
+    }
+
+    //For managing CHARACTER-GROUND collisions
     public void OnCollisionEnter(Collision other)
-    {       
+    {
         //when touching a platform (but not with the "head" of the character)
         if (other.gameObject.tag == "Floor" && other.gameObject.transform.position.y < transform.position.y)
         {
             canExtraJump = true;
-        }        
+        }
     }
 
     //Manages the process of picking up a weapon from the ground
@@ -442,14 +544,18 @@ public class BaseCharacterBehaviour : MonoBehaviour
     {
         equippedWeapon = weapon;
 
-        weaponScript = weapon.GetComponent<BaseWeaponScript>();
+        if(weapon.GetComponent<BaseWeaponScript>())
+            weaponScript = weapon.GetComponent<BaseWeaponScript>();
+
+        //else if(melee weapon script)
+
         equippedWeapon.GetComponent<Rigidbody>().isKinematic = true;
-        
+
         //Reset their velocity, rotational velocity and rotation. Looks strange but prevents a bug that would otherwise pop every time.
         equippedWeapon.GetComponent<Rigidbody>().velocity = Vector3.zero;
         equippedWeapon.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
         equippedWeapon.transform.rotation = Quaternion.Euler(Vector3.zero);
-        
+
         weaponScript.isEquipped = true;
         weaponScript.canBeCollected = false;
         weaponScript.weaponHolderCollider = GetComponent<Collider>();
@@ -460,7 +566,8 @@ public class BaseCharacterBehaviour : MonoBehaviour
 
         equippedWeaponSprite = weaponScript.weaponSprite;
         equippedWeapon.GetComponent<MeshRenderer>().enabled = false;
-        asparagun.SetActive(true);
+
+        equippedWeaponInventory.SetActive(true);
         isArmed = true;
         yield return null;
     }
@@ -468,7 +575,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
     //Called when manually tossing a non-empty weapon away or when picking up another weapon
     public IEnumerator TossWeapon()
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.085f);
         //UI info
         equippedWeaponSprite = null;
 
@@ -485,14 +592,16 @@ public class BaseCharacterBehaviour : MonoBehaviour
         equippedWeapon.GetComponent<Rigidbody>().AddForce(new Vector3(flingPower.x * Mathf.Sign(transform.rotation.y), flingPower.y, 0), ForceMode.VelocityChange);
         equippedWeapon.GetComponent<Rigidbody>().AddTorque(transform.right * 27 * Mathf.Sign(transform.rotation.y), ForceMode.VelocityChange);
 
+        //Updates weapon's state
         weaponScript.isEquipped = false;
         weaponScript.canBeCollected = false;
 
         isArmed = false;
 
+        equippedWeaponInventory.SetActive(false);
         equippedWeapon.GetComponent<MeshRenderer>().enabled = true;
-        asparagun.SetActive(false);
-
+        
+        //Animator stuff
         anim.SetBool("Unarmed", true);
         anim.SetBool("Melee", false);
         anim.SetBool("Rifle", false);
@@ -503,73 +612,88 @@ public class BaseCharacterBehaviour : MonoBehaviour
     public IEnumerator TossWeaponEmpty()
     {
         yield return new WaitForSeconds(0.1f);
-        //UI info
-        equippedWeaponSprite = null;
 
-        //unparenting weapon and updating physics constraints
-        equippedWeapon.transform.SetParent(null);
-        equippedWeapon.GetComponent<Rigidbody>().isKinematic = false;
-        equippedWeapon.GetComponent<Rigidbody>().useGravity = false;
-        equippedWeapon.transform.rotation = Quaternion.Euler(equippedWeapon.transform.rotation.x, 90, equippedWeapon.transform.rotation.z); //resetting rotation
+        if (equippedWeapon != null)
+        {
+            //UI info
+            equippedWeaponSprite = null;
 
-        //Tossess the weapon away while also telling the weapon not to immediately collide with the character
-        StartCoroutine(weaponScript.Flung(gameObject.GetComponent<Collider>()));
-        weaponScript.weaponHolderCollider = null;
-        equippedWeapon.GetComponent<MeshRenderer>().enabled = true;
-        asparagun.SetActive(false);
-        equippedWeapon.GetComponent<Rigidbody>().AddForce(new Vector3(80 * Mathf.Sign(transform.rotation.y), 0, 0), ForceMode.VelocityChange);
-        equippedWeapon.GetComponent<Rigidbody>().AddTorque(transform.right * 27 * Mathf.Sign(transform.rotation.y), ForceMode.VelocityChange);
+            //unparenting weapon and updating physics constraints
+            equippedWeapon.transform.SetParent(null);
+            equippedWeapon.GetComponent<Rigidbody>().isKinematic = false;
+            equippedWeapon.GetComponent<Rigidbody>().useGravity = false;
+            equippedWeapon.transform.rotation = Quaternion.Euler(equippedWeapon.transform.rotation.x, 90, equippedWeapon.transform.rotation.z); //resetting rotation
 
-        //equippedWeapon.GetComponent<Collider>().isTrigger = false;
-        weaponScript.isEquipped = false;
-        weaponScript.canBeCollected = false;
-        weaponScript.actAsBullet = true;
+            //Tossess the weapon away while also telling the weapon not to immediately collide with the character
+            StartCoroutine(weaponScript.Flung(gameObject.GetComponent<Collider>()));
+            weaponScript.weaponHolderCollider = null;
 
-        isArmed = false;
+            equippedWeaponInventory.SetActive(false);
 
-        anim.SetBool("Unarmed", true);
-        anim.SetBool("Melee", false);
-        anim.SetBool("Rifle", false);
+            equippedWeapon.GetComponent<MeshRenderer>().enabled = true;           
+            equippedWeapon.GetComponent<Rigidbody>().AddForce(new Vector3(80 * Mathf.Sign(transform.rotation.y), 0, 0), ForceMode.VelocityChange);
+            equippedWeapon.GetComponent<Rigidbody>().AddTorque(transform.right * 27 * Mathf.Sign(transform.rotation.y), ForceMode.VelocityChange);
 
-        anim.SetTrigger("Throw");
+            //Updates the weapon's state
+            weaponScript.isEquipped = false;
+            weaponScript.canBeCollected = false;
+            weaponScript.actAsBullet = true;
+
+            isArmed = false;
+
+            //Animator stuff
+            anim.SetBool("Unarmed", true);
+            anim.SetBool("Melee", false);
+            anim.SetBool("Rifle", false);
+
+            anim.SetTrigger("Throw");
+        }
     }
 
     //when hit by a bullet that's moving in the opposite direction, drop speed to zero
     public void GetStopped(float direction)
     {
-        if(Mathf.Sign(direction) == Mathf.Sign(transform.rotation.y))
+        if (Mathf.Sign(direction) == Mathf.Sign(transform.rotation.y))
         {
             print("get stopped method called");
             rb.velocity = new Vector3(0, rb.velocity.y, rb.velocity.y);
         }
     }
-    
+
     //set how long a character should be stopped upon bullet collision
     public void SetDisablingMovementTime(float duration)
-    {   
-        if(!canMove)
+    {
+        if (!canMove)
         {
-            duration += duration/2;
+            duration += duration / 2;
         }
         canMove = false;
-        moveDisableDuration = duration;             
+        moveDisableDuration = duration;
     }
 
+    public IEnumerator SetStun(float time)
+    {
+        stunned = true;
+        yield return new WaitForSeconds(time);
+        stunned = false;
+    }
     #region Health and Lives Methods
+    
+    Coroutine updateHealth = null;
 
     //Makes displayed health stop-lerp to current health
     public IEnumerator UpdateHealth()
-    {
+    {        
         float t = 0;
         int previousHealth = displayedHealth;
         while (t < 1)
         {
             t += Time.deltaTime;
-            displayedHealth = (int)Mathf.Lerp(previousHealth, currHealth, 1 - (t - 1) * (t - 1));
+            displayedHealth = (int)Mathf.Lerp(previousHealth, currentHealth, 1 - (t - 1) * (t - 1));
 
             if(t > 1)
             {
-                displayedHealth = currHealth;
+                displayedHealth = currentHealth;
             }
             yield return null;
         }
@@ -597,11 +721,14 @@ public class BaseCharacterBehaviour : MonoBehaviour
             anim.SetBool("Unarmed", true);
             anim.SetBool("Melee", false);
             anim.SetBool("Rifle", false);
-            asparagun.SetActive(false);
+
+            equippedWeaponInventory.SetActive(false);
             Destroy(equippedWeapon);
         }
+
         rb.collisionDetectionMode = CollisionDetectionMode.Discrete;
         rb.isKinematic = true;
+
         //Play death animation, when it's over execute lines below
         //GetComponent<MeshRenderer>().enabled = false;        //this is okay to turn off cubes but models are more complex than this
         rb.velocity = Vector3.zero;
@@ -615,6 +742,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
     public IEnumerator CharacterRespawn()
     {
         SetHealth(maxHealth);
+
         StartCoroutine(UpdateHealth());
         //position on a respawn platform
         //GetComponent<MeshRenderer>().enabled = true;
@@ -632,13 +760,17 @@ public class BaseCharacterBehaviour : MonoBehaviour
     //Usual getters/setters
     public int GetHealth()
     {
-        return currHealth;
+        return currentHealth;
     }
 
     private void SetHealth(int amount)
     {
-        currHealth = amount;
-        StartCoroutine("UpdateHealth");
+        if (updateHealth != null)
+        {
+            StopCoroutine(updateHealth);
+        }
+        currentHealth = amount;
+        updateHealth = StartCoroutine(UpdateHealth());
     }
 
     public int GetRemainingLives()

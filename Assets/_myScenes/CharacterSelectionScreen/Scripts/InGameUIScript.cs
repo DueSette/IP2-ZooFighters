@@ -9,6 +9,7 @@ public class InGameUIScript : MonoBehaviour
     private BaseCharacterBehaviour charBehaviour;
     public Text livesLeftText;
 
+    public GameObject charAvatar;
     public Slider slider;
     public Image fillImage;
     public GameObject equippedWeaponImage;
@@ -19,7 +20,6 @@ public class InGameUIScript : MonoBehaviour
     public Color fullHealthColor = Color.green;
     public Color zeroHealthColor = Color.red;
 
-    
     void Start()
     {
         charBehaviour = representedCharacter.GetComponent<BaseCharacterBehaviour>();
@@ -29,7 +29,8 @@ public class InGameUIScript : MonoBehaviour
     //This should update a bar or slider based on its own character's hp.
     //Then also keep tracks of lives left and stuff
     public void UpdateHUD()
-    {   
+    {
+        SetAvatar();
         if(charBehaviour.equippedWeaponSprite != null)
         {
             equippedWeaponImage.GetComponent<Image>().sprite = charBehaviour.equippedWeaponSprite;
@@ -61,5 +62,10 @@ public class InGameUIScript : MonoBehaviour
         {
             fillImage.color = Color.black;
         }
+    }
+
+    public void SetAvatar()
+    {
+        charAvatar.GetComponent<Image>().sprite = representedCharacter.GetComponent<BaseCharacterBehaviour>().characterSprite;
     }
 }

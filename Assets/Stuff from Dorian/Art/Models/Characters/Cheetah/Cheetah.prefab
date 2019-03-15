@@ -10,11 +10,11 @@ GameObject:
   m_Component:
   - component: {fileID: 1339887239487305943}
   - component: {fileID: 8849768280822746589}
-  - component: {fileID: 7535690477717337053}
   - component: {fileID: 1515846709459847006}
-  m_Layer: 10
+  - component: {fileID: 4617865833120467904}
+  m_Layer: 0
   m_Name: SlapObject
-  m_TagString: Untagged
+  m_TagString: SlapObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -129,21 +129,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &7535690477717337053
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3461984252790671686}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b4c617d79c158cb429fe5cb995746680, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  slappedPeople: []
-  pushBack: 40
-  stopTargetDuration: 1
 --- !u!136 &1515846709459847006
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -158,6 +143,21 @@ CapsuleCollider:
   m_Height: 0.085
   m_Direction: 2
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4617865833120467904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3461984252790671686}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34acfa0bbb03a0c48ab89a62c40d0a7d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hitPeople: []
+  slapPushBack: 20
+  stopTargetDuration: 1
 --- !u!1 &9029626542385406464
 GameObject:
   m_ObjectHideFlags: 0
@@ -1629,6 +1629,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   anim: {fileID: 9029626542392824214}
+  characterSprite: {fileID: 21300000, guid: 45d77b1e5dd46c947a3c27a142ba40a6, type: 3}
   maxHealth: 100
   displayedHealth: 100
   currentHealth: 100
@@ -1642,14 +1643,16 @@ MonoBehaviour:
   isArmed: 0
   flingPower: {x: 20, y: 25}
   equippedWeaponSprite: {fileID: 0}
-  weaponScript: {fileID: 0}
+  rangedWeaponScript: {fileID: 0}
+  meleeWeaponScript: {fileID: 0}
   weaponSlot: {fileID: 9029626542385406488}
-  slapObject: {fileID: 3461984252790671686}
+  meleeObject: {fileID: 3461984252790671686}
   rTrigReleased: 1
   canSlap: 1
   weaponArray:
   - {fileID: 1023305556590161825}
   - {fileID: 8626936854009788748}
+  equippedWeaponInventory: {fileID: 0}
   canMove: 1
   stunned: 0
   moveDisableDuration: 0
@@ -2551,17 +2554,17 @@ PrefabInstance:
     - target: {fileID: 2320603310164309186, guid: 0730e8e33ab900e45b9b3bd4faae9e44,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.01738
+      value: -0.0303
       objectReference: {fileID: 0}
     - target: {fileID: 2320603310164309186, guid: 0730e8e33ab900e45b9b3bd4faae9e44,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.00828
+      value: 0.0068
       objectReference: {fileID: 0}
     - target: {fileID: 2320603310164309186, guid: 0730e8e33ab900e45b9b3bd4faae9e44,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.00071
+      value: 0.0011
       objectReference: {fileID: 0}
     - target: {fileID: 2320603310164309186, guid: 0730e8e33ab900e45b9b3bd4faae9e44,
         type: 3}
@@ -2606,17 +2609,17 @@ PrefabInstance:
     - target: {fileID: 2320603310164309186, guid: 0730e8e33ab900e45b9b3bd4faae9e44,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.008000004
+      value: 0.011
       objectReference: {fileID: 0}
     - target: {fileID: 2320603310164309186, guid: 0730e8e33ab900e45b9b3bd4faae9e44,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.008000001
+      value: 0.011
       objectReference: {fileID: 0}
     - target: {fileID: 2320603310164309186, guid: 0730e8e33ab900e45b9b3bd4faae9e44,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.008000003
+      value: 0.011
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0730e8e33ab900e45b9b3bd4faae9e44, type: 3}

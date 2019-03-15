@@ -201,7 +201,7 @@ GameObject:
   - component: {fileID: 4854920905595858068}
   - component: {fileID: 4854920905595858069}
   m_Layer: 5
-  m_Name: CharacteImage
+  m_Name: CharAvatar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -214,16 +214,16 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4854920905595858071}
-  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
+  m_LocalRotation: {x: -0.70710695, y: 0.70710665, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.359562, y: 1.4612918, z: 1}
   m_Children: []
   m_Father: {fileID: 4854920906239728564}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
+  m_LocalEulerAnglesHint: {x: -180, y: 0, z: 89.99999}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -39.5, y: -8}
+  m_AnchoredPosition: {x: -39.5, y: 22.1}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4854920905595858068
@@ -254,7 +254,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 4e78bcaee3f2ef34e9efa36c7005eb12, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -317,6 +317,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   representedCharacter: {fileID: 0}
   livesLeftText: {fileID: 382408461830550858}
+  charAvatar: {fileID: 4854920905595858071}
   slider: {fileID: 8221210307842628489}
   fillImage: {fileID: 7178173876429834969}
   equippedWeaponImage: {fileID: 6677241644557759354}

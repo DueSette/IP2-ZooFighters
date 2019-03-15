@@ -35,6 +35,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
     public Animator anim;
 
     //Gameplay variables
+    public Sprite characterSprite;
     public int maxHealth = 100;
     [Tooltip("This represents health but is updated with the UI, meaning more slowly")]
     public int displayedHealth;
@@ -56,18 +57,19 @@ public class BaseCharacterBehaviour : MonoBehaviour
     public Vector2 flingPower;
     private GameObject equippedWeapon;
     public Sprite equippedWeaponSprite;
-    public BaseWeaponScript weaponScript;
+    public RangedWeaponScript rangedWeaponScript;
+    public MeleeWeaponScript meleeWeaponScript;
     //public MeleeWeaponScript
     [Tooltip("The game object that the weapon will be childed too")]
     public GameObject weaponSlot;
-    public GameObject slapObject;
+    public GameObject meleeObject;
 
     public bool rTrigReleased = true;
     public bool canSlap = true;
 
     //Weapons list data
     public GameObject[] weaponArray;
-    protected GameObject equippedWeaponInventory;
+    public GameObject equippedWeaponInventory;
 
     protected Dictionary<string, GameObject> weaponDictionary = new Dictionary<string, GameObject>();
 
@@ -80,7 +82,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
     protected bool grounded = true;
     protected bool canExtraJump = true;
     protected bool drag = false;
-    
+
     protected bool slapping = false;
     [HideInInspector]
     public float moveDisableDuration = 0;
@@ -187,7 +189,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
             }
             if (bButton && isArmed && !stunned)
             {
-                if (weaponScript.ammo < 1)
+                if (rangedWeaponScript != null && rangedWeaponScript.ammo < 1)
                 {
                     StartCoroutine(TossWeaponEmpty());
                 }
@@ -213,8 +215,10 @@ public class BaseCharacterBehaviour : MonoBehaviour
                 rTrigReleased = false;
 
                 //SLAPPING
-                if (!isArmed && canSlap && !stunned)
+                if (!isArmed && canSlap && !anim.GetBool("Slapping") && !stunned)
                 {
+                    print("slapped");
+                    canSlap = false;
                     if (grounded)
                     {
                         slapping = true;
@@ -225,65 +229,35 @@ public class BaseCharacterBehaviour : MonoBehaviour
                         StartCoroutine(Slap(true));
                     }
                 }
+
                 //SHOOTING
-                if (isArmed && weaponScript.canShoot && weaponScript.ammo > 0 && !stunned)
+                else if (isArmed && rangedWeaponScript != null && rangedWeaponScript.canShoot && rangedWeaponScript.ammo > 0 && !stunned)
                 {
-                    weaponScript.Fire(damageMod, Mathf.Sign(transform.rotation.y));
+                    rangedWeaponScript.Fire(damageMod, Mathf.Sign(transform.rotation.y));
                     anim.SetTrigger("Shoot");
                 }
-                //else if(isArmed && meleeWeaponScript.canSwing && !stunned)
+                //SWINGING MELEE
+                else if (isArmed && meleeWeaponScript != null && meleeWeaponScript.canSwing && !stunned)
+                {
+                    StartCoroutine(MeleeHit());
+                }
             }
             else
             {
                 rTrigReleased = true;
-                anim.SetBool("IsSlapping", false);
+                //anim.SetBool("IsSlapping", false);
             }
 
             if (lStickHor != 0 && canMove && !slapping)
             {
                 Move(lStickHor);
             }
-            else 
+            else
             {
                 anim.SetBool("isRunning", false);
                 anim.SetBool("isIdle", true);
             }
         }
-    }
-
-    private IEnumerator Slap(bool inAir)
-    {
-        StartCoroutine(MeleeHit(false));
-
-        canSlap = false;
-        if(!inAir)
-            slapping = true;
-
-        anim.SetBool("IsSlapping", true);
-        yield return new WaitForSeconds(0.50f);
-        anim.SetBool("IsSlapping", false);
-
-        yield return new WaitUntil(() => rTrigReleased == true);
-        canSlap = true;
-        slapping = false;
-    }
-
-    private IEnumerator MeleeHit(bool hasWeapon)
-    {
-        if(!hasWeapon)  //when slapping bare handed
-        {
-            yield return new WaitForSeconds(0.15f);
-            slapObject.SetActive(true);
-            yield return new WaitForSeconds(0.35f);
-            slapObject.SetActive(false);
-
-        }
-        else    //when swinging a melee weapon
-        {
-
-        }
-
-        yield return null;
     }
 
     public virtual void FixedUpdate()
@@ -313,29 +287,6 @@ public class BaseCharacterBehaviour : MonoBehaviour
             }
         }
 
-    }
-
-    public virtual void Move(float stickDirection)
-    {
-        transform.Translate(new Vector3(1 * Mathf.Sign(stickDirection), 0, 0) * Time.deltaTime * movSpeed, Space.World);
-        anim.SetBool("isRunning", true);
-        anim.SetBool("isIdle", false);
-
-
-        if (Mathf.Sign(stickDirection) == rb.velocity.x)
-        {
-            drag = true;
-        }
-
-        transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.x, 90 * Mathf.Sign(stickDirection), transform.rotation.z));
-    }
-
-    public virtual void Jump()
-    {
-        rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
-        rb.AddForce(new Vector3(0, jumpPower, 0), ForceMode.Impulse);
-        anim.SetTrigger("Jump");
-        grounded = false;
     }
 
     //Performs some form of command pattern in relation to the current JoyStick Enum and GameState, checking which buttons have been pressed
@@ -474,6 +425,72 @@ public class BaseCharacterBehaviour : MonoBehaviour
         }
     }
 
+    //Happens when calling RT while unarmed
+    private IEnumerator Slap(bool inAir)
+    {
+        canSlap = false;
+        anim.SetBool("IsSlapping", true);
+
+        if (!inAir)
+            slapping = true;
+
+        yield return new WaitForSeconds(0.20f);
+        meleeObject.SetActive(true);
+        yield return new WaitForSeconds(0.35f);
+        meleeObject.SetActive(false);
+        //anim.SetBool("IsSlapping", false);
+
+        //yield return new WaitUntil(() => rTrigReleased == true);
+        slapping = false;
+        anim.SetBool("IsSlapping", false);
+        yield return new WaitForSeconds(0.5f);
+        canSlap = true;
+    }
+
+    private IEnumerator MeleeHit()
+    {
+        //anim.SetBool("swinging", true);
+        meleeWeaponScript.Swing();  //Just sets the cooldown
+        anim.SetBool("IsSlapping", true);
+        yield return new WaitForSeconds(0.20f);
+        if (meleeObject != null)
+            meleeObject.SetActive(true);
+
+        yield return new WaitForSeconds(0.40f);
+
+        if (meleeObject != null)
+            meleeObject.SetActive(false);
+        //anim.SetBool("swinging", false);
+        anim.SetBool("IsSlapping", false);
+
+        yield return null;
+    }
+
+    //private IEnumerator 
+
+    public virtual void Move(float stickDirection)
+    {
+        transform.Translate(new Vector3(1 * Mathf.Sign(stickDirection), 0, 0) * Time.deltaTime * movSpeed, Space.World);
+        anim.SetBool("isRunning", true);
+        anim.SetBool("isIdle", false);
+
+
+        if (Mathf.Sign(stickDirection) == rb.velocity.x)
+        {
+            drag = true;
+        }
+
+        transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.x, 90 * Mathf.Sign(stickDirection), transform.rotation.z));
+    }
+
+    public virtual void Jump()
+    {
+        rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+        rb.AddForce(new Vector3(0, jumpPower, 0), ForceMode.Impulse);
+        anim.SetTrigger("Jump");
+        grounded = false;
+    }
+
     public void OnCollisionStay(Collision other)
     {
         if (other.collider.tag == "Floor" && other.transform.position.y < transform.position.y)
@@ -503,15 +520,26 @@ public class BaseCharacterBehaviour : MonoBehaviour
         //Colliding with a weapon
         if (coll.gameObject.layer == 11 && !isArmed)
         {
-            if (coll.gameObject.GetComponent<BaseWeaponScript>().canBeCollected)
+            if (coll.gameObject.GetComponent<RangedWeaponScript>() != null && coll.gameObject.GetComponent<RangedWeaponScript>().canBeCollected)
             {
                 ActivateWeapon(coll.name);
                 StartCoroutine(CollectWeapon(coll.gameObject));
-                
+
                 isArmed = true;
                 anim.SetBool("Unarmed", false);
                 anim.SetBool("Melee", false);
-                anim.SetBool("Rifle", true);                
+                anim.SetBool("Rifle", true);
+            }
+
+            else if (coll.gameObject.GetComponent<MeleeWeaponScript>() != null && coll.gameObject.GetComponent<MeleeWeaponScript>().canBeCollected)
+            {
+                ActivateWeapon(coll.name);
+                StartCoroutine(CollectWeapon(coll.gameObject));
+
+                isArmed = true;
+                anim.SetBool("Unarmed", true);
+                anim.SetBool("Melee", false);   //ofc this should be true but animations are not ready yet
+                anim.SetBool("Rifle", false);
             }
         }
     }
@@ -544,10 +572,23 @@ public class BaseCharacterBehaviour : MonoBehaviour
     {
         equippedWeapon = weapon;
 
-        if(weapon.GetComponent<BaseWeaponScript>())
-            weaponScript = weapon.GetComponent<BaseWeaponScript>();
+        if (weapon.GetComponent<RangedWeaponScript>())
+        {
+            rangedWeaponScript = weapon.GetComponent<RangedWeaponScript>();
+            rangedWeaponScript.isEquipped = true;
+            rangedWeaponScript.canBeCollected = false;
+            rangedWeaponScript.weaponHolderCollider = GetComponent<Collider>();
+            equippedWeaponSprite = rangedWeaponScript.weaponSprite;
+        }
 
-        //else if(melee weapon script)
+        else if (weapon.GetComponent<MeleeWeaponScript>())
+        {
+            meleeWeaponScript = weapon.GetComponent<MeleeWeaponScript>();
+            meleeWeaponScript.isEquipped = true;
+            meleeWeaponScript.canBeCollected = false;
+            meleeWeaponScript.weaponHolderCollider = GetComponent<Collider>();
+            equippedWeaponSprite = meleeWeaponScript.weaponSprite;
+        }
 
         equippedWeapon.GetComponent<Rigidbody>().isKinematic = true;
 
@@ -556,20 +597,36 @@ public class BaseCharacterBehaviour : MonoBehaviour
         equippedWeapon.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
         equippedWeapon.transform.rotation = Quaternion.Euler(Vector3.zero);
 
-        weaponScript.isEquipped = true;
-        weaponScript.canBeCollected = false;
-        weaponScript.weaponHolderCollider = GetComponent<Collider>();
-
         equippedWeapon.transform.SetParent(weaponSlot.transform);
         equippedWeapon.transform.position = weaponSlot.transform.position;
         equippedWeapon.transform.rotation = Quaternion.Euler(weaponSlot.transform.rotation.eulerAngles * -1);
 
-        equippedWeaponSprite = weaponScript.weaponSprite;
         equippedWeapon.GetComponent<MeshRenderer>().enabled = false;
 
         equippedWeaponInventory.SetActive(true);
         isArmed = true;
         yield return null;
+    }
+
+    private void Flush()
+    {
+        if (equippedWeapon.GetComponent<RangedWeaponScript>())
+        {
+            StartCoroutine(rangedWeaponScript.Flung(gameObject.GetComponent<Collider>()));
+            rangedWeaponScript.weaponHolderCollider = null;
+
+            rangedWeaponScript.isEquipped = false;
+            rangedWeaponScript.canBeCollected = false;
+        }
+
+        else if (equippedWeapon.GetComponent<MeleeWeaponScript>())
+        {
+            StartCoroutine(meleeWeaponScript.Flung(gameObject.GetComponent<Collider>()));
+            meleeWeaponScript.weaponHolderCollider = null;
+
+            meleeWeaponScript.isEquipped = false;
+            meleeWeaponScript.canBeCollected = false;
+        }
     }
 
     //Called when manually tossing a non-empty weapon away or when picking up another weapon
@@ -587,20 +644,20 @@ public class BaseCharacterBehaviour : MonoBehaviour
         equippedWeapon.transform.rotation = Quaternion.Euler(equippedWeapon.transform.rotation.x, 90, equippedWeapon.transform.rotation.z); //resetting rotation
 
         //Tossess the weapon away while also telling the weapon not to immediately collide with the character
-        StartCoroutine(weaponScript.Flung(gameObject.GetComponent<Collider>()));
-        weaponScript.weaponHolderCollider = null;
+        Flush();
         equippedWeapon.GetComponent<Rigidbody>().AddForce(new Vector3(flingPower.x * Mathf.Sign(transform.rotation.y), flingPower.y, 0), ForceMode.VelocityChange);
         equippedWeapon.GetComponent<Rigidbody>().AddTorque(transform.right * 27 * Mathf.Sign(transform.rotation.y), ForceMode.VelocityChange);
 
-        //Updates weapon's state
-        weaponScript.isEquipped = false;
-        weaponScript.canBeCollected = false;
+        if (equippedWeapon.GetComponent<RangedWeaponScript>())
+            rangedWeaponScript = null;
+        else
+            meleeWeaponScript = null;
 
         isArmed = false;
 
         equippedWeaponInventory.SetActive(false);
         equippedWeapon.GetComponent<MeshRenderer>().enabled = true;
-        
+
         //Animator stuff
         anim.SetBool("Unarmed", true);
         anim.SetBool("Melee", false);
@@ -624,21 +681,24 @@ public class BaseCharacterBehaviour : MonoBehaviour
             equippedWeapon.GetComponent<Rigidbody>().useGravity = false;
             equippedWeapon.transform.rotation = Quaternion.Euler(equippedWeapon.transform.rotation.x, 90, equippedWeapon.transform.rotation.z); //resetting rotation
 
-            //Tossess the weapon away while also telling the weapon not to immediately collide with the character
-            StartCoroutine(weaponScript.Flung(gameObject.GetComponent<Collider>()));
-            weaponScript.weaponHolderCollider = null;
+            Flush();
 
             equippedWeaponInventory.SetActive(false);
 
-            equippedWeapon.GetComponent<MeshRenderer>().enabled = true;           
+            equippedWeapon.GetComponent<MeshRenderer>().enabled = true;
             equippedWeapon.GetComponent<Rigidbody>().AddForce(new Vector3(80 * Mathf.Sign(transform.rotation.y), 0, 0), ForceMode.VelocityChange);
             equippedWeapon.GetComponent<Rigidbody>().AddTorque(transform.right * 27 * Mathf.Sign(transform.rotation.y), ForceMode.VelocityChange);
 
-            //Updates the weapon's state
-            weaponScript.isEquipped = false;
-            weaponScript.canBeCollected = false;
-            weaponScript.actAsBullet = true;
-
+            if (equippedWeapon.GetComponent<RangedWeaponScript>())
+            {
+                rangedWeaponScript.actAsBullet = true;
+                rangedWeaponScript = null;
+            }
+            else
+            {
+                meleeWeaponScript.actAsBullet = true;
+                meleeWeaponScript = null;
+            }
             isArmed = false;
 
             //Animator stuff
@@ -677,13 +737,14 @@ public class BaseCharacterBehaviour : MonoBehaviour
         yield return new WaitForSeconds(time);
         stunned = false;
     }
+
     #region Health and Lives Methods
-    
+
     Coroutine updateHealth = null;
 
     //Makes displayed health stop-lerp to current health
     public IEnumerator UpdateHealth()
-    {        
+    {
         float t = 0;
         int previousHealth = displayedHealth;
         while (t < 1)
@@ -691,7 +752,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
             t += Time.deltaTime;
             displayedHealth = (int)Mathf.Lerp(previousHealth, currentHealth, 1 - (t - 1) * (t - 1));
 
-            if(t > 1)
+            if (t > 1)
             {
                 displayedHealth = currentHealth;
             }
@@ -708,6 +769,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
     public IEnumerator CharacterDeath()
     {
         alive = false;
+        equippedWeaponSprite = null;
         while (displayedHealth != GetHealth())
         {
             yield return null;
@@ -781,6 +843,20 @@ public class BaseCharacterBehaviour : MonoBehaviour
     public void SetRemainingLives(int amount)
     {
         livesLeft = amount;
+    }
+
+    public void PauseFrames(float time)
+    {
+        StartCoroutine(SkipFrames(time));
+    }
+
+    private IEnumerator SkipFrames(float time)
+    {
+        print("pause");
+        GetComponent<Animator>().speed = 0.1f;
+        yield return new WaitForSeconds(time);
+        GetComponent<Animator>().speed = 1;
+        print("exit pause");
     }
     #endregion
 }

@@ -55,8 +55,6 @@ public class SelectorBehaviour : MonoBehaviour
         //ties this character to their specific controller
         chosenCharacter.GetComponent<BaseCharacterBehaviour>().ReceiveJoystick(GetJoystickNum());
         ready = true;
-
-
     }
 
     //destroys current instance of selected character and updates UI

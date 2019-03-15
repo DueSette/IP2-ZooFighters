@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BaseWeaponScript : MonoBehaviour
+public class RangedWeaponScript : MonoBehaviour
 {
     public ObjectPooler pooler;
 
@@ -28,7 +28,6 @@ public class BaseWeaponScript : MonoBehaviour
     [HideInInspector]
     public Rigidbody rb;
     private Vector3 velo;
-
 
     private void Start()
     {
@@ -83,7 +82,8 @@ public class BaseWeaponScript : MonoBehaviour
         canShoot = true;
     }
 
-    private void OnCollisionEnter(Collision collision)
+    //This is probably just useless now, do a few tests then delete if nothing changes while it is commented out
+   /* private void OnCollisionEnter(Collision collision)
     {
         //Ignore collision if it is not with ground or player
         if (collision.collider.gameObject.layer != 9 && collision.collider.gameObject.layer != 10)
@@ -95,6 +95,7 @@ public class BaseWeaponScript : MonoBehaviour
             StopOnGround();
         }
     }
+    */
 
     private void OnTriggerEnter(Collider collider)
     {
@@ -124,7 +125,6 @@ public class BaseWeaponScript : MonoBehaviour
             else if (collider.gameObject.layer == 9)
             {
                 gameObject.SetActive(false);
-                print("hit floor");
             }           
         }
     }

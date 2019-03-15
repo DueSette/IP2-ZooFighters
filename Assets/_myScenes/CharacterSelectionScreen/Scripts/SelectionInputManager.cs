@@ -109,9 +109,13 @@ public class SelectionInputManager : MonoBehaviour
                 }
                 if (Input.GetKeyDown(KeyCode.Joystick1Button1))
                 {
-                    if (selectors[0].activeSelf)
+                    if (selectors[0].GetComponent<SelectorBehaviour>().ready)
                     {
                         selectors[0].GetComponent<SelectorBehaviour>().CharDeselect();
+                    }
+                    else
+                    {
+                        selectors[0].SetActive(false);
                     }
                 }
                 if(Input.GetKeyDown(KeyCode.Joystick1Button7))
@@ -180,9 +184,13 @@ public class SelectionInputManager : MonoBehaviour
                 }
                 if (Input.GetKeyDown(KeyCode.Joystick2Button1))
                 {
-                    if (selectors[1].activeSelf)
+                    if (selectors[1].GetComponent<SelectorBehaviour>().ready)
                     {
                         selectors[1].GetComponent<SelectorBehaviour>().CharDeselect();
+                    }
+                    else
+                    {
+                        selectors[1].SetActive(false);
                     }
                 }
                 if (Input.GetKeyDown(KeyCode.Joystick2Button7))
@@ -252,9 +260,13 @@ public class SelectionInputManager : MonoBehaviour
                 }
                 if (Input.GetKeyDown(KeyCode.Joystick3Button1))
                 {
-                    if (selectors[2].activeSelf)
+                    if (selectors[2].GetComponent<SelectorBehaviour>().ready)
                     {
                         selectors[2].GetComponent<SelectorBehaviour>().CharDeselect();
+                    }
+                    else
+                    {
+                        selectors[2].SetActive(false);
                     }
                 }
                 if (Input.GetKeyDown(KeyCode.Joystick3Button7))
@@ -325,9 +337,13 @@ public class SelectionInputManager : MonoBehaviour
                 }
                 if (Input.GetKeyDown(KeyCode.Joystick4Button1))
                 {
-                    if (selectors[3].activeSelf)
+                    if (selectors[3].GetComponent<SelectorBehaviour>().ready)
                     {
                         selectors[3].GetComponent<SelectorBehaviour>().CharDeselect();
+                    }
+                    else
+                    {
+                        selectors[3].SetActive(false);
                     }
                 }
                 if (Input.GetKeyDown(KeyCode.Joystick4Button7))

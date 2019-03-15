@@ -161,7 +161,8 @@ public class GameManagerScript : MonoBehaviour
                 //Creates and positions the UI objects, then it communicates to them the character they are portraying
                 inGameUIObjects[i] = Instantiate(inGameUIObj, transform.position + new Vector3 (225 + (i * 450), 100, 0), Quaternion.Euler(0, 0, -90));
                 inGameUIObjects[i].transform.SetParent(canvas.transform);
-                inGameUIObjects[i].GetComponent<InGameUIScript>().representedCharacter = selector.GetComponent<SelectorBehaviour>().chosenCharacter;                
+                inGameUIObjects[i].GetComponent<InGameUIScript>().representedCharacter = selector.GetComponent<SelectorBehaviour>().chosenCharacter;
+                inGameUIObjects[i].GetComponent<InGameUIScript>().SetAvatar();
             }
             i++;
         }

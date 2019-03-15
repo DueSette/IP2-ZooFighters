@@ -5,6 +5,7 @@ using UnityEngine;
 public class WeaponSpawn : MonoBehaviour
 {
     public GameObject[] weaponsToSpawn = new GameObject[1];
+    public bool canSpawn = true;
     public float timeBetweenSpawns = 3;
 
     private Vector3 transf;
@@ -43,17 +44,26 @@ public class WeaponSpawn : MonoBehaviour
                 }
             }
 
-            if(UpdateWeaponList() < gm.CountCharacters())
+            if (UpdateWeaponList() < gm.CountCharacters())
             {
                 Spawn();
                 print("aa");
+            }
+
+            if(UpdateWeaponList() >= gm.CountCharacters()*1.5f)
+            {
+                canSpawn = false;
+            }
+            else
+            {
+                canSpawn = true;
             }
         }
     }
 
     //Counting how many weapons are in the play field
     private int UpdateWeaponList()
-    {     
+    {
         for (int i = 0; i < inGameWeapons.Count; i++)
         {
             if (inGameWeapons[i] == null)
@@ -77,17 +87,20 @@ public class WeaponSpawn : MonoBehaviour
         AlterValue(ref timeBetweenSpawns, UpdateWeaponList()); //changes the value of TBS
 
         Spawn();
-        StartCoroutine(SetSpawn(timeBetweenSpawns));      
+        StartCoroutine(SetSpawn(timeBetweenSpawns));
     }
 
     //Does the actual spawning, choosing a location between two limits and a weapon among the array of existing weapons
     private void Spawn()
     {
-        int num = Random.Range(0, weaponsToSpawn.Length);
-        transf = new Vector3(Random.Range(-57, 57), transform.position.y, transform.position.z);
+        if (canSpawn)
+        {
+            int num = Random.Range(0, weaponsToSpawn.Length);
+            transf = new Vector3(Random.Range(-57, 57), transform.position.y, transform.position.z);
 
-        GameObject newWeapon = Instantiate(weaponsToSpawn[num], transf, Quaternion.Euler(0, 90, 0));
-        newWeapon.name = weaponsToSpawn[num].name;
-        inGameWeapons.Add(newWeapon);
+            GameObject newWeapon = Instantiate(weaponsToSpawn[num], transf, Quaternion.Euler(0, 90, 0));
+            newWeapon.name = weaponsToSpawn[num].name;
+            inGameWeapons.Add(newWeapon);
+        }
     }
 }

@@ -6,23 +6,19 @@ public class CameraScript : MonoBehaviour
 {
     private GameManagerScript gmScript;
 
+    private Vector3 startPos;
     public float dampTime = 0.5f;
-    public float decreaseAmount = 1.0f;
-    public float amount;
+
+    public float shakeAmount;
     public float shakeSpeed;
-
-    public int activeTime = 0;
-
+    public float shakeTime = 0.4f;
     public bool shaking = false;
-
-    Vector3 current;
 
     float xOffset;
     float yOffset;
     float seed;
 
     private Transform[] players = new Transform[4];
-    public bool targetsAcquired = false;
 
     private Vector3 centrePos;
     private Vector3 moveVelocity;
@@ -45,45 +41,47 @@ public class CameraScript : MonoBehaviour
         }
     }
 
+    #region Singleton
+    public static CameraScript instance;
+    void Awake()
+    {
+        if(instance == null)
+        {
+            instance = this;
+        }
+    }
+    #endregion
+
     private void Start()
     {
+        startPos = transform.position;
         gmScript = GameManagerScript.gmInstance;
         seed = Random.Range(0, 100000);
-        current = transform.position;
-        cameraStartPos = transform.position;               
+        cameraStartPos = transform.position;
     }
 
     public void SetUpTargets()
     {
-        
         for (int i = 0; i < gmScript.inGameChars.Length; i++)
         {
             if(gmScript.inGameChars[i] != null)
                 players[i] = gmScript.inGameChars[i].transform;
         }
-        targetsAcquired = true;      
     }
 
     public void Update()
     {
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            shaking = true;
+            StartCoroutine(SetShakeTime(shakeTime, shakeSpeed, shakeAmount));
         }
 
         if (shaking)
         {
-            activeTime++;
             Shake();
         }
-
-        if (activeTime >= 00)
-        {
-            shaking = false;
-            activeTime = 0;
-        }
-
-        if (targetsAcquired)
+        
+        if (gmScript.GetGameState() == GameManagerScript.GameState.inGame)
         {
             FindCentre();
             transform.position = Vector3.SmoothDamp(transform.position, new Vector3(centrePos.x, centrePos.y, transform.position.z), ref moveVelocity, dampTime);
@@ -94,7 +92,7 @@ public class CameraScript : MonoBehaviour
 
     public void FindCentre()
     {
-        Vector3 averagePos = new Vector3();
+        Vector3 averagePos = startPos;
         int numTargets = 0;
 
         for (int i = 0; i < players.Length; i++)
@@ -104,6 +102,7 @@ public class CameraScript : MonoBehaviour
 
             if(players[i] != null)
                 averagePos += players[i].position;
+                averagePos.y += transform.position.y/2;
 
             numTargets++;
         }
@@ -111,14 +110,14 @@ public class CameraScript : MonoBehaviour
         if (numTargets > 0)
             averagePos /= numTargets;
 
-        if(averagePos.y < 22)
+        if (averagePos.y < 17)
         {
-            averagePos.y = 22;
+            averagePos.y = 17;
         }
 
-        if(averagePos.y > 33)
+        if(averagePos.y > 40)
         {
-            averagePos.y = 33;
+            averagePos.y = 40;
         }
 
         centrePos = averagePos;
@@ -128,6 +127,18 @@ public class CameraScript : MonoBehaviour
     {
         xOffset = Mathf.PerlinNoise(seed + Time.time * shakeSpeed, 0) * 2 - 1;
         yOffset = Mathf.PerlinNoise(0, seed + Time.time * shakeSpeed) * 2 - 1;
-        transform.position = transform.position + new Vector3(xOffset * amount, yOffset * amount, 0); 
+        transform.position = transform.position + new Vector3(xOffset * shakeAmount, yOffset * shakeAmount, 0); 
+    }
+
+    public IEnumerator SetShakeTime(float duration, float speed, float intensity)
+    {
+        if (!shaking)
+        {
+            shaking = true;
+            shakeSpeed = speed;
+            shakeAmount = intensity;
+            yield return new WaitForSeconds(duration);
+            shaking = false;
+        }
     }
 }

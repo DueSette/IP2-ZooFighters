@@ -43,8 +43,9 @@ public class MeleeObjectScript : MonoBehaviour
                 hitPeople.Add(other.gameObject);
             }
             //IF ARMED (MELEE WEAPON)
-            else
+            else if (parentScript.meleeWeaponScript)
             {
+
                 parentScript.PauseFrames(0.2f);
                 charScript.TakeDamage((int)(parentScript.meleeWeaponScript.weaponDamage * parentScript.damageMod));
                 other.gameObject.GetComponent<Rigidbody>().AddForce(new Vector3(parentScript.meleeWeaponScript.pushBack.x * Mathf.Sign(transform.parent.rotation.y), parentScript.meleeWeaponScript.pushBack.y, 0), ForceMode.Impulse);
@@ -56,12 +57,9 @@ public class MeleeObjectScript : MonoBehaviour
         }
     }
 
-   
-
     private void OnDisable()
     {
         hitPeople.Clear();
         Start();
     }
-
 }

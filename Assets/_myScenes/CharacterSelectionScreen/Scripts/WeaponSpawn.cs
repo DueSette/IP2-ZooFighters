@@ -12,6 +12,7 @@ public class WeaponSpawn : MonoBehaviour
     private GameManagerScript gm;
 
     private float maxSpawnTime = 24;
+    [SerializeField]
     private List<GameObject> inGameWeapons = new List<GameObject>();
 
     // Start is called before the first frame update
@@ -50,7 +51,7 @@ public class WeaponSpawn : MonoBehaviour
                 print("aa");
             }
 
-            if(UpdateWeaponList() >= gm.CountCharacters()*1.5f)
+            if(UpdateWeaponList() >= gm.CountCharacters() * 2.5f)
             {
                 canSpawn = false;
             }
@@ -66,7 +67,7 @@ public class WeaponSpawn : MonoBehaviour
     {
         for (int i = 0; i < inGameWeapons.Count; i++)
         {
-            if (inGameWeapons[i] == null)
+            if (inGameWeapons[i] == null || !inGameWeapons[i].activeSelf)
             {
                 inGameWeapons.Remove(inGameWeapons[i]);
             }
@@ -84,7 +85,7 @@ public class WeaponSpawn : MonoBehaviour
     {
         yield return new WaitForSeconds(time);
         timeBetweenSpawns = Random.Range(2, maxSpawnTime);  //sets up the initial value of TimeBetweenSpawns
-        AlterValue(ref timeBetweenSpawns, UpdateWeaponList()); //changes the value of TBS
+        AlterValue(ref timeBetweenSpawns, UpdateWeaponList()); //for every weapon in the existing weapons list, add 1 second
 
         Spawn();
         StartCoroutine(SetSpawn(timeBetweenSpawns));
@@ -93,14 +94,34 @@ public class WeaponSpawn : MonoBehaviour
     //Does the actual spawning, choosing a location between two limits and a weapon among the array of existing weapons
     private void Spawn()
     {
-        if (canSpawn)
-        {
-            int num = Random.Range(0, weaponsToSpawn.Length);
-            transf = new Vector3(Random.Range(-57, 57), transform.position.y, transform.position.z);
+        int num = Random.Range(0, weaponsToSpawn.Length);
 
-            GameObject newWeapon = Instantiate(weaponsToSpawn[num], transf, Quaternion.Euler(0, 90, 0));
-            newWeapon.name = weaponsToSpawn[num].name;
-            inGameWeapons.Add(newWeapon);
+        transf = PickLocation();
+
+        GameObject newWeapon = Instantiate(weaponsToSpawn[num], transf, Quaternion.Euler(0, 90, 0));
+        newWeapon.name = weaponsToSpawn[num].name;
+        inGameWeapons.Add(newWeapon);
+    }
+
+    private Vector3 PickLocation()
+    {
+        Vector3 newLocation = new Vector3(Random.Range(-52, 52), transform.position.y, transform.position.z);
+
+        if (CheckLocation(newLocation))
+            return newLocation;
+        else
+           return PickLocation();
+    }
+
+    private bool CheckLocation(Vector2 loc)
+    {
+        if (Physics.Raycast(new Vector3(loc.x, loc.y, 0), Vector3.down, 150))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 }

@@ -569,7 +569,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
 
     //Manages the process of picking up a weapon from the ground
     private IEnumerator CollectWeapon(GameObject weapon)
-    {
+    {       
         equippedWeapon = weapon;
 
         if (weapon.GetComponent<RangedWeaponScript>())
@@ -768,6 +768,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
 
     public IEnumerator CharacterDeath()
     {
+        StartCoroutine(CameraScript.instance.SetShakeTime(0.5f, 6, 1.5f));
         alive = false;
         equippedWeaponSprite = null;
         while (displayedHealth != GetHealth())
@@ -787,6 +788,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
             equippedWeaponInventory.SetActive(false);
             Destroy(equippedWeapon);
         }
+        //anim.SetBool("Dead", true);
 
         rb.collisionDetectionMode = CollisionDetectionMode.Discrete;
         rb.isKinematic = true;

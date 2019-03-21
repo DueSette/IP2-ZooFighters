@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BaseCharacterBehaviour : MonoBehaviour
 {
@@ -33,6 +34,8 @@ public class BaseCharacterBehaviour : MonoBehaviour
 
     private GameManagerScript gmScript;
     public Animator anim;
+    public Image characterPointer;
+    public Sprite[] pointers = new Sprite[4];
 
     //Gameplay variables
     public Sprite characterSprite;
@@ -118,11 +121,14 @@ public class BaseCharacterBehaviour : MonoBehaviour
             case 3:
                 {
                     jStick = JoyStick.J4;
+                    //jStick = (JoyStick)joyNum;
                 }
                 break;
             default:
                 break;
         }
+        characterPointer.sprite = pointers[joyNum];
+        characterPointer.enabled = true;
     }
 
     public virtual void Start()

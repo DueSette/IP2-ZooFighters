@@ -335,6 +335,8 @@ MonoBehaviour:
   button: {fileID: 4708818119357231301}
   portrait: {fileID: 5661415123444986298}
   text: {fileID: 603553598530380772}
+  introVid: {fileID: 0}
+  videoPlayer: {fileID: 0}
   selectedCharactersPanels:
   - {fileID: 0}
   - {fileID: 0}

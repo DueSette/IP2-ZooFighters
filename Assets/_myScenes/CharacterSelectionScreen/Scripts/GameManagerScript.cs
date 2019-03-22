@@ -29,8 +29,9 @@ public class GameManagerScript : MonoBehaviour
 
     //Spawning character on game start variables
     public float timeBetweenCharSpawns = 0.2f;
-    [Tooltip("Populate with all the desired spawning places. Make sure that they correspond to the transf of an empty object on the map for easier location")]
+
     public Transform[] spawnLocations = new Transform[4];
+    public Transform[] respawnLocations = new Transform[4];
 
     #endregion
 
@@ -162,7 +163,8 @@ public class GameManagerScript : MonoBehaviour
                 inGameUIObjects[i] = Instantiate(inGameUIObj, transform.position + new Vector3 (225 + (i * 450), 100, 0), Quaternion.Euler(0, 0, -90));
                 inGameUIObjects[i].transform.SetParent(canvas.transform);
                 inGameUIObjects[i].GetComponent<InGameUIScript>().representedCharacter = selector.GetComponent<SelectorBehaviour>().chosenCharacter;
-                inGameUIObjects[i].GetComponent<InGameUIScript>().SetAvatar();
+                inGameUIObjects[i].GetComponent<InGameUIScript>().SetAvatar(); //==EXPAND THIS TO MAKE IT ABLE TO CHOOSE THE BG BETWEEN THE FOUR TYPES
+                inGameUIObjects[i].GetComponent<InGameUIScript>().ResetLifePoints();
             }
             i++;
         }
@@ -176,7 +178,7 @@ public class GameManagerScript : MonoBehaviour
         {
             if (uiObj != null)
             {
-                inGameUIObjects[i].GetComponent<InGameUIScript>().UpdateHUD();
+                inGameUIObjects[i].GetComponent<InGameUIScript>().UpdateHUD((int)Time.frameCount);
                 i++;
             }
         }
@@ -188,7 +190,7 @@ public class GameManagerScript : MonoBehaviour
         int charactersLeft = 0;
         foreach (GameObject character in inGameChars)
         {
-            if(character != null && character.GetComponent<BaseCharacterBehaviour>().GetRemainingLives() > -1)
+            if(character != null && character.GetComponent<BaseCharacterBehaviour>().GetRemainingLives() > 0)
             {
                 charactersLeft++;
             }

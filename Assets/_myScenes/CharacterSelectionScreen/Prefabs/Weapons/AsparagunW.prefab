@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 1274041842}
   - component: {fileID: 6262615683369532407}
   m_Layer: 11
-  m_Name: Asparagun Weapon
+  m_Name: AsparagunW
   m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -127,7 +127,7 @@ MonoBehaviour:
   weaponDamage: 25
   rateOfFire: 0.3
   ammo: 9
-  weaponSprite: {fileID: 21300000, guid: d40c191aa46654db7a426d6a1fa3aa30, type: 3}
+  weaponSprite: {fileID: 21300000, guid: 977b8a275e4dff74894e8769b3bc7848, type: 3}
   weaponHolderCollider: {fileID: 0}
   isEquipped: 0
   canBeCollected: 1

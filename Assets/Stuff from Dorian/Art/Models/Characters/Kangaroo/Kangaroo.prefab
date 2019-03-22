@@ -1041,7 +1041,7 @@ MonoBehaviour:
   maxHealth: 100
   displayedHealth: 100
   currentHealth: 100
-  livesLeft: 3
+  livesLeft: 6
   alive: 1
   totalLives: 3
   movSpeed: 36
@@ -2125,15 +2125,15 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 7276012961042784710, guid: 04f8f33b577c4f34ba731e0c3254204d,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 31
-      objectReference: {fileID: 0}
     - target: {fileID: 3869296255810244574, guid: 04f8f33b577c4f34ba731e0c3254204d,
         type: 3}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7276012961042784710, guid: 04f8f33b577c4f34ba731e0c3254204d,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 31
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 04f8f33b577c4f34ba731e0c3254204d, type: 3}

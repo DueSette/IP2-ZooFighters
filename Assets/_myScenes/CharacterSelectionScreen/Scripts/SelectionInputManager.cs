@@ -93,12 +93,22 @@ public class SelectionInputManager : MonoBehaviour
                         selectors[0].SetActive(false);
                     }
                 }
-                 
+
                 //===========JOYSTICK 1, REMEMBER TO TICK "FLIPPED" IN THE PROJECT INPUT SETTINGS=========
                 //ACTIVATING THE SELECTOR, SELECTING AND DESELECTING CHARACTER
                 if (Input.GetKeyDown(KeyCode.Joystick1Button0))
                 {
-                    selectors[0].SetActive(true);
+                    if (selectors[0].activeSelf)
+                    {
+                        if (selectors[0].GetComponent<SelectorBehaviour>().chosenCharacter == null)
+                        {
+                            selectors[0].GetComponent<SelectorBehaviour>().CharSelect();
+                        }
+                    }
+                    else
+                    {
+                        selectors[0].SetActive(true);
+                    }
                 }
                 if (Input.GetKeyDown(KeyCode.Joystick1Button3))
                 {
@@ -173,7 +183,17 @@ public class SelectionInputManager : MonoBehaviour
                 //========= JOYSTICK 2 ===========
                 if (Input.GetKeyDown(KeyCode.Joystick2Button0))
                 {
-                    selectors[1].SetActive(true);
+                    if (selectors[1].activeSelf)
+                    {
+                        if (selectors[1].GetComponent<SelectorBehaviour>().chosenCharacter == null)
+                        {
+                            selectors[1].GetComponent<SelectorBehaviour>().CharSelect();
+                        }
+                    }
+                    else
+                    {
+                        selectors[1].SetActive(true);
+                    }
                 }
                 if (Input.GetKeyDown(KeyCode.Joystick2Button3))
                 {
@@ -249,7 +269,17 @@ public class SelectionInputManager : MonoBehaviour
                 //=========== JOYSTICK 3 ========
                 if (Input.GetKeyDown(KeyCode.Joystick3Button0))
                 {
-                    selectors[2].SetActive(true);
+                    if (selectors[2].activeSelf)
+                    {
+                        if (selectors[2].GetComponent<SelectorBehaviour>().chosenCharacter == null)
+                        {
+                            selectors[2].GetComponent<SelectorBehaviour>().CharSelect();
+                        }
+                    }
+                    else
+                    {
+                        selectors[2].SetActive(true);
+                    }
                 }
                 if (Input.GetKeyDown(KeyCode.Joystick3Button3))
                 {
@@ -326,7 +356,17 @@ public class SelectionInputManager : MonoBehaviour
 
                 if (Input.GetKeyDown(KeyCode.Joystick4Button0))
                 {
-                    selectors[3].SetActive(true);
+                    if (selectors[3].activeSelf)
+                    {
+                        if (selectors[3].GetComponent<SelectorBehaviour>().chosenCharacter == null)
+                        {
+                            selectors[3].GetComponent<SelectorBehaviour>().CharSelect();
+                        }
+                    }
+                    else
+                    {
+                        selectors[3].SetActive(true);
+                    }
                 }
                 if (Input.GetKeyDown(KeyCode.Joystick4Button3))
                 {

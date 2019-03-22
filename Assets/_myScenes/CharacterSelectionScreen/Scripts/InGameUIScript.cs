@@ -7,16 +7,15 @@ public class InGameUIScript : MonoBehaviour
 {
     public GameObject representedCharacter;
     private BaseCharacterBehaviour charBehaviour;
-    public Text livesLeftText;
 
     public GameObject charAvatar;
+    public GameObject charBackground;
     public Slider slider;
     public Image fillImage;
+    public GameObject[] lifePoints = new GameObject[6];
     public GameObject equippedWeaponImage;
 
     public int theHealth;
-    public int remainingLives;
-
     public Color fullHealthColor = Color.green;
     public Color zeroHealthColor = Color.red;
 
@@ -28,10 +27,10 @@ public class InGameUIScript : MonoBehaviour
 
     //This should update a bar or slider based on its own character's hp.
     //Then also keep tracks of lives left and stuff
-    public void UpdateHUD()
+    public void UpdateHUD(int elapsedTime)
     {
         SetAvatar();
-        if(charBehaviour.equippedWeaponSprite != null)
+        if (charBehaviour.equippedWeaponSprite != null)
         {
             equippedWeaponImage.GetComponent<Image>().sprite = charBehaviour.equippedWeaponSprite;
             equippedWeaponImage.GetComponent<Image>().color = new Color(255, 255, 255, 255);
@@ -41,14 +40,11 @@ public class InGameUIScript : MonoBehaviour
             equippedWeaponImage.GetComponent<Image>().color = new Color(0, 0, 0, 0);
         }
 
-        UpdateLivesLeft();
         UpdateHPColor();
-    }
-
-    private void UpdateLivesLeft()
-    {
-        remainingLives = charBehaviour.livesLeft;
-        livesLeftText.text = remainingLives.ToString() + " Lives Left";
+        if (elapsedTime % 90 == 0)
+        {
+            SetLifePoints();
+        }
     }
     
     private void UpdateHPColor()
@@ -61,6 +57,28 @@ public class InGameUIScript : MonoBehaviour
         if(slider.value == 0)
         {
             fillImage.color = Color.black;
+        }
+    }
+
+    public void ResetLifePoints()
+    {
+        foreach (GameObject point in lifePoints)
+        {
+            point.SetActive(true);
+            print("setup");
+        }
+    }
+
+    public void SetLifePoints()
+    {
+        int i = 0;
+        foreach (GameObject point in lifePoints)
+        {
+            if (i < charBehaviour.livesLeft)
+                point.SetActive(true);
+            else
+                point.SetActive(false);
+            i++;
         }
     }
 

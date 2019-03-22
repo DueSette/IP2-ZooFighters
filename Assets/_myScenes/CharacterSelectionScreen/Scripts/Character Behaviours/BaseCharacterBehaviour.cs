@@ -819,11 +819,8 @@ public class BaseCharacterBehaviour : MonoBehaviour
         rb.isKinematic = false;
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
 
-        transform.position = new Vector3(-2, 20, 0); //this is temporary
-        //make the platform appear on screen
+        transform.position = gmScript.respawnLocations[Random.Range(0, gmScript.respawnLocations.Length)].position;
         alive = true;
-        //maybe give a jump boost
-        //have the platform lerp away/deactivate
         yield return null;
     }
 

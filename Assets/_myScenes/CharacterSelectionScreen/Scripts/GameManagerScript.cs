@@ -165,6 +165,7 @@ public class GameManagerScript : MonoBehaviour
                 inGameUIObjects[i].GetComponent<InGameUIScript>().representedCharacter = selector.GetComponent<SelectorBehaviour>().chosenCharacter;
                 inGameUIObjects[i].GetComponent<InGameUIScript>().SetAvatar(); //==EXPAND THIS TO MAKE IT ABLE TO CHOOSE THE BG BETWEEN THE FOUR TYPES
                 inGameUIObjects[i].GetComponent<InGameUIScript>().ResetLifePoints();
+                inGameUIObjects[i].GetComponent<InGameUIScript>().SetBackground(i);
             }
             i++;
         }

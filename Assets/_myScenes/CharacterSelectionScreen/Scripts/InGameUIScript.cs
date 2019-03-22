@@ -7,14 +7,17 @@ public class InGameUIScript : MonoBehaviour
 {
     public GameObject representedCharacter;
     private BaseCharacterBehaviour charBehaviour;
-
+    
     public GameObject charAvatar;
+    public Sprite[] charBackgrounds = new Sprite[4];
     public GameObject charBackground;
     public Slider slider;
     public Image fillImage;
     public GameObject[] lifePoints = new GameObject[6];
+    [HideInInspector]
     public GameObject equippedWeaponImage;
 
+    [HideInInspector]
     public int theHealth;
     public Color fullHealthColor = Color.green;
     public Color zeroHealthColor = Color.red;
@@ -65,11 +68,10 @@ public class InGameUIScript : MonoBehaviour
         foreach (GameObject point in lifePoints)
         {
             point.SetActive(true);
-            print("setup");
         }
     }
 
-    public void SetLifePoints()
+    private void SetLifePoints()
     {
         int i = 0;
         foreach (GameObject point in lifePoints)
@@ -85,5 +87,10 @@ public class InGameUIScript : MonoBehaviour
     public void SetAvatar()
     {
         charAvatar.GetComponent<Image>().sprite = representedCharacter.GetComponent<BaseCharacterBehaviour>().characterSprite;
+    }
+
+    public void SetBackground(int playerNum)
+    {
+        charBackground.GetComponent<Image>().sprite = charBackgrounds[playerNum];
     }
 }

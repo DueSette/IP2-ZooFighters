@@ -11,7 +11,7 @@ public class SelectorBehaviour : MonoBehaviour
 
     [HideInInspector]
     public int totalCharactersNum;     //how many total portraits are there in the character selection UI
-    private int cursorPos;             //which portrait the cursor should snap to
+    public int cursorPos;             //which portrait the cursor should snap to
     private int joystickNumber;     //the joystick that controls this specific instance of the selector object
 
     public GameObject chosenCharacter;     //the character that will be activated when the game starts

@@ -1,0 +1,218 @@
+fileFormatVersion: 2
+guid: ea6b25f54002c0847b9c2d9a938d47a7
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: Foot
+    100002: Foot 1
+    100004: Foot1
+    100006: Foot2
+    100008: GemLowerMid1
+    100010: GemLowerMid2
+    100012: GemsBot
+    100014: GemsBot1
+    100016: GemsBot2
+    100018: GemsLowerMid
+    100020: GemsMid
+    100022: GemsMid1
+    100024: GemsMid2
+    100026: GemsUpper
+    100028: GemUpper1
+    100030: GemUpper2
+    100032: JointBot
+    100034: JointBot1
+    100036: JointBot2
+    100038: JointMid
+    100040: JointMid1
+    100042: JointMid2
+    100044: JointsMid
+    100046: JointUpper
+    100048: LegLower
+    100050: LegLower1
+    100052: LegLower2
+    100054: //RootNode
+    100056: LegUpper
+    100058: LegUpper1
+    100060: LegUpper2
+    100062: LowerLeg
+    100064: UpperLeg
+    400000: Foot
+    400002: Foot 1
+    400004: Foot1
+    400006: Foot2
+    400008: GemLowerMid1
+    400010: GemLowerMid2
+    400012: GemsBot
+    400014: GemsBot1
+    400016: GemsBot2
+    400018: GemsLowerMid
+    400020: GemsMid
+    400022: GemsMid1
+    400024: GemsMid2
+    400026: GemsUpper
+    400028: GemUpper1
+    400030: GemUpper2
+    400032: JointBot
+    400034: JointBot1
+    400036: JointBot2
+    400038: JointMid
+    400040: JointMid1
+    400042: JointMid2
+    400044: JointsMid
+    400046: JointUpper
+    400048: LegLower
+    400050: LegLower1
+    400052: LegLower2
+    400054: //RootNode
+    400056: LegUpper
+    400058: LegUpper1
+    400060: LegUpper2
+    400062: LowerLeg
+    400064: UpperLeg
+    2100000: Joint_1_initialShadingGroup1
+    2100002: lambert2
+    2100004: lambert3
+    2100006: Default_Material
+    2300000: Foot1
+    2300002: Foot2
+    2300004: GemLowerMid1
+    2300006: GemLowerMid2
+    2300008: GemsBot1
+    2300010: GemsBot2
+    2300012: GemsMid1
+    2300014: GemsMid2
+    2300016: GemUpper1
+    2300018: GemUpper2
+    2300020: JointBot1
+    2300022: JointBot2
+    2300024: JointMid1
+    2300026: JointMid2
+    2300028: JointUpper
+    2300030: LegLower1
+    2300032: LegLower2
+    2300034: LegUpper1
+    2300036: LegUpper2
+    3300000: Foot1
+    3300002: Foot2
+    3300004: GemLowerMid1
+    3300006: GemLowerMid2
+    3300008: GemsBot1
+    3300010: GemsBot2
+    3300012: GemsMid1
+    3300014: GemsMid2
+    3300016: GemUpper1
+    3300018: GemUpper2
+    3300020: JointBot1
+    3300022: JointBot2
+    3300024: JointMid1
+    3300026: JointMid2
+    3300028: JointUpper
+    3300030: LegLower1
+    3300032: LegLower2
+    3300034: LegUpper1
+    3300036: LegUpper2
+    4300000: JointMid2
+    4300002: JointMid1
+    4300004: GemLowerMid1
+    4300006: GemLowerMid2
+    4300008: LegLower2
+    4300010: LegLower1
+    4300012: JointBot1
+    4300014: JointBot2
+    4300016: Foot2
+    4300018: Foot1
+    4300020: GemsBot2
+    4300022: GemsBot1
+    4300024: GemsMid2
+    4300026: GemsMid1
+    4300028: LegUpper1
+    4300030: LegUpper2
+    4300032: JointUpper
+    4300034: GemUpper1
+    4300036: GemUpper2
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 1
+    hasPreviousCalculatedGlobalScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

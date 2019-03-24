@@ -32,7 +32,7 @@ public class InGameUIScript : MonoBehaviour
     //Then also keep tracks of lives left and stuff
     public void UpdateHUD(int elapsedTime)
     {
-        SetAvatar();
+
         if (charBehaviour.equippedWeaponSprite != null)
         {
             equippedWeaponImage.GetComponent<Image>().sprite = charBehaviour.equippedWeaponSprite;
@@ -84,13 +84,9 @@ public class InGameUIScript : MonoBehaviour
         }
     }
 
-    public void SetAvatar()
+    public void SetAvatarAndBackground(int playerNum)
     {
         charAvatar.GetComponent<Image>().sprite = representedCharacter.GetComponent<BaseCharacterBehaviour>().characterSprite;
-    }
-
-    public void SetBackground(int playerNum)
-    {
         charBackground.GetComponent<Image>().sprite = charBackgrounds[playerNum];
     }
 }

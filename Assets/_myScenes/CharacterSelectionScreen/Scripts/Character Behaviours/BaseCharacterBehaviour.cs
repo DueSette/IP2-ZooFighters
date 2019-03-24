@@ -92,6 +92,9 @@ public class BaseCharacterBehaviour : MonoBehaviour
     [HideInInspector]
     public float moveDisableTimeElapsed = 0;
 
+    public AudioClip[] audioClips;
+    AudioSource audio;
+
     Rigidbody rb;
     #endregion
 
@@ -136,6 +139,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
         gmScript = GameManagerScript.gmInstance;
         rb = GetComponent<Rigidbody>();
         rb.mass = bodyMass;
+        audio = GetComponent<AudioSource>();
         anim = GetComponent<Animator>();
         anim.SetBool("Unarmed", true);
 
@@ -289,7 +293,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
             }
             else
             {
-                rb.AddForce(Physics.gravity * 2.5f);
+                rb.AddForce(Physics.gravity * 2);
             }
         }
 
@@ -472,8 +476,6 @@ public class BaseCharacterBehaviour : MonoBehaviour
         yield return null;
     }
 
-    //private IEnumerator 
-
     public virtual void Move(float stickDirection)
     {
         transform.Translate(new Vector3(1 * Mathf.Sign(stickDirection), 0, 0) * Time.deltaTime * movSpeed, Space.World);
@@ -499,7 +501,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
 
     public void OnCollisionStay(Collision other)
     {
-        if (other.collider.tag == "Floor" && other.transform.position.y < transform.position.y)
+        if (other.collider.tag == "Floor" && other.GetContact(0).point.y < transform.position.y)
         {
             grounded = true;
         }
@@ -516,7 +518,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
     //It's literally just coyote time
     private IEnumerator CoyoteTime()
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.15f);
         grounded = false;
     }
 
@@ -567,7 +569,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
     public void OnCollisionEnter(Collision other)
     {
         //when touching a platform (but not with the "head" of the character)
-        if (other.gameObject.tag == "Floor" && other.gameObject.transform.position.y < transform.position.y)
+        if (other.gameObject.tag == "Floor" && other.GetContact(0).point.y < transform.position.y)
         {
             canExtraJump = true;
         }
@@ -775,6 +777,8 @@ public class BaseCharacterBehaviour : MonoBehaviour
     public IEnumerator CharacterDeath()
     {
         StartCoroutine(CameraScript.instance.SetShakeTime(0.5f, 6, 1.5f));
+        audio.clip = audioClips[0];
+        audio.Play();
         alive = false;
         equippedWeaponSprite = null;
         while (displayedHealth != GetHealth())
@@ -802,7 +806,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
         //Play death animation, when it's over execute lines below
         //GetComponent<MeshRenderer>().enabled = false;        //this is okay to turn off cubes but models are more complex than this
         rb.velocity = Vector3.zero;
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(0.3f);
         if (GetRemainingLives() > -1)
         {
             StartCoroutine(CharacterRespawn());

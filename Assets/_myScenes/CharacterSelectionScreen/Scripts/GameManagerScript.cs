@@ -160,12 +160,11 @@ public class GameManagerScript : MonoBehaviour
             if (selector.activeSelf)
             {
                 //Creates and positions the UI objects, then it communicates to them the character they are portraying
-                inGameUIObjects[i] = Instantiate(inGameUIObj, transform.position + new Vector3 (225 + (i * 450), 100, 0), Quaternion.Euler(0, 0, -90));
+                inGameUIObjects[i] = Instantiate(inGameUIObj, transform.position + new Vector3 (100 + (i * 275), canvas.pixelRect.height - 135, 0), Quaternion.Euler(0, 0, -90));
                 inGameUIObjects[i].transform.SetParent(canvas.transform);
                 inGameUIObjects[i].GetComponent<InGameUIScript>().representedCharacter = selector.GetComponent<SelectorBehaviour>().chosenCharacter;
-                inGameUIObjects[i].GetComponent<InGameUIScript>().SetAvatar(); //==EXPAND THIS TO MAKE IT ABLE TO CHOOSE THE BG BETWEEN THE FOUR TYPES
+                inGameUIObjects[i].GetComponent<InGameUIScript>().SetAvatarAndBackground(i);
                 inGameUIObjects[i].GetComponent<InGameUIScript>().ResetLifePoints();
-                inGameUIObjects[i].GetComponent<InGameUIScript>().SetBackground(i);
             }
             i++;
         }

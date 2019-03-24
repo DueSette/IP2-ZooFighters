@@ -33,7 +33,7 @@ public class SelectionInputManager : MonoBehaviour
         for (int i = 0; i < selectors.Length; i++)
         {
             selectors[i] = Instantiate(selector, transform.position, Quaternion.identity);
-            selectors[i].transform.SetParent(canvas.transform.GetChild(1));
+            selectors[i].transform.SetParent(canvas.transform);
             selectors[i].GetComponent<SelectorBehaviour>().SetJoystickNum(i);
             selectors[i].GetComponent<SelectorBehaviour>().SetImage(sprites[i]);
             selectors[i].SetActive(false);

@@ -22,7 +22,7 @@ public class WeaponSpawn : MonoBehaviour
         StartCoroutine(SetSpawn(1));
     }
 
-    int ticks = 30; //needed to make update make less per-frame calculations
+    readonly int ticks = 30; //needed to make update make less per-frame calculations
     //adjusts weapon spawn rate according to how many players are there in the game
     void Update()
     {
@@ -47,8 +47,7 @@ public class WeaponSpawn : MonoBehaviour
 
             if (UpdateWeaponList() < gm.CountCharacters())
             {
-                Spawn();
-                print("aa");
+                SpawnRandomWeapon();
             }
 
             if(UpdateWeaponList() >= gm.CountCharacters() * 2.5f)
@@ -87,12 +86,12 @@ public class WeaponSpawn : MonoBehaviour
         timeBetweenSpawns = Random.Range(2, maxSpawnTime);  //sets up the initial value of TimeBetweenSpawns
         AlterValue(ref timeBetweenSpawns, UpdateWeaponList()); //for every weapon in the existing weapons list, add 1 second
 
-        Spawn();
+        SpawnRandomWeapon();
         StartCoroutine(SetSpawn(timeBetweenSpawns));
     }
 
     //Does the actual spawning, choosing a location between two limits and a weapon among the array of existing weapons
-    private void Spawn()
+    private void SpawnRandomWeapon()
     {
         int num = Random.Range(0, weaponsToSpawn.Length);
 

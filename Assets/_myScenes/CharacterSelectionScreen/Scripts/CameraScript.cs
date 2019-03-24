@@ -23,7 +23,7 @@ public class CameraScript : MonoBehaviour
     private Vector3 centrePos;
     private Vector3 moveVelocity;
     private Vector3 cameraStartPos;
-
+    
     IEnumerator LerpCamera(Vector3 endPosition)
     {
         float t = 0;
@@ -102,7 +102,7 @@ public class CameraScript : MonoBehaviour
 
             if(players[i] != null)
                 averagePos += players[i].position;
-                averagePos.y += transform.position.y/2;
+                averagePos.y += transform.position.y/2.5f;
 
             numTargets++;
         }

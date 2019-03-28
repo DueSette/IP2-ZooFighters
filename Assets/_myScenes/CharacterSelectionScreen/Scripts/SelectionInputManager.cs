@@ -52,6 +52,7 @@ public class SelectionInputManager : MonoBehaviour
                 //==================== CHARACTER SELECTION INPUT=========================
 
                 //MOUSE and KEYBOARD - Delete when gamepad support is ready
+                #region MOUSE
                 if (Input.GetKeyDown(KeyCode.Mouse0))
                 {
                     selectors[0].SetActive(true);
@@ -93,8 +94,9 @@ public class SelectionInputManager : MonoBehaviour
                         selectors[0].SetActive(false);
                     }
                 }
-
+                #endregion
                 //===========JOYSTICK 1, REMEMBER TO TICK "FLIPPED" IN THE PROJECT INPUT SETTINGS=========
+                #region JOY 1
                 //ACTIVATING THE SELECTOR, SELECTING AND DESELECTING CHARACTER
                 if (Input.GetKeyDown(KeyCode.Joystick1Button0))
                 {
@@ -107,15 +109,8 @@ public class SelectionInputManager : MonoBehaviour
                     }
                     else
                     {
-                        selectors[0].SetActive(true);
                         selectors[0].GetComponent<SelectorBehaviour>().CharHover();
-                    }
-                }
-                if (Input.GetKeyDown(KeyCode.Joystick1Button3))
-                {
-                    if (selectors[0].activeSelf && selectors[0].GetComponent<SelectorBehaviour>().chosenCharacter == null)
-                    {
-                        selectors[0].GetComponent<SelectorBehaviour>().CharSelect();
+                        selectors[0].SetActive(true);
                     }
                 }
                 if (Input.GetKeyDown(KeyCode.Joystick1Button1))
@@ -183,10 +178,11 @@ public class SelectionInputManager : MonoBehaviour
                             selectors[0].GetComponent<SelectorBehaviour>().CharHover();
                             stick1VIdle = false;
                         }
-                    }
-                    
+                    }                 
                 }
-                //========= JOYSTICK 2 ===========
+                #endregion
+                //========= JOYSTICK 2 ==========
+                #region JOY 2
                 if (Input.GetKeyDown(KeyCode.Joystick2Button0))
                 {
                     if (selectors[1].activeSelf)
@@ -213,6 +209,7 @@ public class SelectionInputManager : MonoBehaviour
                 {
                     if (selectors[1].GetComponent<SelectorBehaviour>().ready)
                     {
+                        selectors[1].GetComponent<SelectorBehaviour>().SetCursorPos(0, false);
                         selectors[1].GetComponent<SelectorBehaviour>().CharDeselect();
                     }
                     else
@@ -277,7 +274,9 @@ public class SelectionInputManager : MonoBehaviour
                         }
                     }
                 }
-                //=========== JOYSTICK 3 ========
+                #endregion
+                //========= JOYSTICK 3 ========
+                #region JOY 3
                 if (Input.GetKeyDown(KeyCode.Joystick3Button0))
                 {
                     if (selectors[2].activeSelf)
@@ -304,6 +303,7 @@ public class SelectionInputManager : MonoBehaviour
                 {
                     if (selectors[2].GetComponent<SelectorBehaviour>().ready)
                     {
+                        selectors[2].GetComponent<SelectorBehaviour>().SetCursorPos(0, false);
                         selectors[2].GetComponent<SelectorBehaviour>().CharDeselect();
                     }
                     else
@@ -368,8 +368,9 @@ public class SelectionInputManager : MonoBehaviour
                         }
                     }
                 }
-                //================= JOYSTICK 4 =================
-
+                #endregion
+                //========= JOYSTICK 4 ======
+                #region JOY 4
                 if (Input.GetKeyDown(KeyCode.Joystick4Button0))
                 {
                     if (selectors[3].activeSelf)
@@ -396,6 +397,7 @@ public class SelectionInputManager : MonoBehaviour
                 {
                     if (selectors[3].GetComponent<SelectorBehaviour>().ready)
                     {
+                        selectors[3].GetComponent<SelectorBehaviour>().SetCursorPos(0, false);
                         selectors[3].GetComponent<SelectorBehaviour>().CharDeselect();
                     }
                     else
@@ -466,15 +468,7 @@ public class SelectionInputManager : MonoBehaviour
                     }
                 }
                 #endregion
-
-                //Detects which selectors are active and manages the hover function
-                foreach (GameObject selector in selectors)
-                {
-                    if (selector.activeSelf && !selector.GetComponent<SelectorBehaviour>().ready)
-                    {
-                        //selector.GetComponent<SelectorBehaviour>().CharHover();
-                    }
-                }
+                #endregion
             }
         }
     }

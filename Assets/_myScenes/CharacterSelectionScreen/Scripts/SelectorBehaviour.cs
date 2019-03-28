@@ -27,6 +27,8 @@ public class SelectorBehaviour : MonoBehaviour
         totalCharactersNum = charDispl.characters.Length;
         gameObject.transform.position = portraitsDisplayer.transform.GetChild(0).transform.position;
         cursorPos = 0;
+
+        StartCoroutine(portraitsDisplayer.transform.GetChild(cursorPos).gameObject.GetComponent<CharacterPortraitScript>().SelectorEnable(GetJoystickNum(), GetCursorPos()));
     }
 
     private void Update()   //snaps to the appropriate portrait
@@ -67,14 +69,14 @@ public class SelectorBehaviour : MonoBehaviour
             Destroy(chosenCharacter);
             chosenCharacter = null;
         }
-        portraitsDisplayer.transform.GetChild(cursorPos).gameObject.GetComponent<CharacterPortraitScript>().DeselectCharacter(GetJoystickNum());
-        
+
+        portraitsDisplayer.transform.GetChild(cursorPos).gameObject.GetComponent<CharacterPortraitScript>().DeselectCharacter(GetJoystickNum());      
         ready = false;
     }
 
-    //when hovering character portraits (called in update)
+    //when hovering character portraits
     public void CharHover()
-    {       
+    {
         portraitsDisplayer.transform.GetChild(cursorPos).gameObject.GetComponent<CharacterPortraitScript>().HoverCharacter(GetJoystickNum(), cursorPos);
     }    
     

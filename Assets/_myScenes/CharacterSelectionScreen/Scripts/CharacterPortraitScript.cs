@@ -15,6 +15,7 @@ public class CharacterPortraitScript : MonoBehaviour
     public VideoClip hoverVideo;
     public VideoPlayer videoPlayer;
     public RawImage rawImage;
+    public Coroutine waiter;
 
     [Tooltip("the object that contains the four panels representing the player's selected character")]
     public static GameObject selectedPortraits;
@@ -57,39 +58,39 @@ public class CharacterPortraitScript : MonoBehaviour
     public GameObject SelectCharacter(int joystickNum, int characterToSpawn)
     {
         //returns the gameobject that will be spawned
-        //selectedCharactersPanels[joystickNum].GetComponent<Image>().color = Color.white;
-        //selectedCharactersPanels[joystickNum].GetComponent<Image>().sprite = portrait.GetComponent<Image>().sprite;
-
         //Setting up the introductory videoclip
-        
-        //MEMO: DISABLE TARGET TEXTURE FOR RAW IMAGE
-        //NEED A WAY TO STORE IT IN ANOTHER TEMP VARIABLE BEFORE SETTING IT TO NULL SO I DON'T LOSE THE REFERENCE TO IT
-
         videoPlayer = selectedCharactersPanels[joystickNum].transform.GetChild(0).gameObject.GetComponent<VideoPlayer>();
-        rawImage = selectedCharactersPanels[joystickNum].transform.GetChild(0).gameObject.GetComponent<RawImage>();
         videoPlayer.clip = selectVideo;
 
-        //videoPlayer.SetActive(false);
-        //videoPlayer.Stop();
-        StartCoroutine(Wait());
+        waiter = StartCoroutine(Wait(joystickNum));
         videoPlayer.Play();
 
         return characters[characterToSpawn];
     }
 
-    private IEnumerator Wait()
+    private IEnumerator Wait(int joystickNum)
     {
+        rawImage = selectedCharactersPanels[joystickNum].transform.GetChild(0).gameObject.GetComponent<RawImage>();
         yield return new WaitForSeconds(0.2f);
         rawImage.enabled = true;
+    }
+
+    public IEnumerator SelectorEnable(int joystickNum, int cursorPos)
+    {
+        rawImage = selectedCharactersPanels[joystickNum].gameObject.GetComponent<RawImage>();
+        rawImage.enabled = false;
+        yield return new WaitForSeconds(0.2f);
+        HoverCharacter(joystickNum, cursorPos);
     }
 
     //deselects the character (ACTS ON THE CHILD NUMBER 0 OF SELECTED BANNER)
     public void DeselectCharacter(int joystickNum)
     {
-        //selectedCharactersPanels[joystickNum].GetComponent<Image>().sprite = null;
-        //selectedCharactersPanels[joystickNum].GetComponent<Image>().color = Color.white - new Color(0, 0, 0, 0.42f);
-        selectedCharactersPanels[joystickNum].transform.GetChild(0).gameObject.GetComponent<VideoPlayer>().clip = null;
+        if (waiter != null)
+            StopCoroutine(waiter);
 
+        selectedCharactersPanels[joystickNum].transform.GetChild(0).gameObject.GetComponent<VideoPlayer>().clip = null;
+        videoPlayer = selectedCharactersPanels[joystickNum].transform.GetChild(0).gameObject.GetComponent<VideoPlayer>();
         if (videoPlayer != null)
         {
             rawImage = selectedCharactersPanels[joystickNum].transform.GetChild(0).gameObject.GetComponent<RawImage>();
@@ -115,20 +116,15 @@ public class CharacterPortraitScript : MonoBehaviour
     //called when hovering over a portrait while not locked onto any character
     public void HoverCharacter(int joystickNum, int characterToDisplay)
     {
-        //selectedCharactersPanels[joystickNum].GetComponent<Image>().color = Color.white - new Color(0, 0, 0, 0.42f);
-        //selectedCharactersPanels[joystickNum].GetComponent<Image>().sprite = portrait.GetComponent<Image>().sprite;
-
         videoPlayer = selectedCharactersPanels[joystickNum].gameObject.GetComponent<VideoPlayer>();
         rawImage = selectedCharactersPanels[joystickNum].gameObject.GetComponent<RawImage>();
-
         videoPlayer.clip = hoverVideo;
 
         if (videoPlayer.clip == hoverVideo && videoPlayer.isPlaying)
             videoPlayer.Stop();
+       videoPlayer.Play();
 
-        videoPlayer.Play();
         rawImage.enabled = true;
-        //TENTATIVE BELOW
         videoPlayer = selectedCharactersPanels[joystickNum].transform.GetChild(0).gameObject.GetComponent<VideoPlayer>();
         videoPlayer.clip = selectVideo;
     }

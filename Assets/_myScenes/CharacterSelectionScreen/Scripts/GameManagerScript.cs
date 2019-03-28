@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManagerScript : MonoBehaviour
 {
@@ -12,6 +13,10 @@ public class GameManagerScript : MonoBehaviour
 
     public Camera cam;
     public Canvas canvas;
+
+    public TextMesh tm;
+    public GameObject UI3DTexts;
+
     public GameObject weaponSpawner;
     public GameObject portraitsHolder;
     public GameObject selectedPortraits;
@@ -56,9 +61,13 @@ public class GameManagerScript : MonoBehaviour
         {
             UpdateInGameUI();
         }
-        if(GetGameState() == GameState.victoryScreen && Input.anyKeyDown)
+        else if(GetGameState() == GameState.victoryScreen && Input.anyKeyDown)
         {
             StartCoroutine(RestartGame());
+        }
+        if(GetGameState() == GameState.victoryScreen)
+        {
+            UpdateInGameUI();
         }
     }
 
@@ -82,7 +91,7 @@ public class GameManagerScript : MonoBehaviour
             {
                 //shifts the UI away
                 StartCoroutine(LerpUI(portraitsHolder, -400));
-                StartCoroutine(LerpUI(selectedPortraits, 1200));
+                StartCoroutine(LerpUI(selectedPortraits, canvas.pixelRect.height + 300));
 
                 //waits until every char is spawned
                 yield return StartCoroutine(SpawnCharacters());
@@ -128,7 +137,8 @@ public class GameManagerScript : MonoBehaviour
                 i++;
             }
         }
-        yield return null;
+        UI3DTexts.GetComponent<Animator>().SetTrigger("Ready");
+        yield return new WaitForSeconds(7 - timeBetweenCharSpawns * CountCharacters());
         //tell the camera what to look at
         cam.gameObject.GetComponent<CameraScript>().SetUpTargets();
         SetGameState(GameState.inGame);
@@ -143,12 +153,12 @@ public class GameManagerScript : MonoBehaviour
         }
 
         SetGameState(GameState.victoryScreen);
-
+        UI3DTexts.GetComponent<Animator>().SetTrigger("Win");
+        tm.text = "We Have a Winner!";
         weaponSpawner.SetActive(false);
         //When only one character is left this part of the code will execute:
         //it should declare the winner, maybe tell the camera to do something cool
         //after a while, call UI buttons to restart/go to character selection/go to main menu
-        print("we have a winner");
     }
 
     //Sets up UI based on the selected characters
@@ -160,7 +170,9 @@ public class GameManagerScript : MonoBehaviour
             if (selector.activeSelf)
             {
                 //Creates and positions the UI objects, then it communicates to them the character they are portraying
-                inGameUIObjects[i] = Instantiate(inGameUIObj, transform.position + new Vector3 (100 + (i * 275), canvas.pixelRect.height - 135, 0), Quaternion.Euler(0, 0, -90));
+                inGameUIObjects[i] = Instantiate(inGameUIObj, transform.position + new Vector3 (canvas.pixelRect.width * 0.1f + (i * 375), //X axis
+                    canvas.pixelRect.height * 0.85f, 0),    //Y axis
+                    Quaternion.Euler(0, 0, -90));   //Rotation
                 inGameUIObjects[i].transform.SetParent(canvas.transform);
                 inGameUIObjects[i].GetComponent<InGameUIScript>().representedCharacter = selector.GetComponent<SelectorBehaviour>().chosenCharacter;
                 inGameUIObjects[i].GetComponent<InGameUIScript>().SetAvatarAndBackground(i);
@@ -178,7 +190,7 @@ public class GameManagerScript : MonoBehaviour
         {
             if (uiObj != null)
             {
-                inGameUIObjects[i].GetComponent<InGameUIScript>().UpdateHUD((int)Time.frameCount);
+                inGameUIObjects[i].GetComponent<InGameUIScript>().UpdateHUD();
                 i++;
             }
         }

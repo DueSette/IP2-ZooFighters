@@ -9,8 +9,8 @@ public class InGameUIScript : MonoBehaviour
     private BaseCharacterBehaviour charBehaviour;
     
     public GameObject charAvatar;
-    public Sprite[] charBackgrounds = new Sprite[4];
-    public GameObject charBackground;
+    public Sprite[] charPointers = new Sprite[4];
+    public GameObject charPointer;
     public Slider slider;
     public Image fillImage;
     public GameObject[] lifePoints = new GameObject[6];
@@ -26,13 +26,13 @@ public class InGameUIScript : MonoBehaviour
     {
         charBehaviour = representedCharacter.GetComponent<BaseCharacterBehaviour>();
         slider.maxValue = charBehaviour.maxHealth;
+        charBehaviour.LifeLossEvent += SetLifePoints;
     }
 
     //This should update a bar or slider based on its own character's hp.
     //Then also keep tracks of lives left and stuff
-    public void UpdateHUD(int elapsedTime)
+    public void UpdateHUD()
     {
-
         if (charBehaviour.equippedWeaponSprite != null)
         {
             equippedWeaponImage.GetComponent<Image>().sprite = charBehaviour.equippedWeaponSprite;
@@ -42,12 +42,7 @@ public class InGameUIScript : MonoBehaviour
         {
             equippedWeaponImage.GetComponent<Image>().color = new Color(0, 0, 0, 0);
         }
-
-        UpdateHPColor();
-        if (elapsedTime % 90 == 0)
-        {
-            SetLifePoints();
-        }
+        UpdateHPColor();       
     }
     
     private void UpdateHPColor()
@@ -73,20 +68,12 @@ public class InGameUIScript : MonoBehaviour
 
     private void SetLifePoints()
     {
-        int i = 0;
-        foreach (GameObject point in lifePoints)
-        {
-            if (i < charBehaviour.livesLeft)
-                point.SetActive(true);
-            else
-                point.SetActive(false);
-            i++;
-        }
+        GetComponent<Animator>().SetTrigger("LifeLost");
     }
 
     public void SetAvatarAndBackground(int playerNum)
     {
         charAvatar.GetComponent<Image>().sprite = representedCharacter.GetComponent<BaseCharacterBehaviour>().characterSprite;
-        charBackground.GetComponent<Image>().sprite = charBackgrounds[playerNum];
+        charPointer.GetComponent<Image>().sprite = charPointers[playerNum];
     }
 }

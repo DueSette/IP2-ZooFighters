@@ -125,7 +125,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pooler: {fileID: 0}
   weaponDamage: 25
-  rateOfFire: 0.3
+  rateOfFire: 0.4
   ammo: 9
   weaponSprite: {fileID: 21300000, guid: 977b8a275e4dff74894e8769b3bc7848, type: 3}
   weaponHolderCollider: {fileID: 0}
@@ -135,6 +135,11 @@ MonoBehaviour:
   canShoot: 1
   actAsBullet: 0
   rb: {fileID: 0}
+  audioClips:
+  - {fileID: 8300000, guid: b4e5a841e18e4164d9a76ca3864b1c18, type: 3}
+  - {fileID: 8300000, guid: b4aac8c54b3f7f8449015ffece9677d2, type: 3}
+  - {fileID: 8300000, guid: 672f6f69824c87f44bec581a753ae079, type: 3}
+  audio: {fileID: 6262615683369532407}
 --- !u!82 &6262615683369532407
 AudioSource:
   m_ObjectHideFlags: 0
@@ -144,7 +149,8 @@ AudioSource:
   m_GameObject: {fileID: 1274041840}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 243057415411689328, guid: 27e4c4d5a98f19643b29d24473baf15b,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1

@@ -11,7 +11,6 @@ public class RangedWeaponScript : MonoBehaviour
     public int ammo;
     public Sprite weaponSprite;
 
-    [HideInInspector]
     public Collider weaponHolderCollider;
 
     [HideInInspector]
@@ -28,17 +27,23 @@ public class RangedWeaponScript : MonoBehaviour
     [HideInInspector]
     public Rigidbody rb;
     private Vector3 velo;
+    public AudioClip[] audioClips;
+    public AudioSource aud;
+
+    public delegate void EventSound(AudioClip clip);
+    public static event EventSound GunBreak;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+        aud = GetComponent<AudioSource>();
         pooler = ObjectPooler.instance;
         rb.maxAngularVelocity = 150;
     }
 
     private void Update()
-    {      
-        if(canBeCollected)
+    {
+        if (canBeCollected)
         {
             transform.Rotate(Vector3.up * 30 * Time.deltaTime, Space.World);
         }
@@ -47,7 +52,7 @@ public class RangedWeaponScript : MonoBehaviour
     private void FixedUpdate()
     {
         velo = rb.velocity;
-        if(velo.y < -45)
+        if (velo.y < -45)
         {
             rb.AddForce(new Vector3(0, 2.7f, 0), ForceMode.Impulse);
         }
@@ -57,20 +62,29 @@ public class RangedWeaponScript : MonoBehaviour
     public void Fire(float damageMod, float direction)
     {
         StartCoroutine(FireCD());
+        if (ammo > 0)
+        {
+
+            //the tag, meaning the first parameter, is the name of the kind of bullet that will be pulled out of the object pooler
+            GameObject bullet = pooler.SpawnFromPool("Bullet1", transform.position, Quaternion.Euler(0, 90 * direction, 0));
+            BulletScript bScript = bullet.GetComponent<BulletScript>();
+
+            //this informs the bullet about what collider to ignore when shooting
+            bScript.shooterCollider = weaponHolderCollider;
+            //this sets damage, direction and post-on enable stuff
+            bScript.damage = (int)(weaponDamage * (damageMod));
+            bScript.direction = direction;
+            bScript.AfterEnable();
+
+            aud.clip = audioClips[2];
+            aud.Play();
+        }
+        else
+        {
+            aud.clip = audioClips[1];
+            aud.Play();
+        }
         ammo--;
-        GameObject bullet;
-
-        //the tag, meaning the first parameter, is the name of the kind of bullet that will be pulled out of the object pooler
-        bullet = pooler.SpawnFromPool("Bullet1", transform.position, Quaternion.Euler(0, 90 * direction, 0));
-        BulletScript bScript = bullet.GetComponent<BulletScript>();
-
-        //this informs the bullet about what collider to ignore when shooting
-        bScript.shooterCollider = weaponHolderCollider;
-        //this sets damage, direction and post-on enable stuff
-        bScript.damage = (int)(weaponDamage * (damageMod));
-        bScript.direction = direction;
-        bScript.AfterEnable();
-
         //TO ADD: stuff about the shot: sound, muzzle flash? animation
     }
 
@@ -83,19 +97,19 @@ public class RangedWeaponScript : MonoBehaviour
     }
 
     //This is probably just useless now, do a few tests then delete if nothing changes while it is commented out
-   /* private void OnCollisionEnter(Collision collision)
-    {
-        //Ignore collision if it is not with ground or player
-        if (collision.collider.gameObject.layer != 9 && collision.collider.gameObject.layer != 10)
-        {
-            Physics.IgnoreCollision(collision.collider, gameObject.GetComponent<Collider>());
-        }
-        else if (collision.collider.gameObject.layer == 9 && collision.gameObject.transform.position.y < transform.position.y)
-        {
-            StopOnGround();
-        }
-    }
-    */
+    /* private void OnCollisionEnter(Collision collision)
+     {
+         //Ignore collision if it is not with ground or player
+         if (collision.collider.gameObject.layer != 9 && collision.collider.gameObject.layer != 10)
+         {
+             Physics.IgnoreCollision(collision.collider, gameObject.GetComponent<Collider>());
+         }
+         else if (collision.collider.gameObject.layer == 9 && collision.gameObject.transform.position.y < transform.position.y)
+         {
+             StopOnGround();
+         }
+     }
+     */
 
     private void OnTriggerEnter(Collider collider)
     {
@@ -110,13 +124,15 @@ public class RangedWeaponScript : MonoBehaviour
                 }
             }
         }
-        
+
         //if being thrown as the result of being out of ammo, this kind of collision will take place
         if (actAsBullet)
         {
+
             //if hitting a player, move and damage it
             if (collider.gameObject.layer == 10)
             {
+                GunBreak(audioClips[0]);
                 collider.gameObject.GetComponent<Rigidbody>().AddForce(new Vector3(50 * -Mathf.Sign(GetComponent<Rigidbody>().angularVelocity.x), 50, 0), ForceMode.VelocityChange);
                 collider.gameObject.GetComponent<BaseCharacterBehaviour>().TakeDamage(30);
                 gameObject.SetActive(false);
@@ -124,15 +140,16 @@ public class RangedWeaponScript : MonoBehaviour
             //if hitting a floor, then just destroy this weapon
             else if (collider.gameObject.layer == 9)
             {
+                GunBreak(audioClips[0]);
                 gameObject.SetActive(false);
-            }           
+            }
         }
     }
 
     private void StopOnGround()
     {
         float yRot = 0; //will determine the rotation that will be set as the gun's rotation upon landing
-        if(transform.rotation.y < 0)
+        if (transform.rotation.y < 0)
         {
             yRot = -90;
         }

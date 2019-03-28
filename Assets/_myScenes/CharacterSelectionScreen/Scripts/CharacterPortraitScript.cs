@@ -11,8 +11,10 @@ public class CharacterPortraitScript : MonoBehaviour
     public GameObject button;   //Assign all the children of the Character Object
     public GameObject portrait;
     public GameObject text;
-    public VideoClip introVid;
+    public VideoClip selectVideo;
+    public VideoClip hoverVideo;
     public VideoPlayer videoPlayer;
+    public RawImage rawImage;
 
     [Tooltip("the object that contains the four panels representing the player's selected character")]
     public static GameObject selectedPortraits;
@@ -44,41 +46,90 @@ public class CharacterPortraitScript : MonoBehaviour
         text.GetComponent<Text>().text = name;
     }
 
-    public void SetClip(VideoClip clip)
+    public void SetClips(VideoClip selectClip, VideoClip hoverClip)
     {
-        introVid = clip;
+        selectVideo = selectClip;
+        hoverVideo = hoverClip;
     }
 
     //Shows the selected character in the SelectedPortraits object, keeping track of what joystick called this
     //e.g: if joystick 0 calls the function, it's going to access the first portrait of the array
     public GameObject SelectCharacter(int joystickNum, int characterToSpawn)
-    {     
+    {
         //returns the gameobject that will be spawned
-        selectedCharactersPanels[joystickNum].GetComponent<Image>().color = Color.white;
-        selectedCharactersPanels[joystickNum].GetComponent<Image>().sprite = portrait.GetComponent<Image>().sprite;
+        //selectedCharactersPanels[joystickNum].GetComponent<Image>().color = Color.white;
+        //selectedCharactersPanels[joystickNum].GetComponent<Image>().sprite = portrait.GetComponent<Image>().sprite;
 
         //Setting up the introductory videoclip
+        
+        //MEMO: DISABLE TARGET TEXTURE FOR RAW IMAGE
+        //NEED A WAY TO STORE IT IN ANOTHER TEMP VARIABLE BEFORE SETTING IT TO NULL SO I DON'T LOSE THE REFERENCE TO IT
+
         videoPlayer = selectedCharactersPanels[joystickNum].transform.GetChild(0).gameObject.GetComponent<VideoPlayer>();
-        videoPlayer.clip = introVid;
-        videoPlayer.gameObject.SetActive(true);
+        rawImage = selectedCharactersPanels[joystickNum].transform.GetChild(0).gameObject.GetComponent<RawImage>();
+        videoPlayer.clip = selectVideo;
+
+        //videoPlayer.SetActive(false);
+        //videoPlayer.Stop();
+        StartCoroutine(Wait());
+        videoPlayer.Play();
 
         return characters[characterToSpawn];
     }
 
-    //deselects the character
+    private IEnumerator Wait()
+    {
+        yield return new WaitForSeconds(0.2f);
+        rawImage.enabled = true;
+    }
+
+    //deselects the character (ACTS ON THE CHILD NUMBER 0 OF SELECTED BANNER)
     public void DeselectCharacter(int joystickNum)
     {
-        selectedCharactersPanels[joystickNum].GetComponent<Image>().sprite = null;
-        selectedCharactersPanels[joystickNum].GetComponent<Image>().color = Color.white - new Color(0, 0, 0, 0.42f);
+        //selectedCharactersPanels[joystickNum].GetComponent<Image>().sprite = null;
+        //selectedCharactersPanels[joystickNum].GetComponent<Image>().color = Color.white - new Color(0, 0, 0, 0.42f);
+        selectedCharactersPanels[joystickNum].transform.GetChild(0).gameObject.GetComponent<VideoPlayer>().clip = null;
 
+        if (videoPlayer != null)
+        {
+            rawImage = selectedCharactersPanels[joystickNum].transform.GetChild(0).gameObject.GetComponent<RawImage>();
+           
+            rawImage.enabled = false;
+            videoPlayer.Stop();
+        }
+    }
+
+    //HAPPENS WHEN SELECTOR IS DISABLED (HAPPENS ON THE PARENT SELECTED BANNER)
+    public void SelectorDisable(int joystickNum)
+    {
+        selectedCharactersPanels[joystickNum].gameObject.GetComponent<VideoPlayer>().clip = null;
+        if (rawImage != null)
+        {
+            rawImage = selectedCharactersPanels[joystickNum].gameObject.GetComponent<RawImage>();
+            rawImage.enabled = false;
+        }
         if(videoPlayer != null)
-            videoPlayer.gameObject.SetActive(false);
+            videoPlayer.Stop();
     }
 
     //called when hovering over a portrait while not locked onto any character
     public void HoverCharacter(int joystickNum, int characterToDisplay)
     {
-        selectedCharactersPanels[joystickNum].GetComponent<Image>().color = Color.white - new Color(0, 0, 0, 0.42f);
-        selectedCharactersPanels[joystickNum].GetComponent<Image>().sprite = this.portrait.GetComponent<Image>().sprite;
+        //selectedCharactersPanels[joystickNum].GetComponent<Image>().color = Color.white - new Color(0, 0, 0, 0.42f);
+        //selectedCharactersPanels[joystickNum].GetComponent<Image>().sprite = portrait.GetComponent<Image>().sprite;
+
+        videoPlayer = selectedCharactersPanels[joystickNum].gameObject.GetComponent<VideoPlayer>();
+        rawImage = selectedCharactersPanels[joystickNum].gameObject.GetComponent<RawImage>();
+
+        videoPlayer.clip = hoverVideo;
+
+        if (videoPlayer.clip == hoverVideo && videoPlayer.isPlaying)
+            videoPlayer.Stop();
+
+        videoPlayer.Play();
+        rawImage.enabled = true;
+        //TENTATIVE BELOW
+        videoPlayer = selectedCharactersPanels[joystickNum].transform.GetChild(0).gameObject.GetComponent<VideoPlayer>();
+        videoPlayer.clip = selectVideo;
     }
 }

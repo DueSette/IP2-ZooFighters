@@ -15,6 +15,35 @@ MonoBehaviour:
   settings:
   - {fileID: 114871915078455684}
   - {fileID: 114981641048284040}
+  - {fileID: 114838555344020494}
+--- !u!114 &114838555344020494
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 556797029e73b2347956b6579e77e05b, type: 3}
+  m_Name: DepthOfField
+  m_EditorClassIdentifier: 
+  active: 0
+  enabled:
+    overrideState: 1
+    value: 1
+  focusDistance:
+    overrideState: 1
+    value: 2.44
+  aperture:
+    overrideState: 1
+    value: 16.1
+  focalLength:
+    overrideState: 1
+    value: 73
+  kernelSize:
+    overrideState: 1
+    value: 2
 --- !u!114 &114871915078455684
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -33,10 +62,10 @@ MonoBehaviour:
     value: 1
   intensity:
     overrideState: 1
-    value: 2.6
+    value: 10.78
   threshold:
-    overrideState: 0
-    value: 1
+    overrideState: 1
+    value: 1.67
   softKnee:
     overrideState: 0
     value: 0.5
@@ -74,12 +103,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40b924e2dad56384a8df2a1e111bb675, type: 3}
   m_Name: Vignette
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   enabled:
     overrideState: 1
     value: 1
   mode:
-    overrideState: 1
+    overrideState: 0
     value: 0
   color:
     overrideState: 0
@@ -89,7 +118,7 @@ MonoBehaviour:
     value: {x: 0.5, y: 0.5}
   intensity:
     overrideState: 0
-    value: 0
+    value: 1
   smoothness:
     overrideState: 0
     value: 0.2

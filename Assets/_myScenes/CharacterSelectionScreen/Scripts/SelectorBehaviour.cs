@@ -33,12 +33,12 @@ public class SelectorBehaviour : MonoBehaviour
     {
         if (joystickNumber < 2)
         {
-            gameObject.transform.position = portraitsDisplayer.transform.GetChild(cursorPos).transform.position + new Vector3(joystickNumber * 100, 0, 0);
+            gameObject.transform.position = portraitsDisplayer.transform.GetChild(cursorPos).transform.position + new Vector3(-15 + (joystickNumber * 115), 10, 0);
         }
 
         else
         {
-            gameObject.transform.position = portraitsDisplayer.transform.GetChild(cursorPos).transform.position + new Vector3((joystickNumber - 2) * 100, -100, 0);
+            gameObject.transform.position = portraitsDisplayer.transform.GetChild(cursorPos).transform.position + new Vector3(-15 + (joystickNumber - 2) * 115, -110, 0);
         }
     }
 
@@ -129,5 +129,6 @@ public class SelectorBehaviour : MonoBehaviour
     public void OnDisable()
     {
         portraitsDisplayer.transform.GetChild(cursorPos).gameObject.GetComponent<CharacterPortraitScript>().DeselectCharacter(GetJoystickNum());
+        portraitsDisplayer.transform.GetChild(cursorPos).gameObject.GetComponent<CharacterPortraitScript>().SelectorDisable(GetJoystickNum());
     }
 }

@@ -12,16 +12,21 @@ public class MeleeObjectScript : MonoBehaviour
     public float slapPushBack;
     public float stopTargetDuration; //stun length
 
+    public AudioClip[] audioClips;
+    public AudioSource aud;
+
     // Start is called before the first frame update
     void Awake()
     {
         parentCharacter = transform.parent.gameObject;
+        aud = GetComponent<AudioSource>();
     }
 
     void Start()
     {
         hitPeople.Add(transform.parent.gameObject);
         parentScript = parentCharacter.GetComponent<BaseCharacterBehaviour>();
+        aud = GetComponent<AudioSource>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -41,6 +46,8 @@ public class MeleeObjectScript : MonoBehaviour
                 charScript.SetStun(stopTargetDuration);
 
                 hitPeople.Add(other.gameObject);
+                aud.clip = audioClips[0];
+                aud.Play();
             }
             //IF ARMED (MELEE WEAPON)
             else if (parentScript.meleeWeaponScript)
@@ -53,6 +60,8 @@ public class MeleeObjectScript : MonoBehaviour
                 charScript.SetDisablingMovementTime(stopTargetDuration);
 
                 hitPeople.Add(other.gameObject);
+                aud.clip = audioClips[1];
+                aud.Play();
             }
         }
     }

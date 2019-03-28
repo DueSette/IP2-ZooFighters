@@ -1068,9 +1068,9 @@ MonoBehaviour:
   moveDisableTimeElapsed: 0
   audioClips:
   - {fileID: 8300000, guid: f398616b2e65b234e84c032c12fce80c, type: 3}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 8300000, guid: 738607fe1061f3a4f8532c43627a6bb4, type: 3}
+  - {fileID: 8300000, guid: d11d0131c40f70245b8fb45feac6e642, type: 3}
+  - {fileID: 8300000, guid: 8c0cdc19ccc1540488c0295965bf48d6, type: 3}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -1086,7 +1086,8 @@ AudioSource:
   m_GameObject: {fileID: 1105152803}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 243057415411689328, guid: 27e4c4d5a98f19643b29d24473baf15b,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
@@ -1810,7 +1811,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -1924,6 +1925,11 @@ MonoBehaviour:
   hitPeople: []
   slapPushBack: 20
   stopTargetDuration: 1
+  audioClips:
+  - {fileID: 8300000, guid: 8909ccb7e7698194995454fddc5920b2, type: 3}
+  - {fileID: 8300000, guid: b54dc9565722bb44d9aaf2f392a7fcdd, type: 3}
+  - {fileID: 8300000, guid: 3507f414f1fcc974bbada5f540d2832d, type: 3}
+  audio: {fileID: 0}
 --- !u!1001 &4076994573975209809
 PrefabInstance:
   m_ObjectHideFlags: 0

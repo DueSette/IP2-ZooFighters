@@ -45,6 +45,8 @@ public class BaseCharacterBehaviour : MonoBehaviour
     [Tooltip("This is the actual real health of the character, it's updated BEFORE the UI")]
     public int currentHealth;
     public int livesLeft;
+    public delegate void LifeLoss();
+    public event LifeLoss LifeLossEvent;
 
     //Base stats
     public bool alive = true;
@@ -93,7 +95,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
     public float moveDisableTimeElapsed = 0;
 
     public AudioClip[] audioClips;
-    AudioSource audio;
+    AudioSource aud;
 
     Rigidbody rb;
     #endregion
@@ -139,7 +141,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
         gmScript = GameManagerScript.gmInstance;
         rb = GetComponent<Rigidbody>();
         rb.mass = bodyMass;
-        audio = GetComponent<AudioSource>();
+        aud = GetComponent<AudioSource>();
         anim = GetComponent<Animator>();
         anim.SetBool("Unarmed", true);
 
@@ -241,11 +243,20 @@ public class BaseCharacterBehaviour : MonoBehaviour
                 }
 
                 //SHOOTING
-                else if (isArmed && rangedWeaponScript != null && rangedWeaponScript.canShoot && rangedWeaponScript.ammo > 0 && !stunned)
+                else if (isArmed && rangedWeaponScript != null && rangedWeaponScript.canShoot && !stunned)
                 {
-                    rangedWeaponScript.Fire(damageMod, Mathf.Sign(transform.rotation.y));
-                    anim.SetTrigger("Shoot");
+                    if (rangedWeaponScript.ammo > 0) //when there's ammo left
+                    {
+                        rangedWeaponScript.Fire(damageMod, Mathf.Sign(transform.rotation.y));
+                        anim.SetTrigger("Shoot");
+                    }
+                    else //when no ammo
+                    {
+                        rangedWeaponScript.Fire(damageMod, Mathf.Sign(transform.rotation.y));
+                        anim.SetTrigger("Shoot");
+                    }                   
                 }
+                
                 //SWINGING MELEE
                 else if (isArmed && meleeWeaponScript != null && meleeWeaponScript.canSwing && !stunned)
                 {
@@ -439,13 +450,15 @@ public class BaseCharacterBehaviour : MonoBehaviour
     private IEnumerator Slap(bool inAir)
     {
         canSlap = false;
-        anim.SetBool("IsSlapping", true);
+        anim.SetBool("IsSlapping", true);      
 
         if (!inAir)
             slapping = true;
 
         yield return new WaitForSeconds(0.20f);
         meleeObject.SetActive(true);
+        meleeObject.GetComponent<MeleeObjectScript>().aud.clip = meleeObject.GetComponent<MeleeObjectScript>().audioClips[2];
+        meleeObject.GetComponent<AudioSource>().Play();
         yield return new WaitForSeconds(0.35f);
         meleeObject.SetActive(false);
         //anim.SetBool("IsSlapping", false);
@@ -497,6 +510,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
         rb.AddForce(new Vector3(0, jumpPower, 0), ForceMode.Impulse);
         anim.SetTrigger("Jump");
         grounded = false;
+        aud.PlayOneShot(audioClips[3]);
     }
 
     public void OnCollisionStay(Collision other)
@@ -613,9 +627,14 @@ public class BaseCharacterBehaviour : MonoBehaviour
 
         equippedWeaponInventory.SetActive(true);
         isArmed = true;
+
+        aud.clip = audioClips[2];
+        aud.Play();
+
         yield return null;
     }
 
+    //Prepares the weapon when it is about to be thrown
     private void Flush()
     {
         if (equippedWeapon.GetComponent<RangedWeaponScript>())
@@ -683,13 +702,13 @@ public class BaseCharacterBehaviour : MonoBehaviour
             //UI info
             equippedWeaponSprite = null;
 
+            Flush();
+
             //unparenting weapon and updating physics constraints
             equippedWeapon.transform.SetParent(null);
             equippedWeapon.GetComponent<Rigidbody>().isKinematic = false;
             equippedWeapon.GetComponent<Rigidbody>().useGravity = false;
-            equippedWeapon.transform.rotation = Quaternion.Euler(equippedWeapon.transform.rotation.x, 90, equippedWeapon.transform.rotation.z); //resetting rotation
-
-            Flush();
+            equippedWeapon.transform.rotation = Quaternion.Euler(equippedWeapon.transform.rotation.x, 90, equippedWeapon.transform.rotation.z); //resetting rotation            
 
             equippedWeaponInventory.SetActive(false);
 
@@ -713,7 +732,8 @@ public class BaseCharacterBehaviour : MonoBehaviour
             anim.SetBool("Unarmed", true);
             anim.SetBool("Melee", false);
             anim.SetBool("Rifle", false);
-
+            aud.clip = audioClips[1];
+            aud.Play();
             anim.SetTrigger("Throw");
         }
     }
@@ -723,7 +743,6 @@ public class BaseCharacterBehaviour : MonoBehaviour
     {
         if (Mathf.Sign(direction) == Mathf.Sign(transform.rotation.y))
         {
-            print("get stopped method called");
             rb.velocity = new Vector3(0, rb.velocity.y, rb.velocity.y);
         }
     }
@@ -772,13 +791,14 @@ public class BaseCharacterBehaviour : MonoBehaviour
     public void TakeDamage(int damage)
     {
         SetHealth(GetHealth() - damage);
+        anim.SetTrigger("GetRekt");
     }
 
     public IEnumerator CharacterDeath()
     {
         StartCoroutine(CameraScript.instance.SetShakeTime(0.5f, 6, 1.5f));
-        audio.clip = audioClips[0];
-        audio.Play();
+        aud.clip = audioClips[0];
+        aud.Play();
         alive = false;
         equippedWeaponSprite = null;
         while (displayedHealth != GetHealth())
@@ -786,6 +806,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
             yield return null;
         }
         SetRemainingLives(GetRemainingLives() - 1);
+        LifeLossEvent();
 
         //DEACTIVATION PROCESS
         if (isArmed)
@@ -807,7 +828,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
         //GetComponent<MeshRenderer>().enabled = false;        //this is okay to turn off cubes but models are more complex than this
         rb.velocity = Vector3.zero;
         yield return new WaitForSeconds(0.3f);
-        if (GetRemainingLives() > -1)
+        if (GetRemainingLives() > 0)
         {
             StartCoroutine(CharacterRespawn());
         }
@@ -861,11 +882,9 @@ public class BaseCharacterBehaviour : MonoBehaviour
 
     private IEnumerator SkipFrames(float time)
     {
-        print("pause");
         GetComponent<Animator>().speed = 0.1f;
         yield return new WaitForSeconds(time);
         GetComponent<Animator>().speed = 1;
-        print("exit pause");
     }
     #endregion
 }

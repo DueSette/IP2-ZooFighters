@@ -108,6 +108,7 @@ public class SelectionInputManager : MonoBehaviour
                     else
                     {
                         selectors[0].SetActive(true);
+                        selectors[0].GetComponent<SelectorBehaviour>().CharHover();
                     }
                 }
                 if (Input.GetKeyDown(KeyCode.Joystick1Button3))
@@ -142,13 +143,14 @@ public class SelectionInputManager : MonoBehaviour
                     stick1VIdle = true;
                 }
                 //RIGHT
-                if (selectors[0].GetComponent<SelectorBehaviour>().chosenCharacter == null)
+                if (selectors[0].GetComponent<SelectorBehaviour>().chosenCharacter == null && selectors[0].gameObject.activeSelf)
                 {
                     if ((Input.GetAxis("LeftJoyHorizontal") > 0.5f))
                     {
                         if (stick1HIdle)
                         {
                             selectors[0].GetComponent<SelectorBehaviour>().SetCursorPos(1, false);
+                            selectors[0].GetComponent<SelectorBehaviour>().CharHover();
                             stick1HIdle = false;
                         }
                     }
@@ -158,6 +160,7 @@ public class SelectionInputManager : MonoBehaviour
                         if (stick1HIdle)
                         {
                             selectors[0].GetComponent<SelectorBehaviour>().SetCursorPos(-1, false);
+                            selectors[0].GetComponent<SelectorBehaviour>().CharHover();
                             stick1HIdle = false;
                         }
                     }
@@ -167,6 +170,7 @@ public class SelectionInputManager : MonoBehaviour
                         if (stick1VIdle)
                         {
                             selectors[0].GetComponent<SelectorBehaviour>().SetCursorPos(1, true);
+                            selectors[0].GetComponent<SelectorBehaviour>().CharHover();
                             stick1VIdle = false;
                         }
                     }
@@ -176,9 +180,11 @@ public class SelectionInputManager : MonoBehaviour
                         if (stick1VIdle)
                         {
                             selectors[0].GetComponent<SelectorBehaviour>().SetCursorPos(-1, true);
+                            selectors[0].GetComponent<SelectorBehaviour>().CharHover();
                             stick1VIdle = false;
                         }
                     }
+                    
                 }
                 //========= JOYSTICK 2 ===========
                 if (Input.GetKeyDown(KeyCode.Joystick2Button0))
@@ -192,6 +198,7 @@ public class SelectionInputManager : MonoBehaviour
                     }
                     else
                     {
+                        selectors[1].GetComponent<SelectorBehaviour>().CharHover();
                         selectors[1].SetActive(true);
                     }
                 }
@@ -227,7 +234,7 @@ public class SelectionInputManager : MonoBehaviour
                     stick2VIdle = true;
                 }
                 //RIGHT
-                if (selectors[1].GetComponent<SelectorBehaviour>().chosenCharacter == null)
+                if (selectors[1].GetComponent<SelectorBehaviour>().chosenCharacter == null && selectors[1].gameObject.activeSelf)
                 {
 
                     if ((Input.GetAxis("LeftJoy2Horizontal") > 0.5f))
@@ -235,6 +242,7 @@ public class SelectionInputManager : MonoBehaviour
                         if (stick2HIdle)
                         {
                             selectors[1].GetComponent<SelectorBehaviour>().SetCursorPos(1, false);
+                            selectors[1].GetComponent<SelectorBehaviour>().CharHover();
                             stick2HIdle = false;
                         }
                     }
@@ -244,6 +252,7 @@ public class SelectionInputManager : MonoBehaviour
                         if (stick2HIdle)
                         {
                             selectors[1].GetComponent<SelectorBehaviour>().SetCursorPos(-1, false);
+                            selectors[1].GetComponent<SelectorBehaviour>().CharHover();
                             stick2HIdle = false;
                         }
                     }
@@ -253,6 +262,7 @@ public class SelectionInputManager : MonoBehaviour
                         if (stick2VIdle)
                         {
                             selectors[1].GetComponent<SelectorBehaviour>().SetCursorPos(1, true);
+                            selectors[1].GetComponent<SelectorBehaviour>().CharHover();
                             stick2VIdle = false;
                         }
                     }
@@ -262,6 +272,7 @@ public class SelectionInputManager : MonoBehaviour
                         if (stick2VIdle)
                         {
                             selectors[1].GetComponent<SelectorBehaviour>().SetCursorPos(-1, true);
+                            selectors[1].GetComponent<SelectorBehaviour>().CharHover();
                             stick2VIdle = false;
                         }
                     }
@@ -278,6 +289,7 @@ public class SelectionInputManager : MonoBehaviour
                     }
                     else
                     {
+                        selectors[2].GetComponent<SelectorBehaviour>().CharHover();
                         selectors[2].SetActive(true);
                     }
                 }
@@ -314,13 +326,14 @@ public class SelectionInputManager : MonoBehaviour
                     stick3VIdle = true;
                 }
                 //RIGHT
-                if (selectors[2].GetComponent<SelectorBehaviour>().chosenCharacter == null)
+                if (selectors[2].GetComponent<SelectorBehaviour>().chosenCharacter == null && selectors[2].gameObject.activeSelf)
                 {
                     if ((Input.GetAxis("LeftJoy3Horizontal") > 0.5f))
                     {
                         if (stick3HIdle)
                         {
                             selectors[2].GetComponent<SelectorBehaviour>().SetCursorPos(1, false);
+                            selectors[2].GetComponent<SelectorBehaviour>().CharHover();
                             stick3HIdle = false;
                         }
                     }
@@ -330,6 +343,7 @@ public class SelectionInputManager : MonoBehaviour
                         if (stick3HIdle)
                         {
                             selectors[2].GetComponent<SelectorBehaviour>().SetCursorPos(-1, false);
+                            selectors[2].GetComponent<SelectorBehaviour>().CharHover();
                             stick3HIdle = false;
                         }
                     }
@@ -339,6 +353,7 @@ public class SelectionInputManager : MonoBehaviour
                         if (stick3VIdle)
                         {
                             selectors[2].GetComponent<SelectorBehaviour>().SetCursorPos(1, true);
+                            selectors[2].GetComponent<SelectorBehaviour>().CharHover();
                             stick3VIdle = false;
                         }
                     }
@@ -348,6 +363,7 @@ public class SelectionInputManager : MonoBehaviour
                         if (stick3VIdle)
                         {
                             selectors[2].GetComponent<SelectorBehaviour>().SetCursorPos(-1, true);
+                            selectors[2].GetComponent<SelectorBehaviour>().CharHover();
                             stick3VIdle = false;
                         }
                     }
@@ -365,6 +381,7 @@ public class SelectionInputManager : MonoBehaviour
                     }
                     else
                     {
+                        selectors[3].GetComponent<SelectorBehaviour>().CharHover();
                         selectors[3].SetActive(true);
                     }
                 }
@@ -400,7 +417,7 @@ public class SelectionInputManager : MonoBehaviour
                     stick4VIdle = true;
                 }
 
-                if (selectors[3].GetComponent<SelectorBehaviour>().chosenCharacter == null)
+                if (selectors[3].GetComponent<SelectorBehaviour>().chosenCharacter == null && selectors[3].gameObject.activeSelf)
                 {
                     //RIGHT
                     if ((Input.GetAxis("LeftJoy4Horizontal") > 0.5f))
@@ -408,6 +425,7 @@ public class SelectionInputManager : MonoBehaviour
                         if (stick4HIdle)
                         {
                             selectors[3].GetComponent<SelectorBehaviour>().SetCursorPos(1, false);
+                            selectors[3].GetComponent<SelectorBehaviour>().CharHover();
                             stick4HIdle = false;
                         }
                     }
@@ -417,6 +435,7 @@ public class SelectionInputManager : MonoBehaviour
                         if (stick4HIdle)
                         {
                             selectors[3].GetComponent<SelectorBehaviour>().SetCursorPos(-1, false);
+                            selectors[3].GetComponent<SelectorBehaviour>().CharHover();
                             stick4HIdle = false;
                         }
                     }
@@ -426,6 +445,7 @@ public class SelectionInputManager : MonoBehaviour
                         if (stick4VIdle)
                         {
                             selectors[3].GetComponent<SelectorBehaviour>().SetCursorPos(1, true);
+                            selectors[3].GetComponent<SelectorBehaviour>().CharHover();
                             stick4VIdle = false;
                         }
                     }
@@ -435,6 +455,7 @@ public class SelectionInputManager : MonoBehaviour
                         if (stick4VIdle)
                         {
                             selectors[3].GetComponent<SelectorBehaviour>().SetCursorPos(-1, true);
+                            selectors[3].GetComponent<SelectorBehaviour>().CharHover();
                             stick4VIdle = false;
                         }
                     }
@@ -451,7 +472,7 @@ public class SelectionInputManager : MonoBehaviour
                 {
                     if (selector.activeSelf && !selector.GetComponent<SelectorBehaviour>().ready)
                     {
-                        selector.GetComponent<SelectorBehaviour>().CharHover();
+                        //selector.GetComponent<SelectorBehaviour>().CharHover();
                     }
                 }
             }

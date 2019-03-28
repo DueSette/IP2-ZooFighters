@@ -30,6 +30,10 @@ public class MeleeWeaponScript : MonoBehaviour
     public Rigidbody rb;
     private Vector3 velo;
 
+    public AudioClip breakSound;
+    public delegate void EventSound(AudioClip clip);
+    public static event EventSound BaseballBreak;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -58,12 +62,13 @@ public class MeleeWeaponScript : MonoBehaviour
     {
         StartCoroutine(SwingCD());
         swinging = true;
+        GetComponent<AudioSource>().Play();
     }
 
     private IEnumerator SwingCD()
     {
         canSwing = false;
-        yield return new WaitForSeconds(0.7f);
+        yield return new WaitForSeconds(1);
         canSwing = true;
         swinging = false;
     }
@@ -82,12 +87,13 @@ public class MeleeWeaponScript : MonoBehaviour
             }
         }
 
-        //if being thrown as the result of being out of ammo, this kind of collision will take place
+        //if being thrown aggressively
         if (actAsBullet)
-        {
+        {           
             //if hitting a player, move and damage it
             if (other.gameObject.layer == 10)
             {
+                BaseballBreak(breakSound); //sound event
                 other.gameObject.GetComponent<Rigidbody>().AddForce(new Vector3(100 * -Mathf.Sign(GetComponent<Rigidbody>().angularVelocity.x), 50, 0), ForceMode.VelocityChange);
                 other.gameObject.GetComponent<BaseCharacterBehaviour>().TakeDamage(20);
                 gameObject.SetActive(false);
@@ -95,8 +101,9 @@ public class MeleeWeaponScript : MonoBehaviour
             //if hitting a floor, then just destroy this weapon
             else if (other.gameObject.layer == 9)
             {
+                BaseballBreak(breakSound); //sound event
                 gameObject.SetActive(false);
-            }
+            }          
         }
     }
 

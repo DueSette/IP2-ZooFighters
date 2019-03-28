@@ -10,6 +10,7 @@ public class BulletScript : MonoBehaviour
 
     private BaseCharacterBehaviour charScript;
     private Rigidbody rb;
+    public AudioSource aud;
 
     [HideInInspector]
     public int damage;
@@ -23,12 +24,15 @@ public class BulletScript : MonoBehaviour
     [Tooltip("How long should this stop the players from moving when they are hit")]
     public float stopTargetDuration = 0;
 
+    public delegate void HitTarget(AudioClip clip);
+    public static event HitTarget HitCharacter;
     #endregion
 
     // Start is called before the first frame update
     void Awake()
     {
-        rb = gameObject.GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody>();
+        aud = GetComponent<AudioSource>();
     }
 
     public virtual void OnEnable()
@@ -59,6 +63,7 @@ public class BulletScript : MonoBehaviour
 
                 collider.GetComponent<Rigidbody>().AddForce(new Vector3(pushBack.x * direction, pushBack.y, 0), ForceMode.Impulse);
                 charScript.SetDisablingMovementTime(stopTargetDuration);
+                HitCharacter(aud.clip);     //sound event
             }
             OnImpact();
         }
@@ -68,7 +73,6 @@ public class BulletScript : MonoBehaviour
     {
         gameObject.SetActive(false);
         Physics.IgnoreCollision(shooterCollider, GetComponent<Collider>(), false); //reset collision immunity
-        //play sound
         //release particle
 
         //do additional stuff if need be

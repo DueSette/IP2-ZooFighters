@@ -22,6 +22,11 @@ public class DestroyerScript : MonoBehaviour
         //add stuff that shouldn't be destroyed via tag search, the rest can be destroyed
         else if(collider.tag == "SlapObject") {}
 
+        else if(collider.tag == "Thrown")
+        {
+            collider.gameObject.GetComponent<GrenadeScript>().OnImpact();
+        }
+
         else
         {
             Destroy(collider.gameObject);

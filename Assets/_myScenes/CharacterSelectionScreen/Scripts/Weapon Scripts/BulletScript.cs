@@ -74,7 +74,6 @@ public class BulletScript : MonoBehaviour
         gameObject.SetActive(false);
         Physics.IgnoreCollision(shooterCollider, GetComponent<Collider>(), false); //reset collision immunity
         //release particle
-
         //do additional stuff if need be
     }
 }

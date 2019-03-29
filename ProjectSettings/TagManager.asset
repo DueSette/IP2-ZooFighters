@@ -8,6 +8,7 @@ TagManager:
   - Floor
   - Bullet
   - SlapObject
+  - Thrown
   layers:
   - Default
   - TransparentFX
@@ -21,7 +22,7 @@ TagManager:
   - Ground
   - Player
   - Weapon
-  - 
+  - Traps
   - 
   - 
   - 

@@ -96,21 +96,6 @@ public class RangedWeaponScript : MonoBehaviour
         canShoot = true;
     }
 
-    //This is probably just useless now, do a few tests then delete if nothing changes while it is commented out
-    /* private void OnCollisionEnter(Collision collision)
-     {
-         //Ignore collision if it is not with ground or player
-         if (collision.collider.gameObject.layer != 9 && collision.collider.gameObject.layer != 10)
-         {
-             Physics.IgnoreCollision(collision.collider, gameObject.GetComponent<Collider>());
-         }
-         else if (collision.collider.gameObject.layer == 9 && collision.gameObject.transform.position.y < transform.position.y)
-         {
-             StopOnGround();
-         }
-     }
-     */
-
     private void OnTriggerEnter(Collider collider)
     {
         if (!actAsBullet)

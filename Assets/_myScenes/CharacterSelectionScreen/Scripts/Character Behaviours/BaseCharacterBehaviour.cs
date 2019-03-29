@@ -38,6 +38,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
     public Sprite[] pointers = new Sprite[4];
 
     //Gameplay variables
+    public int grenades;
     public Sprite characterSprite;
     public int maxHealth = 100;
     [Tooltip("This represents health but is updated with the UI, meaning more slowly")]
@@ -68,6 +69,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
     [Tooltip("The game object that the weapon will be childed too")]
     public GameObject weaponSlot;
     public GameObject meleeObject;
+    public Transform grenadeThrower;
 
     public bool rTrigReleased = true;
     public bool canSlap = true;
@@ -216,7 +218,11 @@ public class BaseCharacterBehaviour : MonoBehaviour
             }
             if (yButton)
             {
-                print("y pressed");
+                
+            }
+            if (lBumper && grenades > 0 && !stunned)
+            {
+                ThrowGrenade();
             }
             if (startButton)
             {
@@ -229,7 +235,6 @@ public class BaseCharacterBehaviour : MonoBehaviour
                 //SLAPPING
                 if (!isArmed && canSlap && !anim.GetBool("Slapping") && !stunned)
                 {
-                    print("slapped");
                     canSlap = false;
                     if (grounded)
                     {
@@ -281,6 +286,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
         }
     }
 
+    //Physics
     public virtual void FixedUpdate()
     {
         //Generally makes gravity stronger when already falling
@@ -446,49 +452,6 @@ public class BaseCharacterBehaviour : MonoBehaviour
         }
     }
 
-    //Happens when calling RT while unarmed
-    private IEnumerator Slap(bool inAir)
-    {
-        canSlap = false;
-        anim.SetBool("IsSlapping", true);      
-
-        if (!inAir)
-            slapping = true;
-
-        yield return new WaitForSeconds(0.20f);
-        meleeObject.SetActive(true);
-        meleeObject.GetComponent<MeleeObjectScript>().aud.clip = meleeObject.GetComponent<MeleeObjectScript>().audioClips[2];
-        meleeObject.GetComponent<AudioSource>().Play();
-        yield return new WaitForSeconds(0.35f);
-        meleeObject.SetActive(false);
-        //anim.SetBool("IsSlapping", false);
-
-        //yield return new WaitUntil(() => rTrigReleased == true);
-        slapping = false;
-        anim.SetBool("IsSlapping", false);
-        yield return new WaitForSeconds(0.5f);
-        canSlap = true;
-    }
-
-    private IEnumerator MeleeHit()
-    {
-        //anim.SetBool("swinging", true);
-        meleeWeaponScript.Swing();  //Just sets the cooldown
-        anim.SetBool("IsSlapping", true);
-        yield return new WaitForSeconds(0.20f);
-        if (meleeObject != null)
-            meleeObject.SetActive(true);
-
-        yield return new WaitForSeconds(0.40f);
-
-        if (meleeObject != null)
-            meleeObject.SetActive(false);
-        //anim.SetBool("swinging", false);
-        anim.SetBool("IsSlapping", false);
-
-        yield return null;
-    }
-
     public virtual void Move(float stickDirection)
     {
         transform.Translate(new Vector3(1 * Mathf.Sign(stickDirection), 0, 0) * Time.deltaTime * movSpeed, Space.World);
@@ -566,19 +529,6 @@ public class BaseCharacterBehaviour : MonoBehaviour
         }
     }
 
-    private void ActivateWeapon(string weaponName)
-    {
-        if (!weaponDictionary.ContainsKey("my" + weaponName))
-        {
-            print("don't have any " + "my" + weaponName + " here");
-        }
-        else
-        {
-            weaponDictionary["my" + weaponName].SetActive(true);
-            equippedWeaponInventory = weaponDictionary["my" + weaponName];
-        }
-    }
-
     //For managing CHARACTER-GROUND collisions
     public void OnCollisionEnter(Collision other)
     {
@@ -588,6 +538,60 @@ public class BaseCharacterBehaviour : MonoBehaviour
             canExtraJump = true;
         }
     }
+
+    //Happens when calling RT while unarmed
+    private IEnumerator Slap(bool inAir)
+    {
+        canSlap = false;
+        anim.SetBool("IsSlapping", true);
+
+        if (!inAir)
+            slapping = true;
+
+        yield return new WaitForSeconds(0.20f);
+        meleeObject.SetActive(true);
+        meleeObject.GetComponent<MeleeObjectScript>().aud.clip = meleeObject.GetComponent<MeleeObjectScript>().audioClips[2];
+        meleeObject.GetComponent<AudioSource>().Play();
+        yield return new WaitForSeconds(0.35f);
+        meleeObject.SetActive(false);
+        //anim.SetBool("IsSlapping", false);
+
+        //yield return new WaitUntil(() => rTrigReleased == true);
+        slapping = false;
+        anim.SetBool("IsSlapping", false);
+        yield return new WaitForSeconds(0.5f);
+        canSlap = true;
+    }
+
+    private IEnumerator MeleeHit()
+    {
+        //anim.SetBool("swinging", true);
+        meleeWeaponScript.Swing();  //Just sets the cooldown
+        anim.SetBool("IsSlapping", true);
+        yield return new WaitForSeconds(0.20f);
+        if (meleeObject != null)
+            meleeObject.SetActive(true);
+
+        yield return new WaitForSeconds(0.40f);
+
+        if (meleeObject != null)
+            meleeObject.SetActive(false);
+        //anim.SetBool("swinging", false);
+        anim.SetBool("IsSlapping", false);
+
+        yield return null;
+    }
+
+    private void ThrowGrenade()
+    {
+        GameObject grenade = ObjectPooler.instance.SpawnFromPool("Grenade", grenadeThrower.position, Quaternion.identity);
+        GrenadeScript gScript = grenade.GetComponent<GrenadeScript>();
+        gScript.direction = Mathf.Sign(transform.rotation.y);
+        gScript.shooterCollider = GetComponent<Collider>();
+        gScript.AfterEnable();
+    }
+
+    #region Weapon Specific Functions
 
     //Manages the process of picking up a weapon from the ground
     private IEnumerator CollectWeapon(GameObject weapon)
@@ -634,25 +638,17 @@ public class BaseCharacterBehaviour : MonoBehaviour
         yield return null;
     }
 
-    //Prepares the weapon when it is about to be thrown
-    private void Flush()
+    //Activates weapon from dictionary
+    private void ActivateWeapon(string weaponName)
     {
-        if (equippedWeapon.GetComponent<RangedWeaponScript>())
+        if (!weaponDictionary.ContainsKey("my" + weaponName))
         {
-            StartCoroutine(rangedWeaponScript.Flung(gameObject.GetComponent<Collider>()));
-            rangedWeaponScript.weaponHolderCollider = null;
-
-            rangedWeaponScript.isEquipped = false;
-            rangedWeaponScript.canBeCollected = false;
+            print("don't have any " + "my" + weaponName + " here");
         }
-
-        else if (equippedWeapon.GetComponent<MeleeWeaponScript>())
+        else
         {
-            StartCoroutine(meleeWeaponScript.Flung(gameObject.GetComponent<Collider>()));
-            meleeWeaponScript.weaponHolderCollider = null;
-
-            meleeWeaponScript.isEquipped = false;
-            meleeWeaponScript.canBeCollected = false;
+            weaponDictionary["my" + weaponName].SetActive(true);
+            equippedWeaponInventory = weaponDictionary["my" + weaponName];
         }
     }
 
@@ -737,6 +733,29 @@ public class BaseCharacterBehaviour : MonoBehaviour
             anim.SetTrigger("Throw");
         }
     }
+
+    //Prepares the weapon when it is about to be thrown
+    private void Flush()
+    {
+        if (equippedWeapon.GetComponent<RangedWeaponScript>())
+        {
+            StartCoroutine(rangedWeaponScript.Flung(gameObject.GetComponent<Collider>()));
+            rangedWeaponScript.weaponHolderCollider = null;
+
+            rangedWeaponScript.isEquipped = false;
+            rangedWeaponScript.canBeCollected = false;
+        }
+
+        else if (equippedWeapon.GetComponent<MeleeWeaponScript>())
+        {
+            StartCoroutine(meleeWeaponScript.Flung(gameObject.GetComponent<Collider>()));
+            meleeWeaponScript.weaponHolderCollider = null;
+
+            meleeWeaponScript.isEquipped = false;
+            meleeWeaponScript.canBeCollected = false;
+        }
+    }
+    #endregion
 
     //when hit by a bullet that's moving in the opposite direction, drop speed to zero
     public void GetStopped(float direction)
@@ -875,6 +894,8 @@ public class BaseCharacterBehaviour : MonoBehaviour
         livesLeft = amount;
     }
 
+    #endregion
+
     public void PauseFrames(float time)
     {
         StartCoroutine(SkipFrames(time));
@@ -886,5 +907,4 @@ public class BaseCharacterBehaviour : MonoBehaviour
         yield return new WaitForSeconds(time);
         GetComponent<Animator>().speed = 1;
     }
-    #endregion
 }

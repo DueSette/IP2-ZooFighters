@@ -12,13 +12,12 @@ public class AudioObserver : MonoBehaviour
         BulletScript.HitCharacter += PlayOnEvent;
         MeleeWeaponScript.BaseballBreak += PlayOnEvent;
         RangedWeaponScript.GunBreak += PlayOnEvent;
+        GrenadeScript.OnExplode += PlayOnEvent;
     }
 
     private void PlayOnEvent(AudioClip clip)
     {
-        //aud.clip = clip;
         if(clip != null)
             aud.PlayOneShot(clip);
-        //aud.Play();
     }
 }

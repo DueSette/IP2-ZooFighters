@@ -13,8 +13,11 @@ public class GrenadeScript : MonoBehaviour
     [HideInInspector]
     public Collider shooterCollider;
     private LayerMask explosionLayerMask;
+
     public Vector3 grenadeSpeed;
     public Vector3 grenadeTorque;
+    private float timeInExistence;
+
     public delegate void Exploding(AudioClip clip);
     public static event Exploding OnExplode;
 
@@ -28,6 +31,7 @@ public class GrenadeScript : MonoBehaviour
     }
     void OnEnable()
     {
+        timeInExistence = 0;
         working = true;
         rb.velocity = Vector3.zero;
     }
@@ -38,9 +42,16 @@ public class GrenadeScript : MonoBehaviour
         Physics.IgnoreCollision(shooterCollider, GetComponent<Collider>());
     }
 
+    void Update()
+    {
+        if (timeInExistence < 7)
+            timeInExistence += Time.deltaTime;
+        else
+            gameObject.SetActive(false);
+    }
+
     void OnCollisionEnter(Collision coll)
     {
-
         switch (coll.gameObject.layer)
         {
             //Ground layer

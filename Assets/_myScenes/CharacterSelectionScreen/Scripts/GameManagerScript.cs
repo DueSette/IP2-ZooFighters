@@ -16,6 +16,7 @@ public class GameManagerScript : MonoBehaviour
 
     public TextMesh tm;
     public GameObject UI3DTexts;
+    public GameObject bgm;
 
     public GameObject weaponSpawner;
     public GameObject portraitsHolder;
@@ -102,6 +103,9 @@ public class GameManagerScript : MonoBehaviour
                 //Should ready the UI to work with each portrait
                 InitialiseInGameUI();
 
+                ////Music Change
+                //bgm.GetComponent<BGMScript>().GameStart();
+
                 //Waits until the coroutine below returns, which happens only when one character is left
                 yield return StartCoroutine(GameOngoing());
             }           
@@ -137,6 +141,9 @@ public class GameManagerScript : MonoBehaviour
                 i++;
             }
         }
+        //Music Change
+        bgm.GetComponent<BGMScript>().GameStart();
+
         UI3DTexts.GetComponent<Animator>().SetTrigger("Ready");
         yield return new WaitForSeconds(7 - timeBetweenCharSpawns * CountCharacters());
         //tell the camera what to look at

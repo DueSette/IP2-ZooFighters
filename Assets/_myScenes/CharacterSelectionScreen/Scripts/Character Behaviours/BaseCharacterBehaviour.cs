@@ -20,7 +20,9 @@ public class BaseCharacterBehaviour : MonoBehaviour
 
     //Bumpers and triggers
     private bool rBumper;
-    private bool lBumper;
+    private bool lBumperDown;
+    private bool lBumperHold;
+    private bool lBumberUp;
     private bool rTrig;
 
     #endregion
@@ -46,14 +48,20 @@ public class BaseCharacterBehaviour : MonoBehaviour
     [Tooltip("This is the actual real health of the character, it's updated BEFORE the UI")]
     public int currentHealth;
     public int livesLeft;
+
     public delegate void LifeLoss();
     public event LifeLoss LifeLossEvent;
+    public delegate void SoundDelegate(AudioClip clip);
+    public static event SoundDelegate SoundEvent;
 
     //Base stats
     public bool alive = true;
     public int totalLives;
     public float movSpeed;
     public float jumpPower;
+    [Range(25, 85)]
+    public float bombTossPower = 25;
+    private bool chargingBomb = false;
     public float bodyMass;
     [Tooltip("Set 1 for default damage, go below one for below average damage and vice versa")]
     public float damageMod = 1;
@@ -71,7 +79,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
     public GameObject meleeObject;
     public Transform grenadeThrower;
 
-    public bool rTrigReleased = true;
+    private bool rTrigReleased = true;
     public bool canSlap = true;
 
     //Weapons list data
@@ -217,13 +225,23 @@ public class BaseCharacterBehaviour : MonoBehaviour
                 StartCoroutine(TossWeaponEmpty());
             }
             if (yButton)
+            {}
+
+            if (lBumperDown && !chargingBomb && grenades > 0 && !stunned)
             {
-                
+                chargingBomb = true;              
             }
-            if (lBumper && grenades > 0 && !stunned)
+            else if(lBumperHold && chargingBomb)
             {
-                ThrowGrenade();
+                if(bombTossPower <= 80)
+                    bombTossPower += Time.deltaTime * 35;
             }
+            else if (lBumberUp && chargingBomb)
+            {
+                ThrowGrenade(bombTossPower);
+                bombTossPower = 25;
+            }
+
             if (startButton)
             {
                 StartCoroutine(gmScript.TogglePause());
@@ -233,7 +251,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
                 rTrigReleased = false;
 
                 //SLAPPING
-                if (!isArmed && canSlap && !anim.GetBool("Slapping") && !stunned)
+                if (!isArmed && canSlap && !anim.GetBool("isSlapping") && !stunned)
                 {
                     canSlap = false;
                     if (grounded)
@@ -333,7 +351,9 @@ public class BaseCharacterBehaviour : MonoBehaviour
                         bButton = Input.GetKeyDown(KeyCode.Joystick1Button1);
                         xButton = Input.GetKeyDown(KeyCode.Joystick1Button2);
                         yButton = Input.GetKeyDown(KeyCode.Joystick1Button3);
-                        lBumper = Input.GetKeyDown(KeyCode.Joystick1Button4);
+                        lBumperDown = Input.GetKeyDown(KeyCode.Joystick1Button4);
+                        lBumperHold = Input.GetKey(KeyCode.Joystick1Button4);
+                        lBumberUp = Input.GetKeyUp(KeyCode.Joystick1Button4);
                         rBumper = Input.GetKeyDown(KeyCode.Joystick1Button5);
 
                         lStickHor = Input.GetAxis("LeftJoyHorizontal");
@@ -364,7 +384,9 @@ public class BaseCharacterBehaviour : MonoBehaviour
                         bButton = Input.GetKeyDown(KeyCode.Joystick2Button1);
                         xButton = Input.GetKeyDown(KeyCode.Joystick2Button2);
                         yButton = Input.GetKeyDown(KeyCode.Joystick2Button3);
-                        lBumper = Input.GetKeyDown(KeyCode.Joystick2Button4);
+                        lBumperDown = Input.GetKeyDown(KeyCode.Joystick2Button4);
+                        lBumperHold = Input.GetKey(KeyCode.Joystick2Button4);
+                        lBumberUp = Input.GetKeyUp(KeyCode.Joystick2Button4);
                         rBumper = Input.GetKeyDown(KeyCode.Joystick2Button5);
 
                         lStickHor = Input.GetAxis("LeftJoy2Horizontal");
@@ -395,7 +417,9 @@ public class BaseCharacterBehaviour : MonoBehaviour
                         bButton = Input.GetKeyDown(KeyCode.Joystick3Button1);
                         xButton = Input.GetKeyDown(KeyCode.Joystick3Button2);
                         yButton = Input.GetKeyDown(KeyCode.Joystick3Button3);
-                        lBumper = Input.GetKeyDown(KeyCode.Joystick3Button4);
+                        lBumperDown = Input.GetKeyDown(KeyCode.Joystick3Button4);
+                        lBumperHold = Input.GetKey(KeyCode.Joystick3Button4);
+                        lBumberUp = Input.GetKeyUp(KeyCode.Joystick3Button4);
                         rBumper = Input.GetKeyDown(KeyCode.Joystick3Button5);
 
                         lStickHor = Input.GetAxis("LeftJoy3Horizontal");
@@ -426,7 +450,9 @@ public class BaseCharacterBehaviour : MonoBehaviour
                         bButton = Input.GetKeyDown(KeyCode.Joystick4Button1);
                         xButton = Input.GetKeyDown(KeyCode.Joystick4Button2);
                         yButton = Input.GetKeyDown(KeyCode.Joystick4Button3);
-                        lBumper = Input.GetKeyDown(KeyCode.Joystick4Button4);
+                        lBumperDown = Input.GetKeyDown(KeyCode.Joystick4Button4);
+                        lBumperHold = Input.GetKey(KeyCode.Joystick4Button4);
+                        lBumberUp = Input.GetKeyUp(KeyCode.Joystick4Button4);
                         rBumper = Input.GetKeyDown(KeyCode.Joystick4Button5);
 
                         lStickHor = Input.GetAxis("LeftJoy4Horizontal");
@@ -473,9 +499,20 @@ public class BaseCharacterBehaviour : MonoBehaviour
         rb.AddForce(new Vector3(0, jumpPower, 0), ForceMode.Impulse);
         anim.SetTrigger("Jump");
         grounded = false;
-        aud.PlayOneShot(audioClips[3]);
+        SoundEvent(audioClips[3]);
     }
 
+    //For managing air jump availability
+    public void OnCollisionEnter(Collision other)
+    {
+        //when touching a platform (but not with the "head" of the character)
+        if (other.gameObject.tag == "Floor" && other.GetContact(0).point.y < transform.position.y)
+        {
+            canExtraJump = true;
+        }
+    }
+
+    //grounded checking
     public void OnCollisionStay(Collision other)
     {
         if (other.collider.tag == "Floor" && other.GetContact(0).point.y < transform.position.y)
@@ -484,6 +521,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
         }
     }
 
+    //Coyote time activation
     public void OnCollisionExit(Collision other)
     {
         if (other.collider.tag == "Floor")
@@ -529,16 +567,6 @@ public class BaseCharacterBehaviour : MonoBehaviour
         }
     }
 
-    //For managing CHARACTER-GROUND collisions
-    public void OnCollisionEnter(Collision other)
-    {
-        //when touching a platform (but not with the "head" of the character)
-        if (other.gameObject.tag == "Floor" && other.GetContact(0).point.y < transform.position.y)
-        {
-            canExtraJump = true;
-        }
-    }
-
     //Happens when calling RT while unarmed
     private IEnumerator Slap(bool inAir)
     {
@@ -550,8 +578,8 @@ public class BaseCharacterBehaviour : MonoBehaviour
 
         yield return new WaitForSeconds(0.20f);
         meleeObject.SetActive(true);
-        meleeObject.GetComponent<MeleeObjectScript>().aud.clip = meleeObject.GetComponent<MeleeObjectScript>().audioClips[2];
-        meleeObject.GetComponent<AudioSource>().Play();
+
+        SoundEvent(meleeObject.GetComponent<MeleeObjectScript>().audioClips[2]);
         yield return new WaitForSeconds(0.35f);
         meleeObject.SetActive(false);
         //anim.SetBool("IsSlapping", false);
@@ -582,10 +610,13 @@ public class BaseCharacterBehaviour : MonoBehaviour
         yield return null;
     }
 
-    private void ThrowGrenade()
+    private void ThrowGrenade(float power)
     {
+        chargingBomb = false;
         GameObject grenade = ObjectPooler.instance.SpawnFromPool("Grenade", grenadeThrower.position, Quaternion.identity);
         GrenadeScript gScript = grenade.GetComponent<GrenadeScript>();
+
+        gScript.grenadeSpeed.x = power;
         gScript.direction = Mathf.Sign(transform.rotation.y);
         gScript.shooterCollider = GetComponent<Collider>();
         gScript.AfterEnable();
@@ -632,8 +663,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
         equippedWeaponInventory.SetActive(true);
         isArmed = true;
 
-        aud.clip = audioClips[2];
-        aud.Play();
+        SoundEvent(audioClips[2]);
 
         yield return null;
     }
@@ -728,8 +758,8 @@ public class BaseCharacterBehaviour : MonoBehaviour
             anim.SetBool("Unarmed", true);
             anim.SetBool("Melee", false);
             anim.SetBool("Rifle", false);
-            aud.clip = audioClips[1];
-            aud.Play();
+
+            SoundEvent(audioClips[1]);
             anim.SetTrigger("Throw");
         }
     }
@@ -816,8 +846,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
     public IEnumerator CharacterDeath()
     {
         StartCoroutine(CameraScript.instance.SetShakeTime(0.5f, 6, 1.5f));
-        aud.clip = audioClips[0];
-        aud.Play();
+        SoundEvent(audioClips[0]);
         alive = false;
         equippedWeaponSprite = null;
         while (displayedHealth != GetHealth())

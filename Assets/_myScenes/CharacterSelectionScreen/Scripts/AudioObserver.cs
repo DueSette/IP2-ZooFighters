@@ -4,20 +4,50 @@ using UnityEngine;
 
 public class AudioObserver : MonoBehaviour
 {
-    AudioSource aud;
-    // Start is called before the first frame update
-    void Start()
+    public List<AudioSource> sources = new List<AudioSource>();
+
+    void Awake()
     {
-        aud = GetComponent<AudioSource>();
+        
+    }
+
+    void OnEnable()
+    {
+        sources.AddRange(GetComponents<AudioSource>());
         BulletScript.HitCharacter += PlayOnEvent;
         MeleeWeaponScript.BaseballBreak += PlayOnEvent;
         RangedWeaponScript.GunBreak += PlayOnEvent;
         GrenadeScript.OnExplode += PlayOnEvent;
+        BaseCharacterBehaviour.SoundEvent += PlayOnEvent;
     }
 
+    //plays specific clip on event
     private void PlayOnEvent(AudioClip clip)
     {
         if(clip != null)
-            aud.PlayOneShot(clip);
+            ChooseSource().PlayOneShot(clip);
+    }
+
+    //Selects which source should play the sound based on theri availability
+    private AudioSource ChooseSource()
+    {
+        foreach(AudioSource source in sources)
+        {
+            if (source.isPlaying && source != null)
+                continue;
+            else
+                return source;
+        }
+        sources.Add(gameObject.AddComponent<AudioSource>());
+        return sources[sources.Count-1];
+    }
+
+    void OnDisable()
+    {
+        BulletScript.HitCharacter -= PlayOnEvent;
+        MeleeWeaponScript.BaseballBreak -= PlayOnEvent;
+        RangedWeaponScript.GunBreak -= PlayOnEvent;
+        GrenadeScript.OnExplode -= PlayOnEvent;
+        BaseCharacterBehaviour.SoundEvent -= PlayOnEvent;
     }
 }

@@ -160,7 +160,7 @@ public class SelectionInputManager : MonoBehaviour
                         }
                     }
                     //UP
-                    if ((Input.GetAxis("LeftJoyVertical") > 0.4f))
+                    if ((Input.GetAxis("LeftJoyVertical") > 1.4f))
                     {
                         if (stick1VIdle)
                         {
@@ -170,7 +170,7 @@ public class SelectionInputManager : MonoBehaviour
                         }
                     }
                     //DOWN
-                    if ((Input.GetAxis("LeftJoyVertical") < -0.4f))
+                    if ((Input.GetAxis("LeftJoyVertical") < -1.4f))
                     {
                         if (stick1VIdle)
                         {
@@ -254,7 +254,7 @@ public class SelectionInputManager : MonoBehaviour
                         }
                     }
                     //UP
-                    if ((Input.GetAxis("LeftJoy2Vertical") > 0.4f))
+                    if ((Input.GetAxis("LeftJoy2Vertical") > 1.4f))
                     {
                         if (stick2VIdle)
                         {
@@ -264,7 +264,7 @@ public class SelectionInputManager : MonoBehaviour
                         }
                     }
                     //DOWN
-                    if ((Input.GetAxis("LeftJoy2Vertical") < -0.4f))
+                    if ((Input.GetAxis("LeftJoy2Vertical") < -1.4f))
                     {
                         if (stick2VIdle)
                         {
@@ -348,7 +348,7 @@ public class SelectionInputManager : MonoBehaviour
                         }
                     }
                     //UP
-                    if ((Input.GetAxis("LeftJoy3Vertical") > 0.4f))
+                    if ((Input.GetAxis("LeftJoy3Vertical") > 1.4f))
                     {
                         if (stick3VIdle)
                         {
@@ -358,7 +358,7 @@ public class SelectionInputManager : MonoBehaviour
                         }
                     }
                     //DOWN
-                    if ((Input.GetAxis("LeftJoy3Vertical") < -0.4f))
+                    if ((Input.GetAxis("LeftJoy3Vertical") < -1.4f))
                     {
                         if (stick3VIdle)
                         {
@@ -442,7 +442,7 @@ public class SelectionInputManager : MonoBehaviour
                         }
                     }
                     //UP
-                    if ((Input.GetAxis("LeftJoy4Vertical") > 0.4f))
+                    if ((Input.GetAxis("LeftJoy4Vertical") > 1.4f))
                     {
                         if (stick4VIdle)
                         {
@@ -452,7 +452,7 @@ public class SelectionInputManager : MonoBehaviour
                         }
                     }
                     //DOWN
-                    if ((Input.GetAxis("LeftJoy4Vertical") < -0.4f))
+                    if ((Input.GetAxis("LeftJoy4Vertical") < -1.4f))
                     {
                         if (stick4VIdle)
                         {
@@ -460,11 +460,6 @@ public class SelectionInputManager : MonoBehaviour
                             selectors[3].GetComponent<SelectorBehaviour>().CharHover();
                             stick4VIdle = false;
                         }
-                    }
-
-                    if (Input.GetKeyDown(KeyCode.Alpha1))
-                    {
-                        gameManager.StartCoroutine("StartGameplayLoop");
                     }
                 }
                 #endregion

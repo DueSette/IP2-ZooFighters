@@ -1048,11 +1048,11 @@ MonoBehaviour:
   alive: 1
   totalLives: 3
   movSpeed: 36
-  jumpPower: 60
+  jumpPower: 75
   bodyMass: 1
   damageMod: 1
   isArmed: 0
-  flingPower: {x: 20, y: 25}
+  flingPower: {x: 40, y: 25}
   equippedWeaponSprite: {fileID: 0}
   rangedWeaponScript: {fileID: 0}
   meleeWeaponScript: {fileID: 0}

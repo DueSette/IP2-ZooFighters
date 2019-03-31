@@ -93,13 +93,18 @@ public class WeaponSpawn : MonoBehaviour
     //Does the actual spawning, choosing a location between two limits and a weapon among the array of existing weapons
     private void SpawnRandomWeapon()
     {
-        int num = Random.Range(0, weaponsToSpawn.Length);
+        if (canSpawn)
+        {
+            int num = Random.Range(0, weaponsToSpawn.Length);
 
-        transf = PickLocation();
+            transf = PickLocation();
 
-        GameObject newWeapon = Instantiate(weaponsToSpawn[num], transf, Quaternion.Euler(0, 90, 0));
-        newWeapon.name = weaponsToSpawn[num].name;
-        inGameWeapons.Add(newWeapon);
+            GameObject newWeapon = Instantiate(weaponsToSpawn[num], transf, Quaternion.Euler(0, 90, 0));
+            newWeapon.name = weaponsToSpawn[num].name;
+            inGameWeapons.Add(newWeapon);
+        }
+        else
+            AlterValue(ref timeBetweenSpawns, -timeBetweenSpawns + 0.27f);
     }
 
     private Vector3 PickLocation()

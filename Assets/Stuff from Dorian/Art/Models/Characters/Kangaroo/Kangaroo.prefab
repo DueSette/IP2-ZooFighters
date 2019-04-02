@@ -1049,6 +1049,7 @@ MonoBehaviour:
   totalLives: 3
   movSpeed: 36
   jumpPower: 75
+  bombTossPower: 25
   bodyMass: 1
   damageMod: 1
   isArmed: 0
@@ -1059,8 +1060,9 @@ MonoBehaviour:
   weaponSlot: {fileID: 657135829}
   meleeObject: {fileID: 3705396650846079977}
   grenadeThrower: {fileID: 7595608893391250725}
-  rTrigReleased: 1
   canSlap: 1
+  respawnPlatform: {fileID: 5733424078272790591, guid: 57398e94d920acb45bfd157d387e8e5d,
+    type: 3}
   weaponArray:
   - {fileID: 4595054255077322658}
   - {fileID: 1774440915747418035}
@@ -1070,11 +1072,11 @@ MonoBehaviour:
   moveDisableDuration: 0
   moveDisableTimeElapsed: 0
   audioClips:
-  - {fileID: 8300000, guid: f398616b2e65b234e84c032c12fce80c, type: 3}
+  - {fileID: 8300000, guid: 666f96128807843419037712e15c6989, type: 3}
   - {fileID: 8300000, guid: 738607fe1061f3a4f8532c43627a6bb4, type: 3}
   - {fileID: 8300000, guid: d11d0131c40f70245b8fb45feac6e642, type: 3}
   - {fileID: 8300000, guid: 8c0cdc19ccc1540488c0295965bf48d6, type: 3}
-  - {fileID: 0}
+  - {fileID: 8300000, guid: fec68bcb6347cc748827c83d5b167914, type: 3}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}

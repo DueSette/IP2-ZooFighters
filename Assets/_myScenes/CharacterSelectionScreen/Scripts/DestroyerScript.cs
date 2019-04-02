@@ -24,7 +24,7 @@ public class DestroyerScript : MonoBehaviour
 
         else if(collider.tag == "Thrown")
         {
-            collider.gameObject.GetComponent<GrenadeScript>().OnImpact();
+            collider.gameObject.GetComponent<GrenadeScript>().AfterExplosion();
         }
 
         else

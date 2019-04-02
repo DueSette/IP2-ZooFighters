@@ -25,15 +25,23 @@ public class SpikesScript : MonoBehaviour
                     GetComponent<AudioSource>().Play();
                 }
             }
+            //If the character is dead make it pass through the spikes
             else
             {
                 StartCoroutine(CollisionSuspension(collision.collider));
+                GetComponent<AudioSource>().Play();
             }
+        }
+
+        if(collision.gameObject.tag == "Thrown")
+        {
+            collision.rigidbody.AddForce(push/4, ForceMode.VelocityChange);
         }
     }
 
     void OnTriggerEnter(Collider other)
     {
+        //When unequipped weapons touch the trap
         if (other.gameObject.layer == 11)
         {
             if(other.gameObject.GetComponent<MeleeWeaponScript>() != null && !other.gameObject.GetComponent<MeleeWeaponScript>().isEquipped)           

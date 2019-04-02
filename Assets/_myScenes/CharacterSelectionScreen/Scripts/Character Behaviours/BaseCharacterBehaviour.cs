@@ -22,7 +22,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
     private bool rBumper;
     private bool lBumperDown;
     private bool lBumperHold;
-    private bool lBumberUp;
+    private bool lBumperUp;
     private bool rTrig;
 
     #endregion
@@ -79,8 +79,10 @@ public class BaseCharacterBehaviour : MonoBehaviour
     public GameObject meleeObject;
     public Transform grenadeThrower;
 
-    private bool rTrigReleased = true;
     public bool canSlap = true;
+
+    //Respawn Platform Prefab
+    public GameObject respawnPlatform;
 
     //Weapons list data
     public GameObject[] weaponArray;
@@ -227,6 +229,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
             if (yButton)
             {}
 
+            //TOSSING GRENADE
             if (lBumperDown && !chargingBomb && grenades > 0 && !stunned)
             {
                 chargingBomb = true;              
@@ -236,7 +239,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
                 if(bombTossPower <= 80)
                     bombTossPower += Time.deltaTime * 35;
             }
-            else if (lBumberUp && chargingBomb)
+            else if (lBumperUp && chargingBomb)
             {
                 ThrowGrenade(bombTossPower);
                 bombTossPower = 25;
@@ -248,10 +251,8 @@ public class BaseCharacterBehaviour : MonoBehaviour
             }
             if (rTrig)
             {
-                rTrigReleased = false;
-
                 //SLAPPING
-                if (!isArmed && canSlap && !anim.GetBool("isSlapping") && !stunned)
+                if (!isArmed && canSlap && !anim.GetBool("IsSlapping") && !stunned)
                 {
                     canSlap = false;
                     if (grounded)
@@ -285,11 +286,6 @@ public class BaseCharacterBehaviour : MonoBehaviour
                 {
                     StartCoroutine(MeleeHit());
                 }
-            }
-            else
-            {
-                rTrigReleased = true;
-                //anim.SetBool("IsSlapping", false);
             }
 
             if (lStickHor != 0 && canMove && !slapping)
@@ -353,7 +349,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
                         yButton = Input.GetKeyDown(KeyCode.Joystick1Button3);
                         lBumperDown = Input.GetKeyDown(KeyCode.Joystick1Button4);
                         lBumperHold = Input.GetKey(KeyCode.Joystick1Button4);
-                        lBumberUp = Input.GetKeyUp(KeyCode.Joystick1Button4);
+                        lBumperUp = Input.GetKeyUp(KeyCode.Joystick1Button4);
                         rBumper = Input.GetKeyDown(KeyCode.Joystick1Button5);
 
                         lStickHor = Input.GetAxis("LeftJoyHorizontal");
@@ -386,7 +382,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
                         yButton = Input.GetKeyDown(KeyCode.Joystick2Button3);
                         lBumperDown = Input.GetKeyDown(KeyCode.Joystick2Button4);
                         lBumperHold = Input.GetKey(KeyCode.Joystick2Button4);
-                        lBumberUp = Input.GetKeyUp(KeyCode.Joystick2Button4);
+                        lBumperUp = Input.GetKeyUp(KeyCode.Joystick2Button4);
                         rBumper = Input.GetKeyDown(KeyCode.Joystick2Button5);
 
                         lStickHor = Input.GetAxis("LeftJoy2Horizontal");
@@ -419,7 +415,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
                         yButton = Input.GetKeyDown(KeyCode.Joystick3Button3);
                         lBumperDown = Input.GetKeyDown(KeyCode.Joystick3Button4);
                         lBumperHold = Input.GetKey(KeyCode.Joystick3Button4);
-                        lBumberUp = Input.GetKeyUp(KeyCode.Joystick3Button4);
+                        lBumperUp = Input.GetKeyUp(KeyCode.Joystick3Button4);
                         rBumper = Input.GetKeyDown(KeyCode.Joystick3Button5);
 
                         lStickHor = Input.GetAxis("LeftJoy3Horizontal");
@@ -452,7 +448,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
                         yButton = Input.GetKeyDown(KeyCode.Joystick4Button3);
                         lBumperDown = Input.GetKeyDown(KeyCode.Joystick4Button4);
                         lBumperHold = Input.GetKey(KeyCode.Joystick4Button4);
-                        lBumberUp = Input.GetKeyUp(KeyCode.Joystick4Button4);
+                        lBumperUp = Input.GetKeyUp(KeyCode.Joystick4Button4);
                         rBumper = Input.GetKeyDown(KeyCode.Joystick4Button5);
 
                         lStickHor = Input.GetAxis("LeftJoy4Horizontal");
@@ -584,7 +580,6 @@ public class BaseCharacterBehaviour : MonoBehaviour
         meleeObject.SetActive(false);
         //anim.SetBool("IsSlapping", false);
 
-        //yield return new WaitUntil(() => rTrigReleased == true);
         slapping = false;
         anim.SetBool("IsSlapping", false);
         yield return new WaitForSeconds(0.5f);
@@ -620,6 +615,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
         gScript.direction = Mathf.Sign(transform.rotation.y);
         gScript.shooterCollider = GetComponent<Collider>();
         gScript.AfterEnable();
+        SoundEvent(audioClips[4]);
     }
 
     #region Weapon Specific Functions
@@ -893,6 +889,9 @@ public class BaseCharacterBehaviour : MonoBehaviour
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
 
         transform.position = gmScript.respawnLocations[Random.Range(0, gmScript.respawnLocations.Length)].position;
+
+        Instantiate(respawnPlatform, new Vector3(transform.position.x, transform.position.y - 1, transform.position.z), Quaternion.identity);
+
         alive = true;
         yield return null;
     }

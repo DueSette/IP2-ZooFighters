@@ -1580,7 +1580,7 @@ GameObject:
   - component: {fileID: 1846145226}
   m_Layer: 10
   m_Name: Cheetah
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1695,6 +1695,7 @@ MonoBehaviour:
   meleeObject: {fileID: 3461984252790671686}
   grenadeThrower: {fileID: 6326174951517052878}
   canSlap: 1
+  respawned: 0
   respawnPlatform: {fileID: 5733424078272790591, guid: 57398e94d920acb45bfd157d387e8e5d,
     type: 3}
   weaponArray:

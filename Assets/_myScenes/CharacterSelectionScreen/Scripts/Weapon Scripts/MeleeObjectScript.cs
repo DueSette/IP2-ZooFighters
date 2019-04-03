@@ -31,7 +31,7 @@ public class MeleeObjectScript : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.layer == 10 && !hitPeople.Contains(other.gameObject))
+        if (other.gameObject.layer == 10 && !hitPeople.Contains(other.gameObject) && !other.gameObject.GetComponent<BaseCharacterBehaviour>().respawned)
         {
             BaseCharacterBehaviour charScript = other.gameObject.GetComponent<BaseCharacterBehaviour>();
             //IF SLAPPING (UNARMED)

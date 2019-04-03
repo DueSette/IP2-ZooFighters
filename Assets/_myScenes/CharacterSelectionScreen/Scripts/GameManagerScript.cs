@@ -14,7 +14,6 @@ public class GameManagerScript : MonoBehaviour
     public Camera cam;
     public Canvas canvas;
 
-    public TextMesh tm;
     public GameObject UI3DTexts;
     public GameObject bgm;
 
@@ -161,7 +160,7 @@ public class GameManagerScript : MonoBehaviour
 
         SetGameState(GameState.victoryScreen);
         UI3DTexts.GetComponent<Animator>().SetTrigger("Win");
-        tm.text = "We Have a Winner!";
+        cam.gameObject.GetComponent<CameraScript>().gameOver = true;
         weaponSpawner.SetActive(false);
         //When only one character is left this part of the code will execute:
         //it should declare the winner, maybe tell the camera to do something cool

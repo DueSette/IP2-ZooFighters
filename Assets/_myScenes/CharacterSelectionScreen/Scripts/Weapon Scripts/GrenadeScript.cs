@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class GrenadeScript : MonoBehaviour
 {
+    #region Data
     bool ticking = false;
     bool exploded = false;
 
@@ -26,10 +27,11 @@ public class GrenadeScript : MonoBehaviour
     public static event Exploding OnExplode;
 
     public GameObject bombMeshObject;
-    public GameObject explosionParicle;
+    public GameObject explosionParticle;
     public AudioClip explosionSound;
     Rigidbody rb;
     private float startFuseLength;
+    #endregion
 
     void Awake()
     {
@@ -82,7 +84,10 @@ public class GrenadeScript : MonoBehaviour
                 //Player layer
                 case 10:
                     ticking = true;
-                    coll.gameObject.GetComponent<BaseCharacterBehaviour>().TakeDamage(5 + (20 * ((int)grenadeSpeed.x / 80)));
+                    if (!coll.gameObject.GetComponent<BaseCharacterBehaviour>().respawned)
+                    {
+                        coll.gameObject.GetComponent<BaseCharacterBehaviour>().TakeDamage(5 + (20 * ((int)grenadeSpeed.x / 80)));
+                    }
                     break;
                 //Traps layer
                 case 12:
@@ -112,8 +117,11 @@ public class GrenadeScript : MonoBehaviour
             foreach (Collider coll in caughtInExplosion)
             {
                 coll.gameObject.GetComponent<Rigidbody>().AddExplosionForce(explosionPower.x * 2, pos, radius * 2, 2.5f, ForceMode.Impulse);
-                coll.gameObject.GetComponent<BaseCharacterBehaviour>().TakeDamage(damage);
-                coll.gameObject.GetComponent<BaseCharacterBehaviour>().SetDisablingMovementTime(0.5f);
+                if (!coll.gameObject.GetComponent<BaseCharacterBehaviour>().respawned)
+                {
+                    coll.gameObject.GetComponent<BaseCharacterBehaviour>().TakeDamage(damage);
+                    coll.gameObject.GetComponent<BaseCharacterBehaviour>().SetDisablingMovementTime(0.5f);
+                }
             }
             OnExplode(explosionSound);
             StartCoroutine(ExplosionParticle());
@@ -145,8 +153,8 @@ public class GrenadeScript : MonoBehaviour
 
     public IEnumerator ExplosionParticle()
     {
-        explosionParicle.SetActive(true);
+        explosionParticle.SetActive(true);
         yield return new WaitForSeconds(4f);
-        explosionParicle.SetActive(false);
+        explosionParticle.SetActive(false);
     }
 }

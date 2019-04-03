@@ -126,7 +126,7 @@ public class SelectionInputManager : MonoBehaviour
                 }
                 if(Input.GetKeyDown(KeyCode.Joystick1Button7))
                 {
-                    gameManager.StartCoroutine("StartGameplayLoop");
+                    StartCoroutine(gameManager.StartGameplayLoop());
                 }
                 //IDLE FUNCTIONS: IF A STICK IS BETWEEN TWO VALUES, CONSIDER IT IDLE AGAIN
                 if ((Input.GetAxis("LeftJoyHorizontal") < 0.3f) && Input.GetAxis("LeftJoyHorizontal") > -0.3f)
@@ -219,7 +219,7 @@ public class SelectionInputManager : MonoBehaviour
                 }
                 if (Input.GetKeyDown(KeyCode.Joystick2Button7))
                 {
-                    gameManager.StartCoroutine("StartGameplayLoop");
+                    StartCoroutine(gameManager.StartGameplayLoop());
                 }
                 //IDLE FUNCTIONS: IF A STICK IS BETWEEN TWO VALUES, CONSIDER IT IDLE AGAIN
                 if ((Input.GetAxis("LeftJoy2Horizontal") < 0.3f) && Input.GetAxis("LeftJoy2Horizontal") > -0.3f)
@@ -313,7 +313,7 @@ public class SelectionInputManager : MonoBehaviour
                 }
                 if (Input.GetKeyDown(KeyCode.Joystick3Button7))
                 {
-                    gameManager.StartCoroutine("StartGameplayLoop");
+                    StartCoroutine(gameManager.StartGameplayLoop());
                 }
 
                 //IDLE FUNCTIONS: IF A STICK IS BETWEEN TWO VALUES, CONSIDER IT IDLE AGAIN
@@ -407,7 +407,7 @@ public class SelectionInputManager : MonoBehaviour
                 }
                 if (Input.GetKeyDown(KeyCode.Joystick4Button7))
                 {
-                    gameManager.StartCoroutine("StartGameplayLoop");
+                    StartCoroutine(gameManager.StartGameplayLoop());
                 }
                 //IDLE FUNCTIONS: IF A STICK IS BETWEEN TWO VALUES, CONSIDER IT IDLE AGAIN
                 if ((Input.GetAxis("LeftJoy4Horizontal") < 0.3f) && Input.GetAxis("LeftJoy4Horizontal") > -0.3f)

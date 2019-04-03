@@ -113,9 +113,8 @@ public class RangedWeaponScript : MonoBehaviour
         //if being thrown as the result of being out of ammo, this kind of collision will take place
         if (actAsBullet)
         {
-
             //if hitting a player, move and damage it
-            if (collider.gameObject.layer == 10)
+            if (collider.gameObject.layer == 10 && !collider.gameObject.GetComponent<BaseCharacterBehaviour>().respawned)
             {
                 GunBreak(audioClips[0]);
                 collider.gameObject.GetComponent<Rigidbody>().AddForce(new Vector3(50 * -Mathf.Sign(GetComponent<Rigidbody>().angularVelocity.x), 50, 0), ForceMode.VelocityChange);

@@ -54,7 +54,7 @@ public class BulletScript : MonoBehaviour
         if (collider.tag != "Weapon" && !collider.name.Contains("Destroyer"))
         {
             //HITTING A CHARACTER
-            if (collider.gameObject.GetComponent<BaseCharacterBehaviour>())
+            if (collider.gameObject.GetComponent<BaseCharacterBehaviour>() && !collider.gameObject.GetComponent<BaseCharacterBehaviour>().respawned)
             {
                 charScript = collider.gameObject.GetComponent<BaseCharacterBehaviour>();
 

@@ -17,6 +17,7 @@ public class CameraScript : MonoBehaviour
     float xOffset;
     float yOffset;
     float seed;
+    public bool gameOver = false;
 
     private Transform[] players = new Transform[4];
 
@@ -86,23 +87,31 @@ public class CameraScript : MonoBehaviour
             FindCentre();
             transform.position = Vector3.SmoothDamp(transform.position, new Vector3(centrePos.x, centrePos.y, transform.position.z), ref moveVelocity, dampTime);
         }
+
+        else if(gmScript.GetGameState() == GameManagerScript.GameState.victoryScreen)
+        {
+            centrePos = new Vector3(0, 35, transform.position.z);
+            transform.position = Vector3.SmoothDamp(transform.position, new Vector3(centrePos.x, centrePos.y, transform.position.z), ref moveVelocity, dampTime);
+        }
         
         //may want to add a little zoom-in here if needed   
     }
 
     public void FindCentre()
     {
+
+
         Vector3 averagePos = startPos;
         int numTargets = 0;
 
         for (int i = 0; i < players.Length; i++)
         {
-            if (gmScript.inGameChars[i]!= null && !gmScript.inGameChars[i].gameObject.GetComponent<BaseCharacterBehaviour>().alive)
+            if (gmScript.inGameChars[i] != null && !gmScript.inGameChars[i].gameObject.GetComponent<BaseCharacterBehaviour>().alive)
                 continue;
 
-            if(players[i] != null)
+            if (players[i] != null)
                 averagePos += players[i].position;
-                averagePos.y += transform.position.y/2.5f;
+            averagePos.y += transform.position.y / 2.5f;
 
             numTargets++;
         }
@@ -115,7 +124,7 @@ public class CameraScript : MonoBehaviour
             averagePos.y = 17;
         }
 
-        if(averagePos.y > 40)
+        if (averagePos.y > 40)
         {
             averagePos.y = 40;
         }
@@ -140,5 +149,10 @@ public class CameraScript : MonoBehaviour
             yield return new WaitForSeconds(duration);
             shaking = false;
         }
+    }
+
+    private void CenterCamera()
+    {
+
     }
 }

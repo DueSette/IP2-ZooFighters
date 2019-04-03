@@ -947,7 +947,7 @@ GameObject:
   - component: {fileID: 934443892}
   m_Layer: 10
   m_Name: Kangaroo
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1061,6 +1061,7 @@ MonoBehaviour:
   meleeObject: {fileID: 3705396650846079977}
   grenadeThrower: {fileID: 7595608893391250725}
   canSlap: 1
+  respawned: 0
   respawnPlatform: {fileID: 5733424078272790591, guid: 57398e94d920acb45bfd157d387e8e5d,
     type: 3}
   weaponArray:

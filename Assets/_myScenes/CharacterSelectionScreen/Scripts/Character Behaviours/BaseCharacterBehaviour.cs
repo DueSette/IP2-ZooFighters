@@ -81,6 +81,8 @@ public class BaseCharacterBehaviour : MonoBehaviour
 
     public bool canSlap = true;
 
+    public bool respawned = false;
+
     //Respawn Platform Prefab
     public GameObject respawnPlatform;
 
@@ -95,9 +97,10 @@ public class BaseCharacterBehaviour : MonoBehaviour
     [SerializeField]
     protected bool canMove = true;
     [SerializeField]
-    protected bool stunned;
+    protected bool stunned = false;
     protected bool grounded = true;
     protected bool canExtraJump = true;
+    protected bool coyoteOverride = false;
     protected bool drag = false;
 
     protected bool slapping = false;
@@ -232,7 +235,8 @@ public class BaseCharacterBehaviour : MonoBehaviour
             //TOSSING GRENADE
             if (lBumperDown && !chargingBomb && grenades > 0 && !stunned)
             {
-                chargingBomb = true;              
+                chargingBomb = true;
+                SoundEvent(audioClips[5]);
             }
             else if(lBumperHold && chargingBomb)
             {
@@ -491,10 +495,13 @@ public class BaseCharacterBehaviour : MonoBehaviour
 
     public virtual void Jump()
     {
+        grounded = false;
+
         rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
         rb.AddForce(new Vector3(0, jumpPower, 0), ForceMode.Impulse);
-        anim.SetTrigger("Jump");
-        grounded = false;
+
+        StartCoroutine(CoyoteOverride());
+        anim.SetTrigger("Jump");      
         SoundEvent(audioClips[3]);
     }
 
@@ -520,9 +527,13 @@ public class BaseCharacterBehaviour : MonoBehaviour
     //Coyote time activation
     public void OnCollisionExit(Collision other)
     {
-        if (other.collider.tag == "Floor")
+        if (other.collider.tag == "Floor" && !coyoteOverride)
         {
             StartCoroutine(CoyoteTime());
+        }
+        else if(coyoteOverride)
+        {
+            grounded = false;
         }
     }
 
@@ -531,6 +542,13 @@ public class BaseCharacterBehaviour : MonoBehaviour
     {
         yield return new WaitForSeconds(0.15f);
         grounded = false;
+    }
+
+    private IEnumerator CoyoteOverride()
+    {
+        coyoteOverride = true;
+        yield return new WaitForSeconds(0.05f);
+        coyoteOverride = false;
     }
 
     //For managing CHARACTER-WEAPON collisions

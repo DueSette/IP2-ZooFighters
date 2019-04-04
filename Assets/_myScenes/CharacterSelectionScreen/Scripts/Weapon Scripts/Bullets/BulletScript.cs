@@ -8,8 +8,8 @@ public class BulletScript : MonoBehaviour
 {
     #region Data
 
-    private BaseCharacterBehaviour charScript;
-    private Rigidbody rb;
+    protected BaseCharacterBehaviour charScript;
+    protected Rigidbody rb;
     public AudioSource aud;
 
     [HideInInspector]
@@ -63,7 +63,7 @@ public class BulletScript : MonoBehaviour
 
                 collider.GetComponent<Rigidbody>().AddForce(new Vector3(pushBack.x * direction, pushBack.y, 0), ForceMode.Impulse);
                 charScript.SetDisablingMovementTime(stopTargetDuration);
-                HitCharacter(aud.clip);     //sound event
+                RaiseSoundEvent(aud.clip);     //sound event
             }
             OnImpact();
         }
@@ -75,5 +75,10 @@ public class BulletScript : MonoBehaviour
         Physics.IgnoreCollision(shooterCollider, GetComponent<Collider>(), false); //reset collision immunity
         //release particle
         //do additional stuff if need be
+    }
+
+    protected void RaiseSoundEvent(AudioClip clip)
+    {
+        HitCharacter(clip);
     }
 }

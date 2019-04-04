@@ -24,9 +24,11 @@ public class RangedWeaponScript : MonoBehaviour
     [HideInInspector]
     public bool actAsBullet = false;
 
+    public string bulletName;
+
     [HideInInspector]
     public Rigidbody rb;
-    private Vector3 velo;
+    protected Vector3 velo;
     public AudioClip[] audioClips;
     public AudioSource aud;
 
@@ -59,14 +61,13 @@ public class RangedWeaponScript : MonoBehaviour
     }
 
     //shooting a bullet (instantiating it from the pool)
-    public void Fire(float damageMod, float direction)
+    public virtual void Fire(float damageMod, float direction)
     {
         StartCoroutine(FireCD());
         if (ammo > 0)
         {
-
             //the tag, meaning the first parameter, is the name of the kind of bullet that will be pulled out of the object pooler
-            GameObject bullet = pooler.SpawnFromPool("Bullet1", transform.position, Quaternion.Euler(0, 90 * direction, 0));
+            GameObject bullet = pooler.SpawnFromPool(bulletName, transform.position, Quaternion.Euler(0, 90 * direction, 0));
             BulletScript bScript = bullet.GetComponent<BulletScript>();
 
             //this informs the bullet about what collider to ignore when shooting

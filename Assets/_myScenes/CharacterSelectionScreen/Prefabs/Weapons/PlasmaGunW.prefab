@@ -13,10 +13,11 @@ GameObject:
   - component: {fileID: 1274041843}
   - component: {fileID: 1274041841}
   - component: {fileID: 1274041846}
-  - component: {fileID: 1274041842}
   - component: {fileID: 6262615683369532407}
+  - component: {fileID: 2234178471027546233}
+  - component: {fileID: 213826822}
   m_Layer: 11
-  m_Name: AsparagunW
+  m_Name: PlasmaGunW
   m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -111,36 +112,6 @@ CapsuleCollider:
   m_Height: 3.4464314
   m_Direction: 2
   m_Center: {x: -0.07372975, y: -0.13513756, z: 0.0641973}
---- !u!114 &1274041842
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1274041840}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fb86c587c823f234c8d0e86ae8bf3093, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pooler: {fileID: 0}
-  weaponDamage: 25
-  rateOfFire: 0.4
-  ammo: 9
-  weaponSprite: {fileID: 21300000, guid: 977b8a275e4dff74894e8769b3bc7848, type: 3}
-  weaponHolderCollider: {fileID: 0}
-  isEquipped: 0
-  canBeCollected: 1
-  canSpin: 0
-  canShoot: 1
-  actAsBullet: 0
-  bulletName: Bullet1
-  rb: {fileID: 0}
-  audioClips:
-  - {fileID: 8300000, guid: b4e5a841e18e4164d9a76ca3864b1c18, type: 3}
-  - {fileID: 8300000, guid: b4aac8c54b3f7f8449015ffece9677d2, type: 3}
-  - {fileID: 8300000, guid: 672f6f69824c87f44bec581a753ae079, type: 3}
-  aud: {fileID: 0}
 --- !u!82 &6262615683369532407
 AudioSource:
   m_ObjectHideFlags: 0
@@ -238,3 +209,72 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &2234178471027546233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1274041840}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e0b2cec2801e144f9cc4c5aef63e523, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pooler: {fileID: 0}
+  weaponDamage: 40
+  rateOfFire: 2
+  ammo: 5
+  weaponSprite: {fileID: 21300000, guid: 9aad592c25b40f740933f57e3f796aff, type: 3}
+  weaponHolderCollider: {fileID: 0}
+  isEquipped: 0
+  canBeCollected: 1
+  canSpin: 0
+  canShoot: 1
+  actAsBullet: 0
+  bulletName: PlasmaBullet
+  rb: {fileID: 0}
+  audioClips:
+  - {fileID: 8300000, guid: 03e3bd08a6e70684dbe299a3e185fdd2, type: 3}
+  - {fileID: 8300000, guid: e9714160ce34f2b4ab63ff8c27bd68e1, type: 3}
+  - {fileID: 8300000, guid: e9714160ce34f2b4ab63ff8c27bd68e1, type: 3}
+  aud: {fileID: 6262615683369532407}
+  recoilKnockback: {x: 55, y: 5}
+--- !u!108 &213826822
+Light:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1274041840}
+  m_Enabled: 1
+  serializedVersion: 8
+  m_Type: 0
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Intensity: 3
+  m_Range: 10
+  m_SpotAngle: 31
+  m_CookieSize: 10
+  m_Shadows:
+    m_Type: 0
+    m_Resolution: -1
+    m_CustomResolution: -1
+    m_Strength: 1
+    m_Bias: 0.05
+    m_NormalBias: 0.4
+    m_NearPlane: 0.2
+  m_Cookie: {fileID: 0}
+  m_DrawHalo: 1
+  m_Flare: {fileID: 0}
+  m_RenderMode: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_Lightmapping: 2
+  m_LightShadowCasterMode: 0
+  m_AreaSize: {x: 1, y: 1}
+  m_BounceIntensity: 1
+  m_ColorTemperature: 6570
+  m_UseColorTemperature: 0
+  m_ShadowRadius: 0
+  m_ShadowAngle: 0

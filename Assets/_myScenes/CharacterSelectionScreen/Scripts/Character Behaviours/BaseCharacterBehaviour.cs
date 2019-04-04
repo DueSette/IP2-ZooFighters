@@ -672,7 +672,17 @@ public class BaseCharacterBehaviour : MonoBehaviour
         equippedWeapon.transform.position = weaponSlot.transform.position;
         equippedWeapon.transform.rotation = Quaternion.Euler(weaponSlot.transform.rotation.eulerAngles * -1);
 
-        equippedWeapon.GetComponent<MeshRenderer>().enabled = false;
+
+        if(equippedWeapon.GetComponent<MeshRenderer>() != false)
+            equippedWeapon.GetComponent<MeshRenderer>().enabled = false;
+        else
+        {
+            MeshRenderer[] renderers = equippedWeapon.GetComponentsInChildren<MeshRenderer>();
+            foreach(MeshRenderer rend in renderers)
+            {
+                rend.enabled = false;
+            }
+        }
 
         equippedWeaponInventory.SetActive(true);
         isArmed = true;

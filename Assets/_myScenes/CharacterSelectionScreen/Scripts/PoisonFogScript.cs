@@ -26,70 +26,74 @@ public class PoisonFogScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (gmScript.GetGameState() == GameManagerScript.GameState.inGame)
         {
+            if (Input.GetKeyDown(KeyCode.P))
+            {
+                if (!enable)
+                {
+                    wall = Random.Range(1, 100);
+                }
+
+
+                if (wall <= 49 && wall > 0)
+                {
+                    for (int i = 0; i < 3; i++)
+                    {
+                        StartCoroutine(HazardLeft());
+                    }
+                }
+                else if (wall >= 50)
+                {
+                    for (int i = 0; i < 3; i++)
+                    {
+                        StartCoroutine(HazardRight());
+                    }
+                }
+
+            }
+
+            if (wall <= 49 && wall > 0)
+            {
+                if (acidRain && enable)
+                {
+                    for (int i = 0; i < gmScript.inGameChars.Length; i++)
+                    {
+                        if (gmScript.inGameChars[i].transform.position.x < -6)
+                        {
+                            BaseCharacterBehaviour charScript = gmScript.inGameChars[i].gameObject.GetComponent<BaseCharacterBehaviour>();
+
+                            charScript.TakeDamage(10);
+
+                            StartCoroutine(AcidRainDamage());
+                        }
+                    }
+                }
+            }
+            else if (wall >= 50)
+            {
+                if (acidRain && enable)
+                {
+                    for (int i = 0; i < gmScript.inGameChars.Length; i++)
+                    {
+                        if (gmScript.inGameChars[i].transform.position.x > -6)
+                        {
+                            BaseCharacterBehaviour charScript = gmScript.inGameChars[i].gameObject.GetComponent<BaseCharacterBehaviour>();
+
+                            charScript.TakeDamage(10);
+
+                            StartCoroutine(AcidRainDamage());
+                        }
+                    }
+                }
+            }
+
             if (!enable)
             {
-                wall = Random.Range(1, 100);
-            }
-
-
-            if (wall <= 49)
-            {
-                for (int i = 0; i < 3; i++)
-                {
-                    StartCoroutine(HazardLeft());
-                }
-            }
-            else
-            {
-                for (int i = 0; i < 3; i++)
-                {
-                    StartCoroutine(HazardRight());
-                }
-            }
-
-        }
-
-        if (wall <= 49)
-        {
-            if (acidRain && enable)
-            {
-                for (int i = 0; i < gmScript.inGameChars.Length; i++)
-                {
-                    if (gmScript.inGameChars[i].transform.position.x < -6)
-                    {
-                        BaseCharacterBehaviour charScript = gmScript.inGameChars[i].gameObject.GetComponent<BaseCharacterBehaviour>();
-
-                        charScript.TakeDamage(10);
-
-                        StartCoroutine(AcidRainDamage());
-                    }
-                }
+                acidRain = false;
             }
         }
-        else if (wall >= 50)
-        {
-            if (acidRain && enable)
-            {
-                for (int i = 0; i < gmScript.inGameChars.Length; i++)
-                {
-                    if (gmScript.inGameChars[i].transform.position.x > -6)
-                    {
-                        BaseCharacterBehaviour charScript = gmScript.inGameChars[i].gameObject.GetComponent<BaseCharacterBehaviour>();
-
-                        charScript.TakeDamage(10);
-
-                        StartCoroutine(AcidRainDamage());
-                    }
-                }
-            }
-        }
-
-        if (!enable)
-        {
-            acidRain = false;
-        }
+           
     }
 
     public IEnumerator AcidRainDamage()

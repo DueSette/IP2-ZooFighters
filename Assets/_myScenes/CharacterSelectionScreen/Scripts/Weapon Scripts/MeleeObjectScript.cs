@@ -41,7 +41,8 @@ public class MeleeObjectScript : MonoBehaviour
                 charScript.TakeDamage(10);
 
                 other.gameObject.GetComponent<Rigidbody>().AddForce(new Vector3(slapPushBack * Mathf.Sign(transform.parent.rotation.y), 0, 0), ForceMode.Impulse);
-
+                other.gameObject.GetComponent<Animator>().SetTrigger("Staggered");
+                other.gameObject.GetComponent<Animator>().SetLayerWeight(9, 1);
                 charScript.SetDisablingMovementTime(stopTargetDuration);
                 charScript.SetStun(stopTargetDuration);
 
@@ -52,15 +53,19 @@ public class MeleeObjectScript : MonoBehaviour
             //IF ARMED (MELEE WEAPON)
             else if (parentScript.meleeWeaponScript)
             {
-
                 parentScript.PauseFrames(0.2f);
                 charScript.TakeDamage((int)(parentScript.meleeWeaponScript.weaponDamage * parentScript.damageMod));
-                other.gameObject.GetComponent<Rigidbody>().AddForce(new Vector3(parentScript.meleeWeaponScript.pushBack.x * Mathf.Sign(transform.parent.rotation.y), parentScript.meleeWeaponScript.pushBack.y, 0), ForceMode.Impulse);
+                other.gameObject.GetComponent<Rigidbody>().AddForce(new Vector3(parentScript.meleeWeaponScript.pushback.x * Mathf.Sign(transform.parent.rotation.y), parentScript.meleeWeaponScript.pushback.y, 0), ForceMode.Impulse);
 
                 charScript.SetDisablingMovementTime(stopTargetDuration);
 
                 hitPeople.Add(other.gameObject);
-                aud.clip = audioClips[1];
+                if(parentScript.equippedWeapon.tag == "Lightsaber")
+                {
+                    aud.clip = audioClips[Random.Range(3, 5)];
+                }
+                else
+                    aud.clip = audioClips[1];
                 aud.Play();
             }
         }

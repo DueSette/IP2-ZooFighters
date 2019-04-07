@@ -29,7 +29,6 @@ public class SpikesScript : MonoBehaviour
             else
             {
                 StartCoroutine(CollisionSuspension(collision.collider));
-                GetComponent<AudioSource>().Play();
             }
         }
 
@@ -49,6 +48,8 @@ public class SpikesScript : MonoBehaviour
             
             else if (other.gameObject.GetComponent<RangedWeaponScript>() != null && !other.gameObject.GetComponent<RangedWeaponScript>().isEquipped)
                     Destroy(other.gameObject);
+
+            //SOUND
         }
     }
 

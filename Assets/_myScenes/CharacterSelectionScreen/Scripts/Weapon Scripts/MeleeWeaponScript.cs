@@ -8,7 +8,9 @@ public class MeleeWeaponScript : MonoBehaviour
 
     public int weaponDamage;
     public float rateOfFire;  
-    public Vector2 pushBack;
+    public Vector2 pushback;
+    public Vector2 throwPushback;
+    public int throwDamage;
     public Sprite weaponSprite;
 
     [HideInInspector]
@@ -28,20 +30,20 @@ public class MeleeWeaponScript : MonoBehaviour
 
     [HideInInspector]
     public Rigidbody rb;
-    private Vector3 velo;
+    protected Vector3 velo;
 
-    public AudioClip breakSound;
+    public AudioClip[] audioClips;
     public delegate void EventSound(AudioClip clip);
-    public static event EventSound BaseballBreak;
+    public static event EventSound SoundEvent;
 
-    private void Start()
+    public virtual void Start()
     {
         rb = GetComponent<Rigidbody>();
         pooler = ObjectPooler.instance;
         rb.maxAngularVelocity = 150;
     }
 
-    private void Update()
+    protected void Update()
     {
         if (canBeCollected)
         {
@@ -49,7 +51,7 @@ public class MeleeWeaponScript : MonoBehaviour
         }
     }
 
-    private void FixedUpdate()
+    protected void FixedUpdate()
     {
         velo = rb.velocity;
         if (velo.y < -45)
@@ -65,7 +67,7 @@ public class MeleeWeaponScript : MonoBehaviour
         GetComponent<AudioSource>().Play();
     }
 
-    private IEnumerator SwingCD()
+    protected IEnumerator SwingCD()
     {
         canSwing = false;
         yield return new WaitForSeconds(1);
@@ -93,15 +95,30 @@ public class MeleeWeaponScript : MonoBehaviour
             //if hitting a player, move and damage it
             if (other.gameObject.layer == 10)
             {
-                BaseballBreak(breakSound); //sound event
-                other.gameObject.GetComponent<Rigidbody>().AddForce(new Vector3(100 * -Mathf.Sign(GetComponent<Rigidbody>().angularVelocity.x), 50, 0), ForceMode.VelocityChange);
-                other.gameObject.GetComponent<BaseCharacterBehaviour>().TakeDamage(20);
+                if (gameObject.tag == "Lightsaber")
+                {
+                    Vector3 normal = (other.gameObject.transform.position - transform.position).normalized;
+                    float x = normal.x;
+
+                    //Makes x either 1 or -1 depenging on its position in relation to the character we it
+                    x = x < 0 ? x = Mathf.FloorToInt(x) : x = Mathf.CeilToInt(x);
+
+                    other.gameObject.GetComponent<Rigidbody>().AddForce(new Vector3(throwPushback.x * x, throwPushback.y, 0), ForceMode.VelocityChange);
+                    RaiseSoundEvent(audioClips[3]); //sound event
+                }
+                else
+                {
+                    other.gameObject.GetComponent<Rigidbody>().AddForce(new Vector3(throwPushback.x * -Mathf.Sign(GetComponent<Rigidbody>().angularVelocity.x), throwPushback.y, 0), ForceMode.VelocityChange);
+                    RaiseSoundEvent(audioClips[1]); //sound event
+                }
+                other.gameObject.GetComponent<BaseCharacterBehaviour>().TakeDamage(throwDamage);
                 gameObject.SetActive(false);
+
             }
             //if hitting a floor, then just destroy this weapon
             else if (other.gameObject.layer == 9)
             {
-                BaseballBreak(breakSound); //sound event
+                RaiseSoundEvent(audioClips[1]); //sound event
                 gameObject.SetActive(false);
             }          
         }
@@ -132,7 +149,7 @@ public class MeleeWeaponScript : MonoBehaviour
     }
 
     //when this is called, it makes the weapon unable to instantly collide again with the player
-    public IEnumerator Flung(Collider coll)
+    public virtual IEnumerator Flung(Collider coll)
     {
         Physics.IgnoreCollision(coll, gameObject.GetComponent<Collider>());
         yield return new WaitForSeconds(0.5f);
@@ -142,5 +159,10 @@ public class MeleeWeaponScript : MonoBehaviour
         }
         
         canBeCollected = true;        
+    }
+
+    public virtual void RaiseSoundEvent(AudioClip clip)
+    {
+        SoundEvent(clip);
     }
 }

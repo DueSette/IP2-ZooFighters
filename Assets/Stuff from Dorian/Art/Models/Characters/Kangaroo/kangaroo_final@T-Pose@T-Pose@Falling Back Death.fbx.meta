@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: a54183b326e26764aa759b2ea7cae6f8
+guid: 3811d5cb9b22f3143b06504943af2de5
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
@@ -97,7 +97,7 @@ ModelImporter:
     2100002: lambert2
     4300000: body
     4300002: outfit
-    7400000: mixamo.com
+    7400000: T-Pose@T-Pose@Falling Back Death
     9500000: //RootNode
     13700000: body
     13700002: outfit
@@ -128,7 +128,35 @@ ModelImporter:
     animationWrapMode: 0
     extraExposedTransformPaths: []
     extraUserProperties: []
-    clipAnimations: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: T-Pose@T-Pose@Falling Back Death
+      takeName: mixamo.com
+      firstFrame: 0
+      lastFrame: 78
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 1
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     isReadable: 1
   meshes:
     lODScreenPercentages: []

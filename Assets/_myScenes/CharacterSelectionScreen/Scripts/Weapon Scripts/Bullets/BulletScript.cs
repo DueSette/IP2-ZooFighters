@@ -51,7 +51,7 @@ public class BulletScript : MonoBehaviour
     public virtual void OnTriggerEnter(Collider collider)
     {
         //if this collides with something THAT IS NEITHER the weapon or the destroyer volume (since they are almost always going to collide with them)
-        if (collider.tag != "Weapon" && !collider.name.Contains("Destroyer"))
+        if (collider.gameObject.layer != 11 && !collider.name.Contains("Destroyer"))
         {
             //HITTING A CHARACTER
             if (collider.gameObject.GetComponent<BaseCharacterBehaviour>() && !collider.gameObject.GetComponent<BaseCharacterBehaviour>().respawned)

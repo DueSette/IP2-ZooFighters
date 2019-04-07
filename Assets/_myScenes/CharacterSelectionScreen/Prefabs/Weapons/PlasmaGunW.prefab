@@ -235,9 +235,9 @@ MonoBehaviour:
   bulletName: PlasmaBullet
   rb: {fileID: 0}
   audioClips:
-  - {fileID: 8300000, guid: 03e3bd08a6e70684dbe299a3e185fdd2, type: 3}
-  - {fileID: 8300000, guid: e9714160ce34f2b4ab63ff8c27bd68e1, type: 3}
-  - {fileID: 8300000, guid: e9714160ce34f2b4ab63ff8c27bd68e1, type: 3}
+  - {fileID: 8300000, guid: b4e5a841e18e4164d9a76ca3864b1c18, type: 3}
+  - {fileID: 8300000, guid: b4aac8c54b3f7f8449015ffece9677d2, type: 3}
+  - {fileID: 8300000, guid: 672f6f69824c87f44bec581a753ae079, type: 3}
   aud: {fileID: 6262615683369532407}
   recoilKnockback: {x: 55, y: 5}
 --- !u!108 &213826822

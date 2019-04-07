@@ -15,7 +15,7 @@ public class AudioObserver : MonoBehaviour
     {
         sources.AddRange(GetComponents<AudioSource>());
         BulletScript.HitCharacter += PlayOnEvent;
-        MeleeWeaponScript.BaseballBreak += PlayOnEvent;
+        MeleeWeaponScript.SoundEvent += PlayOnEvent;
         RangedWeaponScript.GunBreak += PlayOnEvent;
         GrenadeScript.OnExplode += PlayOnEvent;
         BaseCharacterBehaviour.SoundEvent += PlayOnEvent;
@@ -45,7 +45,7 @@ public class AudioObserver : MonoBehaviour
     void OnDisable()
     {
         BulletScript.HitCharacter -= PlayOnEvent;
-        MeleeWeaponScript.BaseballBreak -= PlayOnEvent;
+        MeleeWeaponScript.SoundEvent -= PlayOnEvent;
         RangedWeaponScript.GunBreak -= PlayOnEvent;
         GrenadeScript.OnExplode -= PlayOnEvent;
         BaseCharacterBehaviour.SoundEvent -= PlayOnEvent;

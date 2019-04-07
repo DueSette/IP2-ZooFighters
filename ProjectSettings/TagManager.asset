@@ -9,6 +9,10 @@ TagManager:
   - Bullet
   - SlapObject
   - Thrown
+  - RespawnPlatform
+  - Lightsaber
+  - Asparagun
+  - BaseballBat
   layers:
   - Default
   - TransparentFX

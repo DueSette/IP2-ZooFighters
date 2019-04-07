@@ -16,13 +16,18 @@ public class DestroyerScript : MonoBehaviour
         //if it is a bullet (DON'T DESTROY BULLETS PLS)
         else if (collider.tag == "Bullet")
         {
-            collider.gameObject.SetActive(false);
+            collider.gameObject.SetActive(false);         
         }
 
         //add stuff that shouldn't be destroyed via tag search, the rest can be destroyed
         else if(collider.tag == "SlapObject") {}
 
-        else if(collider.tag == "Thrown")
+        else if (collider.name == "GrenadeThrowerChest")
+        {
+            collider.gameObject.SetActive(true);
+        }
+
+        else if (collider.tag == "Thrown")
         {
             collider.gameObject.GetComponent<GrenadeScript>().AfterExplosion();
         }

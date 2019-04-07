@@ -35,7 +35,7 @@ public class RangedWeaponScript : MonoBehaviour
     public delegate void EventSound(AudioClip clip);
     public static event EventSound GunBreak;
 
-    private void Start()
+    public virtual void Start()
     {
         rb = GetComponent<Rigidbody>();
         aud = GetComponent<AudioSource>();

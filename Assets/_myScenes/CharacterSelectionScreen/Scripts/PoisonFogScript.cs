@@ -59,13 +59,17 @@ public class PoisonFogScript : MonoBehaviour
                 {
                     for (int i = 0; i < gmScript.inGameChars.Length; i++)
                     {
-                        if (gmScript.inGameChars[i].transform.position.x < -6)
+                        if (gmScript.inGameChars[i] != null)
                         {
-                            BaseCharacterBehaviour charScript = gmScript.inGameChars[i].gameObject.GetComponent<BaseCharacterBehaviour>();
+                            if (gmScript.inGameChars[i].transform.position.x < -6)
+                            {
+                                BaseCharacterBehaviour charScript = gmScript.inGameChars[i].gameObject.GetComponent<BaseCharacterBehaviour>();
 
-                            charScript.TakeDamage(10);
+                                charScript.TakeDamage(10);
 
-                            StartCoroutine(AcidRainDamage());
+                                StartCoroutine(AcidRainDamage());
+                            }
+
                         }
                     }
                 }
@@ -76,13 +80,17 @@ public class PoisonFogScript : MonoBehaviour
                 {
                     for (int i = 0; i < gmScript.inGameChars.Length; i++)
                     {
-                        if (gmScript.inGameChars[i].transform.position.x > -6)
+                        if (gmScript.inGameChars[i] != null)
                         {
-                            BaseCharacterBehaviour charScript = gmScript.inGameChars[i].gameObject.GetComponent<BaseCharacterBehaviour>();
+                            if (gmScript.inGameChars[i].transform.position.x > -6)
+                            {
+                                BaseCharacterBehaviour charScript = gmScript.inGameChars[i].gameObject.GetComponent<BaseCharacterBehaviour>();
 
-                            charScript.TakeDamage(10);
+                                charScript.TakeDamage(10);
 
-                            StartCoroutine(AcidRainDamage());
+                                StartCoroutine(AcidRainDamage());
+                            }
+
                         }
                     }
                 }
@@ -163,7 +171,7 @@ public class PoisonFogScript : MonoBehaviour
         {
             hazard[1].gameObject.SetActive(false);
             yield return new WaitForSeconds(0.5f);
-            hazard[0].gameObject.SetActive(true);
+            hazard[1].gameObject.SetActive(true);
             yield return new WaitForSeconds(0.5f);
         }
 

@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 526644934}
   m_Layer: 11
   m_Name: BaseballBatW
-  m_TagString: Weapon
+  m_TagString: BaseballBat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -124,9 +124,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pooler: {fileID: 0}
-  weaponDamage: 20
+  weaponDamage: 34
   rateOfFire: 0.5
-  pushBack: {x: 70, y: 125}
+  pushback: {x: 85, y: 65}
+  throwPushback: {x: 90, y: 50}
+  throwDamage: 25
   weaponSprite: {fileID: 21300000, guid: a27dd0fda83d33d41b0a8036ac3221bc, type: 3}
   weaponHolderCollider: {fileID: 0}
   isEquipped: 0
@@ -136,7 +138,9 @@ MonoBehaviour:
   swinging: 0
   actAsBullet: 0
   rb: {fileID: 0}
-  breakSound: {fileID: 8300000, guid: 19d00827f309fb0468790fcada5a63b0, type: 3}
+  audioClips:
+  - {fileID: 0}
+  - {fileID: 8300000, guid: 19d00827f309fb0468790fcada5a63b0, type: 3}
 --- !u!82 &526644934
 AudioSource:
   m_ObjectHideFlags: 0

@@ -69,9 +69,13 @@ public class BaseCharacterBehaviour : MonoBehaviour
     //Weapon related variables
     public bool isArmed = false;
     public Vector2 flingPower;
-    private GameObject equippedWeapon;
+    [HideInInspector]
+    public GameObject equippedWeapon;
+    [HideInInspector]
     public Sprite equippedWeaponSprite;
+    [HideInInspector]
     public RangedWeaponScript rangedWeaponScript;
+    [HideInInspector]
     public MeleeWeaponScript meleeWeaponScript;
     //public MeleeWeaponScript
     [Tooltip("The game object that the weapon will be childed too")]
@@ -99,7 +103,8 @@ public class BaseCharacterBehaviour : MonoBehaviour
     [SerializeField]
     protected bool stunned = false;
     protected bool grounded = true;
-    protected bool canExtraJump = true;
+    [HideInInspector]
+    public bool canExtraJump = true;
     protected bool coyoteOverride = false;
     protected bool drag = false;
 
@@ -230,7 +235,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
                 StartCoroutine(TossWeaponEmpty());
             }
             if (yButton)
-            {}
+            { }
 
             //TOSSING GRENADE
             if (lBumperDown && !chargingBomb && grenades > 0 && !stunned)
@@ -238,9 +243,9 @@ public class BaseCharacterBehaviour : MonoBehaviour
                 chargingBomb = true;
                 SoundEvent(audioClips[5]);
             }
-            else if(lBumperHold && chargingBomb)
+            else if (lBumperHold && chargingBomb)
             {
-                if(bombTossPower <= 80)
+                if (bombTossPower <= 80)
                     bombTossPower += Time.deltaTime * 35;
             }
             else if (lBumperUp && chargingBomb)
@@ -282,9 +287,9 @@ public class BaseCharacterBehaviour : MonoBehaviour
                     {
                         rangedWeaponScript.Fire(damageMod, Mathf.Sign(transform.rotation.y));
                         anim.SetTrigger("Shoot");
-                    }                   
+                    }
                 }
-                
+
                 //SWINGING MELEE
                 else if (isArmed && meleeWeaponScript != null && meleeWeaponScript.canSwing && !stunned)
                 {
@@ -331,7 +336,6 @@ public class BaseCharacterBehaviour : MonoBehaviour
                 rb.AddForce(Physics.gravity * 2);
             }
         }
-
     }
 
     //Performs some form of command pattern in relation to the current JoyStick Enum and GameState, checking which buttons have been pressed
@@ -501,7 +505,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
         rb.AddForce(new Vector3(0, jumpPower, 0), ForceMode.Impulse);
 
         StartCoroutine(CoyoteOverride());
-        anim.SetTrigger("Jump");      
+        anim.SetTrigger("Jump");
         SoundEvent(audioClips[3]);
     }
 
@@ -531,7 +535,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
         {
             StartCoroutine(CoyoteTime());
         }
-        else if(coyoteOverride)
+        else if (coyoteOverride)
         {
             grounded = false;
         }
@@ -555,8 +559,9 @@ public class BaseCharacterBehaviour : MonoBehaviour
     public void OnTriggerStay(Collider coll)
     {
         //Colliding with a weapon
-        if (coll.gameObject.layer == 11 && !isArmed)
+        if (coll.gameObject.layer == 11 && !isArmed && alive)
         {
+            //Ranged weapon
             if (coll.gameObject.GetComponent<RangedWeaponScript>() != null && coll.gameObject.GetComponent<RangedWeaponScript>().canBeCollected)
             {
                 ActivateWeapon(coll.name);
@@ -566,17 +571,31 @@ public class BaseCharacterBehaviour : MonoBehaviour
                 anim.SetBool("Unarmed", false);
                 anim.SetBool("Melee", false);
                 anim.SetBool("Rifle", true);
+                anim.SetBool("Melee2", false);
+
             }
 
+            //Melee weapon
             else if (coll.gameObject.GetComponent<MeleeWeaponScript>() != null && coll.gameObject.GetComponent<MeleeWeaponScript>().canBeCollected)
             {
                 ActivateWeapon(coll.name);
                 StartCoroutine(CollectWeapon(coll.gameObject));
 
                 isArmed = true;
-                anim.SetBool("Unarmed", true);
-                anim.SetBool("Melee", false);   //ofc this should be true but animations are not ready yet
                 anim.SetBool("Rifle", false);
+
+                if (coll.gameObject.tag == "Lightsaber")
+                {
+                    anim.SetBool("Unarmed", false);
+                    anim.SetBool("Melee", false);
+                    anim.SetBool("Melee2", true);
+                }
+                else
+                {
+                    anim.SetBool("Unarmed", false);
+                    anim.SetBool("Melee", true);
+                    anim.SetBool("Melee2", false);
+                }
             }
         }
     }
@@ -592,7 +611,6 @@ public class BaseCharacterBehaviour : MonoBehaviour
 
         yield return new WaitForSeconds(0.20f);
         meleeObject.SetActive(true);
-
         SoundEvent(meleeObject.GetComponent<MeleeObjectScript>().audioClips[2]);
         yield return new WaitForSeconds(0.35f);
         meleeObject.SetActive(false);
@@ -609,16 +627,25 @@ public class BaseCharacterBehaviour : MonoBehaviour
         //anim.SetBool("swinging", true);
         meleeWeaponScript.Swing();  //Just sets the cooldown
         anim.SetBool("IsSlapping", true);
+        if (equippedWeapon.tag == "Lightsaber")
+        {
+            yield return new WaitForSeconds(0.25f);
+        }
+        else if (equippedWeapon.tag == "BaseballBat")
+        {
+            yield return new WaitForSeconds(0.3f);
+        }
+
         yield return new WaitForSeconds(0.20f);
         if (meleeObject != null)
             meleeObject.SetActive(true);
 
-        yield return new WaitForSeconds(0.40f);
+        anim.SetBool("IsSlapping", false);
+
+        yield return new WaitForSeconds(0.20f);
 
         if (meleeObject != null)
             meleeObject.SetActive(false);
-        //anim.SetBool("swinging", false);
-        anim.SetBool("IsSlapping", false);
 
         yield return null;
     }
@@ -640,7 +667,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
 
     //Manages the process of picking up a weapon from the ground
     private IEnumerator CollectWeapon(GameObject weapon)
-    {       
+    {
         equippedWeapon = weapon;
 
         if (weapon.GetComponent<RangedWeaponScript>())
@@ -650,6 +677,10 @@ public class BaseCharacterBehaviour : MonoBehaviour
             rangedWeaponScript.canBeCollected = false;
             rangedWeaponScript.weaponHolderCollider = GetComponent<Collider>();
             equippedWeaponSprite = rangedWeaponScript.weaponSprite;
+            if (weapon.tag == "Asparagun")
+            {
+                SoundEvent(audioClips[2]);
+            }
         }
 
         else if (weapon.GetComponent<MeleeWeaponScript>())
@@ -659,6 +690,13 @@ public class BaseCharacterBehaviour : MonoBehaviour
             meleeWeaponScript.canBeCollected = false;
             meleeWeaponScript.weaponHolderCollider = GetComponent<Collider>();
             equippedWeaponSprite = meleeWeaponScript.weaponSprite;
+            if (weapon.tag == "Lightsaber")
+            {
+                SoundEvent(meleeWeaponScript.audioClips[0]);
+                weapon.GetComponent<Animator>().enabled = true;
+                meleeWeaponScript.GetComponent<AudioSource>().loop = true;
+                meleeWeaponScript.GetComponent<AudioSource>().Play();
+            }
         }
 
         equippedWeapon.GetComponent<Rigidbody>().isKinematic = true;
@@ -673,12 +711,12 @@ public class BaseCharacterBehaviour : MonoBehaviour
         equippedWeapon.transform.rotation = Quaternion.Euler(weaponSlot.transform.rotation.eulerAngles * -1);
 
 
-        if(equippedWeapon.GetComponent<MeshRenderer>() != false)
+        if (equippedWeapon.GetComponent<MeshRenderer>())
             equippedWeapon.GetComponent<MeshRenderer>().enabled = false;
         else
         {
             MeshRenderer[] renderers = equippedWeapon.GetComponentsInChildren<MeshRenderer>();
-            foreach(MeshRenderer rend in renderers)
+            foreach (MeshRenderer rend in renderers)
             {
                 rend.enabled = false;
             }
@@ -686,8 +724,6 @@ public class BaseCharacterBehaviour : MonoBehaviour
 
         equippedWeaponInventory.SetActive(true);
         isArmed = true;
-
-        SoundEvent(audioClips[2]);
 
         yield return null;
     }
@@ -725,6 +761,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
         equippedWeapon.GetComponent<Rigidbody>().AddForce(new Vector3(flingPower.x * Mathf.Sign(transform.rotation.y), flingPower.y, 0), ForceMode.VelocityChange);
         equippedWeapon.GetComponent<Rigidbody>().AddTorque(transform.right * 27 * Mathf.Sign(transform.rotation.y), ForceMode.VelocityChange);
 
+
         if (equippedWeapon.GetComponent<RangedWeaponScript>())
             rangedWeaponScript = null;
         else
@@ -733,11 +770,28 @@ public class BaseCharacterBehaviour : MonoBehaviour
         isArmed = false;
 
         equippedWeaponInventory.SetActive(false);
-        equippedWeapon.GetComponent<MeshRenderer>().enabled = true;
+        if (equippedWeapon.GetComponent<MeshRenderer>())
+            equippedWeapon.GetComponent<MeshRenderer>().enabled = true;
+        else
+        {
+            MeshRenderer[] renderers = equippedWeapon.GetComponentsInChildren<MeshRenderer>();
+            foreach (MeshRenderer rend in renderers)
+            {
+                rend.enabled = true;
+            }
+        }
+
+        if (equippedWeapon.tag == "Lightsaber")
+        {
+            equippedWeapon.GetComponent<Animator>().SetTrigger("Off");
+            SoundEvent(equippedWeapon.GetComponent<MeleeWeaponScript>().audioClips[6]);
+        }
+
 
         //Animator stuff
         anim.SetBool("Unarmed", true);
         anim.SetBool("Melee", false);
+        anim.SetBool("Melee2", false);
         anim.SetBool("Rifle", false);
         anim.SetTrigger("Throw");
     }
@@ -762,10 +816,19 @@ public class BaseCharacterBehaviour : MonoBehaviour
 
             equippedWeaponInventory.SetActive(false);
 
-            equippedWeapon.GetComponent<MeshRenderer>().enabled = true;
-            equippedWeapon.GetComponent<Rigidbody>().AddForce(new Vector3(80 * Mathf.Sign(transform.rotation.y), 0, 0), ForceMode.VelocityChange);
-            equippedWeapon.GetComponent<Rigidbody>().AddTorque(transform.right * 27 * Mathf.Sign(transform.rotation.y), ForceMode.VelocityChange);
+            if (equippedWeapon.GetComponent<MeshRenderer>())
+                equippedWeapon.GetComponent<MeshRenderer>().enabled = true;
+            else
+            {
+                MeshRenderer[] renderers = equippedWeapon.GetComponentsInChildren<MeshRenderer>();
+                foreach (MeshRenderer rend in renderers)
+                {
+                    rend.enabled = true;
+                }
+            }
 
+            equippedWeapon.GetComponent<Rigidbody>().AddForce(new Vector3(80 * Mathf.Sign(transform.rotation.y), 0, 0), ForceMode.VelocityChange);
+        
             if (equippedWeapon.GetComponent<RangedWeaponScript>())
             {
                 rangedWeaponScript.actAsBullet = true;
@@ -782,8 +845,18 @@ public class BaseCharacterBehaviour : MonoBehaviour
             anim.SetBool("Unarmed", true);
             anim.SetBool("Melee", false);
             anim.SetBool("Rifle", false);
+            anim.SetBool("Melee2", false);
 
-            SoundEvent(audioClips[1]);
+            if(equippedWeapon.tag == "Lightsaber")
+            {
+                SoundEvent(equippedWeapon.GetComponent<MeleeWeaponScript>().audioClips[5]);
+                equippedWeapon.GetComponent<Rigidbody>().AddTorque(transform.up * 50 * Mathf.Sign(transform.rotation.x), ForceMode.VelocityChange);
+            }
+            else
+            {
+                SoundEvent(audioClips[1]);
+                equippedWeapon.GetComponent<Rigidbody>().AddTorque(transform.right * 27 * Mathf.Sign(transform.rotation.y), ForceMode.VelocityChange);
+            }
             anim.SetTrigger("Throw");
         }
     }
@@ -872,6 +945,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
         StartCoroutine(CameraScript.instance.SetShakeTime(0.5f, 6, 1.5f));
         SoundEvent(audioClips[0]);
         alive = false;
+        anim.SetTrigger("Died");
         equippedWeaponSprite = null;
         while (displayedHealth != GetHealth())
         {
@@ -887,6 +961,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
             anim.SetBool("Unarmed", true);
             anim.SetBool("Melee", false);
             anim.SetBool("Rifle", false);
+            anim.SetBool("Melee2", false);
 
             equippedWeaponInventory.SetActive(false);
             Destroy(equippedWeapon);
@@ -904,6 +979,10 @@ public class BaseCharacterBehaviour : MonoBehaviour
         {
             StartCoroutine(CharacterRespawn());
         }
+        else
+        {
+            anim.SetBool("CanRespawn", false);
+        }
     }
 
     public IEnumerator CharacterRespawn()
@@ -915,8 +994,8 @@ public class BaseCharacterBehaviour : MonoBehaviour
         //GetComponent<MeshRenderer>().enabled = true;
         rb.isKinematic = false;
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
-
-        transform.position = gmScript.respawnLocations[Random.Range(0, gmScript.respawnLocations.Length)].position;
+        yield return new WaitForSeconds(0.27f);
+        transform.position = gmScript.respawnLocations[(int)jStick].position;
 
         Instantiate(respawnPlatform, new Vector3(transform.position.x, transform.position.y - 1, transform.position.z), Quaternion.identity);
 

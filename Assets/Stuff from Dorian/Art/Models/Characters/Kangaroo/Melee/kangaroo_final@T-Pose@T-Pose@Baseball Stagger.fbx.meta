@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: e762569dbf5b6c447baf00a6d9372c7a
+guid: 703e66d74f499824e97b38c1256bc98b
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
@@ -93,11 +93,11 @@ ModelImporter:
     400084: mixamorig:Spine1
     400086: mixamorig:Spine2
     400088: outfit
-    2100000: Kangaroo_head_LP_lambert1
-    2100002: lambert2
+    2100000: Kangaroo_head_LP_lambert3
+    2100002: lambert4
     4300000: body
     4300002: outfit
-    7400000: T-Pose@Standing Idle
+    7400000: T-Pose@T-Pose@Baseball Stagger
     9500000: //RootNode
     13700000: body
     13700002: outfit
@@ -130,24 +130,24 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: T-Pose@Standing Idle
-      takeName: mixamo.com
-      firstFrame: 0
-      lastFrame: 55
+      name: T-Pose@T-Pose@Baseball Stagger
+      takeName: Take 001
+      firstFrame: 2
+      lastFrame: 35
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 1
+      loopTime: 0
       loopBlend: 0
-      loopBlendOrientation: 0
-      loopBlendPositionY: 0
-      loopBlendPositionXZ: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
       keepOriginalOrientation: 1
       keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 0
+      keepOriginalPositionXZ: 1
       heightFromFeet: 0
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000

@@ -4809,6 +4809,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   aud: {fileID: 0}
+  redirectSound: {fileID: 0}
   damage: 0
   direction: 0
   shooterCollider: {fileID: 0}

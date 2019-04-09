@@ -6,7 +6,8 @@ public class GrenadeScript : MonoBehaviour
 {
     #region Data
     bool ticking = false;
-    bool exploded = false;
+    [HideInInspector]
+    public bool exploded = false;
 
     public float fuseSeconds;
     public int damage;
@@ -98,13 +99,6 @@ public class GrenadeScript : MonoBehaviour
                     break;
             }
         }
-        /*
-        if(coll.gameObject.layer == 9 || coll.gameObject.layer == 10 || coll.gameObject.layer == 12)
-        {
-            ticking = true;
-            print("fuse");
-        }
-        */
     }
 
     void Explode()
@@ -131,16 +125,10 @@ public class GrenadeScript : MonoBehaviour
         }
     }
 
-    void SetFuse(float time)
-    {
-        if(ticking)
-            Invoke("Explode", time);
-    }
-
     public IEnumerator AfterExplosion()
     {
         bombMeshObject.SetActive(false);
-        yield return new WaitForSeconds(0.6f);
+        yield return new WaitForSeconds(2.15f);
         bombMeshObject.SetActive(true);
         gameObject.SetActive(false);
 
@@ -154,7 +142,11 @@ public class GrenadeScript : MonoBehaviour
     public IEnumerator ExplosionParticle()
     {
         explosionParticle.SetActive(true);
-        yield return new WaitForSeconds(4f);
+        explosionParticle.transform.SetParent(null);
+        yield return new WaitForSeconds(2.05f);
+        
+        explosionParticle.transform.position = transform.position;
+        explosionParticle.transform.SetParent(transform);
         explosionParticle.SetActive(false);
     }
 }

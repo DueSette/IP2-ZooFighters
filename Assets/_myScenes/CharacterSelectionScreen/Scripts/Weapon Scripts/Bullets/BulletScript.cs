@@ -11,6 +11,7 @@ public class BulletScript : MonoBehaviour
     protected BaseCharacterBehaviour charScript;
     protected Rigidbody rb;
     public AudioSource aud;
+    public AudioClip redirectSound;
 
     [HideInInspector]
     public int damage;
@@ -65,7 +66,15 @@ public class BulletScript : MonoBehaviour
                 charScript.SetDisablingMovementTime(stopTargetDuration);
                 RaiseSoundEvent(aud.clip);     //sound event
             }
-            OnImpact();
+
+            else if (collider.tag == "SlapObject")
+            {
+                Redirect();
+                Physics.IgnoreCollision(shooterCollider, GetComponent<Collider>(), false);
+                //RaiseSoundEvent(redirectSound); //uncomment when sound is ready
+                return;
+            }
+            OnImpact();        
         }
     }
 
@@ -80,5 +89,17 @@ public class BulletScript : MonoBehaviour
     protected void RaiseSoundEvent(AudioClip clip)
     {
         HitCharacter(clip);
+    }
+
+    protected void Redirect()
+    {
+        gameObject.transform.GetChild(0).GetComponent<ParticleSystem>().Stop();
+
+        float x = transform.rotation.y < 0 ? 90 : -90;
+        transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.x, x, transform.rotation.z));
+        GetComponent<Rigidbody>().velocity *= -1;
+        direction *= -1;
+
+        gameObject.transform.GetChild(0).GetComponent<ParticleSystem>().Play();
     }
 }

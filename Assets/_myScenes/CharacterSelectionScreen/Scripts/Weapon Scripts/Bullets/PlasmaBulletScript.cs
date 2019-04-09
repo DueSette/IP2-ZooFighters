@@ -17,8 +17,13 @@ public class PlasmaBulletScript : BulletScript
             collider.GetComponent<Rigidbody>().AddForce(new Vector3(pushBack.x * direction, pushBack.y, 0), ForceMode.Impulse);
             charScript.SetDisablingMovementTime(stopTargetDuration);
             RaiseSoundEvent(aud.clip);    //sound event
+            OnImpact();          
+        }
+        else if (collider.tag == "SlapObject")
+        {
+            Redirect();
             OnImpact();
-            return;
+            //RaiseSoundEvent(redirectSound); //uncomment when sound is ready          
         }
     }
 

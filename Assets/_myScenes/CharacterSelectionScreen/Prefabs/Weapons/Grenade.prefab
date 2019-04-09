@@ -23962,9 +23962,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cf49a9abf8fdc0469e65aced17ced00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fuseSeconds: 1.1
-  damage: 15
-  radius: 27
+  fuseSeconds: 0.6
+  damage: 33
+  radius: 20
   explosionPower: {x: 70, y: 70, z: 0}
   direction: 0
   shooterCollider: {fileID: 0}

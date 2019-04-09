@@ -5,6 +5,7 @@ using UnityEngine;
 public class SpikesScript : MonoBehaviour
 {
     public Vector3 push;
+    public int damage;
 
     void OnCollisionEnter(Collision collision)
     {
@@ -13,9 +14,9 @@ public class SpikesScript : MonoBehaviour
         {
             if (collision.gameObject.GetComponent<BaseCharacterBehaviour>().GetHealth() > 0)
             {
-                collision.gameObject.GetComponent<BaseCharacterBehaviour>().TakeDamage(13);
+                collision.gameObject.GetComponent<BaseCharacterBehaviour>().TakeDamage(damage);
 
-                if (collision.gameObject.GetComponent<BaseCharacterBehaviour>().GetHealth() <= 0)
+                if (!collision.gameObject.GetComponent<BaseCharacterBehaviour>().alive)
                 {
                     StartCoroutine(CollisionSuspension(collision.collider));
                 }
@@ -35,6 +36,9 @@ public class SpikesScript : MonoBehaviour
         if(collision.gameObject.tag == "Thrown")
         {
             collision.rigidbody.AddForce(push/4, ForceMode.VelocityChange);
+
+            if(!collision.gameObject.GetComponent<GrenadeScript>().exploded)
+                GetComponent<AudioSource>().Play();
         }
     }
 

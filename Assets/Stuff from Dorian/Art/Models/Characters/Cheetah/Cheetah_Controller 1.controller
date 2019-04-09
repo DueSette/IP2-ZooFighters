@@ -1834,7 +1834,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: ff153edfbdfc8cc43a93cc7f227152bf, type: 3}
+  m_Motion: {fileID: 7400000, guid: 70cd27df51bee2046846781e5c596e3f, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -2096,7 +2096,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: TwoHanded_Slash
-  m_Speed: 1.5
+  m_Speed: 1.65
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 1101849003085353424}
@@ -2139,7 +2139,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 26c1d0f4894a53c4eba5b7e65f946e14, type: 3}
+  m_Motion: {fileID: 7400000, guid: de4c5ecda1283534a88824f74d335637, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -2223,7 +2223,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 03c3054cb5e5e924dad41f53b4f29251, type: 3}
+  m_Motion: {fileID: 7400000, guid: 1278724e3e0a5574182805f130522949, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -2347,7 +2347,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Melee_Hit
-  m_Speed: 1.2
+  m_Speed: 1.26
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 1101246538491352474}
@@ -2444,7 +2444,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: de1790d4f002347469d95c52219ceba4, type: 3}
+  m_Motion: {fileID: 7400000, guid: e1d03a001e2092446be6f8fc738d4ce9, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 

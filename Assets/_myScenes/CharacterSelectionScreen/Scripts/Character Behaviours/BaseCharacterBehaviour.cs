@@ -278,16 +278,18 @@ public class BaseCharacterBehaviour : MonoBehaviour
                 //SHOOTING
                 else if (isArmed && rangedWeaponScript != null && rangedWeaponScript.canShoot && !stunned)
                 {
-                    if (rangedWeaponScript.ammo > 0) //when there's ammo left
+                    if (rangedWeaponScript.canShoot) //when there's ammo left
                     {
                         rangedWeaponScript.Fire(damageMod, Mathf.Sign(transform.rotation.y));
                         anim.SetTrigger("Shoot");
                     }
-                    else //when no ammo
+                    /*
+                    else if(rangedWeaponScript.ammo <= 0 && rangedWeaponScript.canShoot) //when no ammo
                     {
                         rangedWeaponScript.Fire(damageMod, Mathf.Sign(transform.rotation.y));
                         anim.SetTrigger("Shoot");
                     }
+                    */
                 }
 
                 //SWINGING MELEE
@@ -607,7 +609,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
         anim.SetBool("IsSlapping", true);
 
         if (!inAir)
-            slapping = true;
+            slapping = true; //remove these if you want to have people move while slapping
 
         yield return new WaitForSeconds(0.20f);
         meleeObject.SetActive(true);
@@ -629,11 +631,11 @@ public class BaseCharacterBehaviour : MonoBehaviour
         anim.SetBool("IsSlapping", true);
         if (equippedWeapon.tag == "Lightsaber")
         {
-            yield return new WaitForSeconds(0.25f);
+            yield return new WaitForSeconds(0.18f);
         }
         else if (equippedWeapon.tag == "BaseballBat")
         {
-            yield return new WaitForSeconds(0.3f);
+            yield return new WaitForSeconds(0.18f);
         }
 
         yield return new WaitForSeconds(0.20f);
@@ -642,7 +644,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
 
         anim.SetBool("IsSlapping", false);
 
-        yield return new WaitForSeconds(0.20f);
+        yield return new WaitForSeconds(0.33f);
 
         if (meleeObject != null)
             meleeObject.SetActive(false);
@@ -733,7 +735,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
     {
         if (!weaponDictionary.ContainsKey("my" + weaponName))
         {
-            print("don't have any " + "my" + weaponName + " here");
+            print("don't have any my" + weaponName + " here");
         }
         else
         {
@@ -987,19 +989,18 @@ public class BaseCharacterBehaviour : MonoBehaviour
 
     public IEnumerator CharacterRespawn()
     {
+        transform.position = new Vector3(100, 100, 0); //teleport the character away from view for a while
         SetHealth(maxHealth);
+        yield return StartCoroutine(UpdateHealth()); //wait until health bar is visually recharged
 
-        StartCoroutine(UpdateHealth());
-        //position on a respawn platform
-        //GetComponent<MeshRenderer>().enabled = true;
         rb.isKinematic = false;
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
         yield return new WaitForSeconds(0.27f);
+
         transform.position = gmScript.respawnLocations[(int)jStick].position;
-
         Instantiate(respawnPlatform, new Vector3(transform.position.x, transform.position.y - 1, transform.position.z), Quaternion.identity);
-
         alive = true;
+
         yield return null;
     }
 

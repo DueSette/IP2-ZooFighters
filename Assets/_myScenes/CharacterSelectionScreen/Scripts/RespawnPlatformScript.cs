@@ -36,7 +36,11 @@ public class RespawnPlatformScript : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        collidedPlayer.Add(collision.gameObject);
+        if (collision.gameObject.tag == "Player")
+        {
+            collidedPlayer.Add(collision.gameObject);   
+        }
+        
         collidedPlayer[0].GetComponent<BaseCharacterBehaviour>().respawned = true;
     }
 }

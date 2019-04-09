@@ -1076,6 +1076,7 @@ MonoBehaviour:
   equippedWeaponInventory: {fileID: 0}
   canMove: 0
   stunned: 0
+  canExtraJump: 1
   moveDisableDuration: 0
   moveDisableTimeElapsed: 0
   audioClips:
@@ -1827,15 +1828,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2562171288569157145}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2eedbadecac6c19469acde6b56e98f0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   touchTime: 0
   touching: 0
-  knockbackForce: 20
-  threshold: 0.3
+  threshold: 0.12
 --- !u!1 &3705396650846079977
 GameObject:
   m_ObjectHideFlags: 0

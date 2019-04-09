@@ -90,7 +90,7 @@ public class RangedWeaponScript : MonoBehaviour
     }
 
     //manages the rate of fire
-    private IEnumerator FireCD()
+    public virtual IEnumerator FireCD()
     {
         canShoot = false;
         yield return new WaitForSeconds(rateOfFire);

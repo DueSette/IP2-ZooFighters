@@ -8,11 +8,6 @@ public class PlatformSideCheckScript : MonoBehaviour
     public bool touching = false;
     public float threshold;
 
-    void Start()
-    {
-        gameObject.SetActive(true);
-    }
-
     void OnTriggerStay(Collider col)
     {
         if(col.tag == "Floor")

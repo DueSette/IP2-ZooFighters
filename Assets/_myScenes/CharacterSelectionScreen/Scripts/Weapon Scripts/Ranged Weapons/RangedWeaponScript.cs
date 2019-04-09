@@ -31,6 +31,7 @@ public class RangedWeaponScript : MonoBehaviour
     protected Vector3 velo;
     public AudioClip[] audioClips;
     public AudioSource aud;
+    public Animator anim;
 
     public delegate void EventSound(AudioClip clip);
     public static event EventSound GunBreak;
@@ -41,6 +42,8 @@ public class RangedWeaponScript : MonoBehaviour
         aud = GetComponent<AudioSource>();
         pooler = ObjectPooler.instance;
         rb.maxAngularVelocity = 150;
+        if (GetComponent<Animator>() != null)
+            anim = GetComponent<Animator>();     
     }
 
     private void Update()
@@ -85,6 +88,7 @@ public class RangedWeaponScript : MonoBehaviour
             aud.clip = audioClips[1];
             aud.Play();
         }
+        weaponHolderCollider.GetComponent<BaseCharacterBehaviour>().anim.SetTrigger("Shoot");
         ammo--;
         //TO ADD: stuff about the shot: sound, muzzle flash? animation
     }

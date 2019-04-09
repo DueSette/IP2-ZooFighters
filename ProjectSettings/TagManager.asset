@@ -13,6 +13,7 @@ TagManager:
   - Lightsaber
   - Asparagun
   - BaseballBat
+  - PlasmaRifle
   layers:
   - Default
   - TransparentFX

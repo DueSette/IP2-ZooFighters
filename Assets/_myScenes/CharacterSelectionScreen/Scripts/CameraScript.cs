@@ -166,6 +166,8 @@ public class CameraScript : MonoBehaviour
                 //this means that if we are close on the x but far away on the Y we are still gonna make the camera move back
                 if (distanceBetweenX < minDistanceX && distanceBetweenY > minDistanceX)
                 {
+                    if (distanceBetweenY > 45)
+                        distanceBetweenY = 45;
                     transform.position = Vector3.SmoothDamp(transform.position, new Vector3(transform.position.x, transform.position.y, (distanceBetweenY * -1.15f)), ref moveVelocity, dampTimeChange);
                 }
             }

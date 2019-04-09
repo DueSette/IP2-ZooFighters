@@ -74,7 +74,6 @@ public class SelectionInputManager : MonoBehaviour
             default:
                 break;
         }
-        print(selectorNum);
     }
 
     //ALL INPUTS HERE

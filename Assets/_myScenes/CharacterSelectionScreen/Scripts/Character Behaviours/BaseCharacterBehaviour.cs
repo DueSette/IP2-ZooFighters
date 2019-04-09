@@ -82,6 +82,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
     public GameObject weaponSlot;
     public GameObject meleeObject;
     public Transform grenadeThrower;
+    public Animator charPlasmaAnim;
 
     public bool canSlap = true;
 
@@ -281,15 +282,8 @@ public class BaseCharacterBehaviour : MonoBehaviour
                     if (rangedWeaponScript.canShoot) //when there's ammo left
                     {
                         rangedWeaponScript.Fire(damageMod, Mathf.Sign(transform.rotation.y));
-                        anim.SetTrigger("Shoot");
+                       // anim.SetTrigger("Shoot");
                     }
-                    /*
-                    else if(rangedWeaponScript.ammo <= 0 && rangedWeaponScript.canShoot) //when no ammo
-                    {
-                        rangedWeaponScript.Fire(damageMod, Mathf.Sign(transform.rotation.y));
-                        anim.SetTrigger("Shoot");
-                    }
-                    */
                 }
 
                 //SWINGING MELEE
@@ -678,6 +672,8 @@ public class BaseCharacterBehaviour : MonoBehaviour
             rangedWeaponScript.isEquipped = true;
             rangedWeaponScript.canBeCollected = false;
             rangedWeaponScript.weaponHolderCollider = GetComponent<Collider>();
+            if(rangedWeaponScript.anim != null)
+                rangedWeaponScript.anim.enabled = false;
             equippedWeaponSprite = rangedWeaponScript.weaponSprite;
             if (weapon.tag == "Asparagun")
             {
@@ -783,6 +779,9 @@ public class BaseCharacterBehaviour : MonoBehaviour
             }
         }
 
+        if (equippedWeapon.tag == "PlasmaRifle")
+            rangedWeaponScript.anim.enabled = true;
+
         if (equippedWeapon.tag == "Lightsaber")
         {
             equippedWeapon.GetComponent<Animator>().SetTrigger("Off");
@@ -849,7 +848,10 @@ public class BaseCharacterBehaviour : MonoBehaviour
             anim.SetBool("Rifle", false);
             anim.SetBool("Melee2", false);
 
-            if(equippedWeapon.tag == "Lightsaber")
+            if(equippedWeapon.tag == "PlasmaRifle")
+                rangedWeaponScript.anim.enabled = true;
+
+            if (equippedWeapon.tag == "Lightsaber")
             {
                 SoundEvent(equippedWeapon.GetComponent<MeleeWeaponScript>().audioClips[5]);
                 equippedWeapon.GetComponent<Rigidbody>().AddTorque(transform.up * 50 * Mathf.Sign(transform.rotation.x), ForceMode.VelocityChange);
@@ -968,13 +970,11 @@ public class BaseCharacterBehaviour : MonoBehaviour
             equippedWeaponInventory.SetActive(false);
             Destroy(equippedWeapon);
         }
-        //anim.SetBool("Dead", true);
 
         rb.collisionDetectionMode = CollisionDetectionMode.Discrete;
         rb.isKinematic = true;
 
         //Play death animation, when it's over execute lines below
-        //GetComponent<MeshRenderer>().enabled = false;        //this is okay to turn off cubes but models are more complex than this
         rb.velocity = Vector3.zero;
         yield return new WaitForSeconds(0.3f);
         if (GetRemainingLives() > 0)

@@ -26,7 +26,7 @@ RectTransform:
   m_GameObject: {fileID: 3332476089939730806}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: -86.8, y: 1, z: 1}
+  m_LocalScale: {x: 0.85, y: 0.85, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -50,86 +50,46 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   appearSpeed: 0.03
   characters:
-  - name: Sample
-    portrait: {fileID: 21300000, guid: 12b033009f5518843a643612c3d476e7, type: 3}
-    selectedImage: {fileID: 21300000, guid: 12b033009f5518843a643612c3d476e7, type: 3}
-    introClip: {fileID: 32900000, guid: c5e6a46b59788d14a924b1e71ab37bc2, type: 3}
-  - name: Sample
-    portrait: {fileID: 21300000, guid: 12b033009f5518843a643612c3d476e7, type: 3}
-    selectedImage: {fileID: 0}
-    introClip: {fileID: 32900000, guid: c5e6a46b59788d14a924b1e71ab37bc2, type: 3}
-  - name: Sample
-    portrait: {fileID: 21300000, guid: 12b033009f5518843a643612c3d476e7, type: 3}
-    selectedImage: {fileID: 0}
-    introClip: {fileID: 32900000, guid: c5e6a46b59788d14a924b1e71ab37bc2, type: 3}
-  - name: Sample
-    portrait: {fileID: 21300000, guid: 12b033009f5518843a643612c3d476e7, type: 3}
-    selectedImage: {fileID: 0}
-    introClip: {fileID: 32900000, guid: c5e6a46b59788d14a924b1e71ab37bc2, type: 3}
-  - name: Sample
-    portrait: {fileID: 21300000, guid: 12b033009f5518843a643612c3d476e7, type: 3}
-    selectedImage: {fileID: 0}
-    introClip: {fileID: 32900000, guid: c5e6a46b59788d14a924b1e71ab37bc2, type: 3}
-  - name: Sample
-    portrait: {fileID: 21300000, guid: 12b033009f5518843a643612c3d476e7, type: 3}
-    selectedImage: {fileID: 0}
-    introClip: {fileID: 32900000, guid: c5e6a46b59788d14a924b1e71ab37bc2, type: 3}
-  - name: Sample
-    portrait: {fileID: 21300000, guid: 12b033009f5518843a643612c3d476e7, type: 3}
-    selectedImage: {fileID: 0}
-    introClip: {fileID: 32900000, guid: c5e6a46b59788d14a924b1e71ab37bc2, type: 3}
-  - name: Sample
-    portrait: {fileID: 21300000, guid: 12b033009f5518843a643612c3d476e7, type: 3}
-    selectedImage: {fileID: 0}
-    introClip: {fileID: 32900000, guid: c5e6a46b59788d14a924b1e71ab37bc2, type: 3}
-  - name: Sample
-    portrait: {fileID: 21300000, guid: 12b033009f5518843a643612c3d476e7, type: 3}
-    selectedImage: {fileID: 0}
-    introClip: {fileID: 32900000, guid: c5e6a46b59788d14a924b1e71ab37bc2, type: 3}
-  - name: Sample
-    portrait: {fileID: 21300000, guid: 12b033009f5518843a643612c3d476e7, type: 3}
-    selectedImage: {fileID: 0}
-    introClip: {fileID: 32900000, guid: c5e6a46b59788d14a924b1e71ab37bc2, type: 3}
-  - name: Sample2
-    portrait: {fileID: 21300000, guid: 45d77b1e5dd46c947a3c27a142ba40a6, type: 3}
+  - name: Kangaroo
+    portrait: {fileID: 21300000, guid: 04fa89c66eb1c8843a6e34c773f998c8, type: 3}
+    selectedImage: {fileID: 21300000, guid: f6b7f2e0215d806459c8c4bb7d3e70e7, type: 3}
+    hoverClip: {fileID: 32900000, guid: ef8ca24afcf824449878fe08253cc498, type: 3}
+    selectClip: {fileID: 32900000, guid: b7a948becb4293a46b85a8199a0bdb42, type: 3}
+  - name: Cheetah
+    portrait: {fileID: 21300000, guid: 109942ec82b3fd840803859ed8f22eb0, type: 3}
     selectedImage: {fileID: 21300000, guid: 45d77b1e5dd46c947a3c27a142ba40a6, type: 3}
-    introClip: {fileID: 32900000, guid: 6777c917076f824498baac51f13a004b, type: 3}
-  - name: Sample2
-    portrait: {fileID: 21300000, guid: 45d77b1e5dd46c947a3c27a142ba40a6, type: 3}
+    hoverClip: {fileID: 32900000, guid: cf8a6ee0ede81e2469623bf31292634c, type: 3}
+    selectClip: {fileID: 32900000, guid: 40a1fb2f6b33f024897ce27e7c4f6b72, type: 3}
+  - name: Cowboy
+    portrait: {fileID: 21300000, guid: 3bc484aea57429147909d6dbf01b9cda, type: 3}
+    selectedImage: {fileID: 21300000, guid: f6b7f2e0215d806459c8c4bb7d3e70e7, type: 3}
+    hoverClip: {fileID: 32900000, guid: ef8ca24afcf824449878fe08253cc498, type: 3}
+    selectClip: {fileID: 32900000, guid: b7a948becb4293a46b85a8199a0bdb42, type: 3}
+  - name: Cowgirl
+    portrait: {fileID: 21300000, guid: 20385303cc81c1f43b1e7b3880e809c1, type: 3}
     selectedImage: {fileID: 21300000, guid: 45d77b1e5dd46c947a3c27a142ba40a6, type: 3}
-    introClip: {fileID: 32900000, guid: 6777c917076f824498baac51f13a004b, type: 3}
-  - name: Sample2
-    portrait: {fileID: 21300000, guid: 45d77b1e5dd46c947a3c27a142ba40a6, type: 3}
+    hoverClip: {fileID: 32900000, guid: cf8a6ee0ede81e2469623bf31292634c, type: 3}
+    selectClip: {fileID: 32900000, guid: 40a1fb2f6b33f024897ce27e7c4f6b72, type: 3}
+  - name: Gorilla
+    portrait: {fileID: 21300000, guid: 2b80f7b9e3a970d46b8610f8d4085656, type: 3}
+    selectedImage: {fileID: 21300000, guid: f6b7f2e0215d806459c8c4bb7d3e70e7, type: 3}
+    hoverClip: {fileID: 32900000, guid: ef8ca24afcf824449878fe08253cc498, type: 3}
+    selectClip: {fileID: 32900000, guid: b7a948becb4293a46b85a8199a0bdb42, type: 3}
+  - name: Rabbit
+    portrait: {fileID: 21300000, guid: e82c40379430e3b428843877a5f7e2ce, type: 3}
     selectedImage: {fileID: 21300000, guid: 45d77b1e5dd46c947a3c27a142ba40a6, type: 3}
-    introClip: {fileID: 32900000, guid: 6777c917076f824498baac51f13a004b, type: 3}
-  - name: Sample2
-    portrait: {fileID: 21300000, guid: 45d77b1e5dd46c947a3c27a142ba40a6, type: 3}
+    hoverClip: {fileID: 32900000, guid: cf8a6ee0ede81e2469623bf31292634c, type: 3}
+    selectClip: {fileID: 32900000, guid: 40a1fb2f6b33f024897ce27e7c4f6b72, type: 3}
+  - name: Elephant
+    portrait: {fileID: 21300000, guid: 938c727cb8ba02048a24b60fdb4c47b3, type: 3}
+    selectedImage: {fileID: 21300000, guid: f6b7f2e0215d806459c8c4bb7d3e70e7, type: 3}
+    hoverClip: {fileID: 32900000, guid: ef8ca24afcf824449878fe08253cc498, type: 3}
+    selectClip: {fileID: 32900000, guid: b7a948becb4293a46b85a8199a0bdb42, type: 3}
+  - name: Bear
+    portrait: {fileID: 21300000, guid: f3f4d39289fd90b42872b021781dedaf, type: 3}
     selectedImage: {fileID: 21300000, guid: 45d77b1e5dd46c947a3c27a142ba40a6, type: 3}
-    introClip: {fileID: 32900000, guid: 6777c917076f824498baac51f13a004b, type: 3}
-  - name: Sample2
-    portrait: {fileID: 21300000, guid: 45d77b1e5dd46c947a3c27a142ba40a6, type: 3}
-    selectedImage: {fileID: 21300000, guid: 45d77b1e5dd46c947a3c27a142ba40a6, type: 3}
-    introClip: {fileID: 32900000, guid: 6777c917076f824498baac51f13a004b, type: 3}
-  - name: Sample2
-    portrait: {fileID: 21300000, guid: 45d77b1e5dd46c947a3c27a142ba40a6, type: 3}
-    selectedImage: {fileID: 21300000, guid: 45d77b1e5dd46c947a3c27a142ba40a6, type: 3}
-    introClip: {fileID: 32900000, guid: 6777c917076f824498baac51f13a004b, type: 3}
-  - name: Sample2
-    portrait: {fileID: 21300000, guid: 45d77b1e5dd46c947a3c27a142ba40a6, type: 3}
-    selectedImage: {fileID: 21300000, guid: 45d77b1e5dd46c947a3c27a142ba40a6, type: 3}
-    introClip: {fileID: 32900000, guid: 6777c917076f824498baac51f13a004b, type: 3}
-  - name: Sample2
-    portrait: {fileID: 21300000, guid: 45d77b1e5dd46c947a3c27a142ba40a6, type: 3}
-    selectedImage: {fileID: 21300000, guid: 45d77b1e5dd46c947a3c27a142ba40a6, type: 3}
-    introClip: {fileID: 32900000, guid: 6777c917076f824498baac51f13a004b, type: 3}
-  - name: Sample2
-    portrait: {fileID: 21300000, guid: 45d77b1e5dd46c947a3c27a142ba40a6, type: 3}
-    selectedImage: {fileID: 21300000, guid: 45d77b1e5dd46c947a3c27a142ba40a6, type: 3}
-    introClip: {fileID: 32900000, guid: 6777c917076f824498baac51f13a004b, type: 3}
-  - name: Sample2
-    portrait: {fileID: 21300000, guid: 45d77b1e5dd46c947a3c27a142ba40a6, type: 3}
-    selectedImage: {fileID: 21300000, guid: 45d77b1e5dd46c947a3c27a142ba40a6, type: 3}
-    introClip: {fileID: 32900000, guid: 6777c917076f824498baac51f13a004b, type: 3}
+    hoverClip: {fileID: 32900000, guid: cf8a6ee0ede81e2469623bf31292634c, type: 3}
+    selectClip: {fileID: 32900000, guid: 40a1fb2f6b33f024897ce27e7c4f6b72, type: 3}
   charObject: {fileID: 7784462310692306654, guid: e19c343d131249840b8868bce03dcdf4,
     type: 3}
-  portraitGapSize: 0
+  portraitGapSize: 236

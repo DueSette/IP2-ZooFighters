@@ -37,6 +37,7 @@ public class GameManagerScript : MonoBehaviour
 
     public Transform[] spawnLocations = new Transform[4];
     public Transform[] respawnLocations = new Transform[4];
+    public GameObject[] respawnPlatforms = new GameObject[4];
 
     #endregion
 

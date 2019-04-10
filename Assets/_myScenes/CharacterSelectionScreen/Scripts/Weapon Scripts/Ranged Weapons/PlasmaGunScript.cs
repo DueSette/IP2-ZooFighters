@@ -8,6 +8,8 @@ public class PlasmaGunScript : RangedWeaponScript
     public float windUpTime;
     private GameObject weaponHolder;
     public AudioClip windUp;
+    public GameObject[] emissionObjects;
+
     Coroutine chargingShot;
 
     private IEnumerator FireWithDelay(float damageMod, float direction)
@@ -36,5 +38,19 @@ public class PlasmaGunScript : RangedWeaponScript
         canShoot = false;
         if(chargingShot == null)
             chargingShot = StartCoroutine(FireWithDelay(damageMod, direction));
+    }
+
+    public void ToggleEmissionObjects(bool enabled)
+    {
+        foreach (GameObject objc in emissionObjects)
+        {
+            objc.SetActive(enabled);
+        }
+    }
+
+    public override IEnumerator Flung(Collider coll)
+    {
+        ToggleEmissionObjects(true);
+        return base.Flung(coll);
     }
 }

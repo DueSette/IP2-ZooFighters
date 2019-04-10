@@ -160,7 +160,7 @@ public class RangedWeaponScript : MonoBehaviour
     }
 
     //when this is called, it makes the weapon unable to instantly collide again with the player
-    public IEnumerator Flung(Collider coll)
+    public virtual IEnumerator Flung(Collider coll)
     {
         Physics.IgnoreCollision(coll, gameObject.GetComponent<Collider>());
         yield return new WaitForSeconds(0.5f);

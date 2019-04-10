@@ -19510,8 +19510,8 @@ GameObject:
   - component: {fileID: 169841759}
   - component: {fileID: 169841761}
   m_Layer: 11
-  m_Name: PlasmaGunW 1
-  m_TagString: Weapon
+  m_Name: PlasmaGunW
+  m_TagString: PlasmaRifle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -19703,7 +19703,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pooler: {fileID: 0}
   weaponDamage: 40
-  rateOfFire: 1.1
+  rateOfFire: 3
   ammo: 5
   weaponSprite: {fileID: 21300000, guid: 9aad592c25b40f740933f57e3f796aff, type: 3}
   weaponHolderCollider: {fileID: 0}
@@ -19721,8 +19721,17 @@ MonoBehaviour:
   aud: {fileID: 0}
   anim: {fileID: 0}
   recoilKnockback: {x: 55, y: 5}
-  windUpTime: 0.5
+  windUpTime: 3
   windUp: {fileID: 8300000, guid: 03e3bd08a6e70684dbe299a3e185fdd2, type: 3}
+  emissionObjects:
+  - {fileID: 2136629645}
+  - {fileID: 461846536}
+  - {fileID: 1662125084}
+  - {fileID: 216456720}
+  - {fileID: 745989675}
+  - {fileID: 177607981}
+  - {fileID: 58490787}
+  - {fileID: 1940096103}
 --- !u!1 &584652133
 GameObject:
   m_ObjectHideFlags: 0

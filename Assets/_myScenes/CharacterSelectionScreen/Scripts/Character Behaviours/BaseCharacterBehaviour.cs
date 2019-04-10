@@ -672,13 +672,16 @@ public class BaseCharacterBehaviour : MonoBehaviour
             rangedWeaponScript.isEquipped = true;
             rangedWeaponScript.canBeCollected = false;
             rangedWeaponScript.weaponHolderCollider = GetComponent<Collider>();
+
             if(rangedWeaponScript.anim != null)
                 rangedWeaponScript.anim.enabled = false;
+
             equippedWeaponSprite = rangedWeaponScript.weaponSprite;
+
             if (weapon.tag == "Asparagun")
-            {
                 SoundEvent(audioClips[2]);
-            }
+            else if (weapon.tag == "PlasmaRifle")
+                rangedWeaponScript.GetComponent<PlasmaGunScript>().ToggleEmissionObjects(false);
         }
 
         else if (weapon.GetComponent<MeleeWeaponScript>())
@@ -778,10 +781,10 @@ public class BaseCharacterBehaviour : MonoBehaviour
                 rend.enabled = true;
             }
         }
-
+        /*
         if (equippedWeapon.tag == "PlasmaRifle")
             rangedWeaponScript.anim.enabled = true;
-
+            */
         if (equippedWeapon.tag == "Lightsaber")
         {
             equippedWeapon.GetComponent<Animator>().SetTrigger("Off");
@@ -847,10 +850,10 @@ public class BaseCharacterBehaviour : MonoBehaviour
             anim.SetBool("Melee", false);
             anim.SetBool("Rifle", false);
             anim.SetBool("Melee2", false);
-
+            /*
             if(equippedWeapon.tag == "PlasmaRifle")
                 rangedWeaponScript.anim.enabled = true;
-
+                */
             if (equippedWeapon.tag == "Lightsaber")
             {
                 SoundEvent(equippedWeapon.GetComponent<MeleeWeaponScript>().audioClips[5]);
@@ -998,7 +1001,8 @@ public class BaseCharacterBehaviour : MonoBehaviour
         yield return new WaitForSeconds(0.27f);
 
         transform.position = gmScript.respawnLocations[(int)jStick].position;
-        Instantiate(respawnPlatform, new Vector3(transform.position.x, transform.position.y - 1, transform.position.z), Quaternion.identity);
+        gmScript.respawnPlatforms[(int)jStick].SetActive(true);
+        //Instantiate(respawnPlatform, new Vector3(transform.position.x, transform.position.y - 1, transform.position.z), Quaternion.identity);
         alive = true;
 
         yield return null;

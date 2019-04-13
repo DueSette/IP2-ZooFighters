@@ -8,6 +8,10 @@ public class SelectorBehaviour : MonoBehaviour
     //variables needed to retrieve data from other scripts
     private static GameObject portraitsDisplayer;      //the object that spawns the portraits
     private CharacterDisplayer charDispl;   //the script attached to the previous object
+    public delegate void SelectorActionDelegate(AudioClip clip);
+    public static event SelectorActionDelegate OnSelectorAction;
+
+    [SerializeField] AudioClip[] clips = new AudioClip[2];
 
     [HideInInspector]
     public int totalCharactersNum;     //how many total portraits are there in the character selection UI
@@ -57,6 +61,7 @@ public class SelectorBehaviour : MonoBehaviour
         //ties this character to their specific controller
         chosenCharacter.GetComponent<BaseCharacterBehaviour>().ReceiveJoystick(GetJoystickNum());
         ready = true;
+        OnSelectorAction(clips[1]);
     }
 
     //destroys current instance of selected character and updates UI
@@ -72,14 +77,15 @@ public class SelectorBehaviour : MonoBehaviour
 
         portraitsDisplayer.transform.GetChild(cursorPos).gameObject.GetComponent<CharacterPortraitScript>().DeselectCharacter(GetJoystickNum());      
         ready = false;
+        OnSelectorAction(clips[2]);
     }
 
     //when hovering character portraits
     public void CharHover()
     {
         portraitsDisplayer.transform.GetChild(cursorPos).gameObject.GetComponent<CharacterPortraitScript>().HoverCharacter(GetJoystickNum(), cursorPos);
-    }    
-    
+    }
+
     //assigns an image to this object (the images should be "P1, P2, P3, P4")
     public void SetImage(Sprite sprite)
     {
@@ -126,6 +132,7 @@ public class SelectorBehaviour : MonoBehaviour
         {
             cursorPos += totalCharactersNum;
         }
+        OnSelectorAction(clips[0]);
     }
 
     public void OnDisable()

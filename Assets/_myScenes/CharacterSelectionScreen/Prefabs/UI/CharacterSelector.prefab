@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 9059391993319448235}
   - component: {fileID: 61293248963989371}
   m_Layer: 5
-  m_Name: PlayerIcon
+  m_Name: CharacterSelector
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -87,5 +87,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fba1411518301f4f8fd229914f7f087, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  portraitsHolder: {fileID: 0}
-  characterCount: 0
+  clips:
+  - {fileID: 8300000, guid: 63e1519df5fffd24195a88074e1108da, type: 3}
+  - {fileID: 8300000, guid: 4163508a951f91c48b2898b8dfcaeb1f, type: 3}
+  - {fileID: 8300000, guid: 0f5471a39aea67c4ebc110ba0b88e6d9, type: 3}
+  totalCharactersNum: 0
+  cursorPos: 0
+  chosenCharacter: {fileID: 0}
+  ready: 0

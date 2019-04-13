@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 7051645}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1.0553336}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1526053463}
   m_RootOrder: 1
@@ -48,6 +48,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
+  - {fileID: 2100000, guid: 77766fec1e1754c4bb54a55d272399bb, type: 2}
   - {fileID: 2100000, guid: 59a623b3135d60b49872ac584a646563, type: 2}
   - {fileID: 2100000, guid: 59a623b3135d60b49872ac584a646563, type: 2}
   m_StaticBatchInfo:
@@ -73,7 +74,7 @@ SkinnedMeshRenderer:
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
   m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: 4300002, guid: 7061d06d9345aac429f96dc4056000f4, type: 3}
+  m_Mesh: {fileID: 4300002, guid: 2102ade0d899ad64da980f5244def2f9, type: 3}
   m_Bones:
   - {fileID: 1978734574}
   - {fileID: 1586223957}
@@ -1034,6 +1035,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a01c9b2583109fd4c85b8ddb4dc0e607, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  charType: 0
   anim: {fileID: 1105152804}
   characterPointer: {fileID: 7530056346424752041}
   pointers:
@@ -1050,7 +1052,7 @@ MonoBehaviour:
   alive: 1
   totalLives: 3
   movSpeed: 36
-  jumpPower: 75
+  jumpPower: 72
   bombTossPower: 25
   bodyMass: 1
   damageMod: 1
@@ -1086,6 +1088,13 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 8c0cdc19ccc1540488c0295965bf48d6, type: 3}
   - {fileID: 8300000, guid: fec68bcb6347cc748827c83d5b167914, type: 3}
   - {fileID: 8300000, guid: 5d83874607bf26945815c1d5dd602c35, type: 3}
+  - {fileID: 8300000, guid: ad34a21201f29bb4690dcc5c59a37b55, type: 3}
+  outfit: {fileID: 7051647}
+  outfitType:
+  - {fileID: 2100000, guid: 77766fec1e1754c4bb54a55d272399bb, type: 2}
+  - {fileID: 2100000, guid: 01243a95e2aff974ebf171fb89461fcb, type: 2}
+  - {fileID: 2100000, guid: 880130410267be2459ab29312651b9be, type: 2}
+  - {fileID: 2100000, guid: da319188438813e4d9039846fdcd4a65, type: 2}
 --- !u!82 &934443892
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1996,7 +2005,7 @@ MonoBehaviour:
   stopTargetDuration: 1
   audioClips:
   - {fileID: 8300000, guid: 8909ccb7e7698194995454fddc5920b2, type: 3}
-  - {fileID: 8300000, guid: b54dc9565722bb44d9aaf2f392a7fcdd, type: 3}
+  - {fileID: 8300000, guid: e45cc46151af3ae45852d9ac5483fab5, type: 3}
   - {fileID: 8300000, guid: 3507f414f1fcc974bbada5f540d2832d, type: 3}
   - {fileID: 8300000, guid: 07f1c2865d9caeb4586bba70750a253f, type: 3}
   - {fileID: 8300000, guid: e44de38168b779e469a73ba365eff191, type: 3}

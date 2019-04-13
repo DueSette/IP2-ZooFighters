@@ -139,7 +139,8 @@ MonoBehaviour:
   actAsBullet: 0
   rb: {fileID: 0}
   audioClips:
-  - {fileID: 0}
+  - {fileID: 8300000, guid: 2049b3051c9648940a44e554a9d6aeb4, type: 3}
+  - {fileID: 8300000, guid: 19d00827f309fb0468790fcada5a63b0, type: 3}
   - {fileID: 8300000, guid: 19d00827f309fb0468790fcada5a63b0, type: 3}
 --- !u!82 &526644934
 AudioSource:

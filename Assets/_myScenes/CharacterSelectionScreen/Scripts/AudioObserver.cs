@@ -6,11 +6,6 @@ public class AudioObserver : MonoBehaviour
 {
     public List<AudioSource> sources = new List<AudioSource>();
 
-    void Awake()
-    {
-        
-    }
-
     void OnEnable()
     {
         sources.AddRange(GetComponents<AudioSource>());
@@ -19,6 +14,7 @@ public class AudioObserver : MonoBehaviour
         RangedWeaponScript.GunBreak += PlayOnEvent;
         GrenadeScript.OnExplode += PlayOnEvent;
         BaseCharacterBehaviour.SoundEvent += PlayOnEvent;
+        SelectorBehaviour.OnSelectorAction += PlayOnEvent;
     }
 
     //plays specific clip on event

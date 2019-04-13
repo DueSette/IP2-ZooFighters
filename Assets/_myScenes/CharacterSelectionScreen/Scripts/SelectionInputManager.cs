@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class SelectionInputManager : MonoBehaviour
 {
     [Tooltip("The object that will represent each players' symbol when choosing a character and navigating the character selection menu")]
@@ -10,6 +11,7 @@ public class SelectionInputManager : MonoBehaviour
     public GameObject[] selectors = new GameObject[4];
     public Sprite[] sprites = new Sprite[4];
     public Canvas canvas;
+    private AudioSource aud;
 
     public GameManagerScript gameManager;  // a reference to the game manager
 
@@ -34,6 +36,7 @@ public class SelectionInputManager : MonoBehaviour
     private void Awake()
     {
         gameManager = GameManagerScript.gmInstance;
+        aud = GetComponent<AudioSource>();
 
         //Instantiates and preps all four character selectors. They are rendered inactive at first, so that if some players don't join it's not a problem
         for (int i = 0; i < selectors.Length; i++)
@@ -149,6 +152,7 @@ public class SelectionInputManager : MonoBehaviour
                             selectors[0].GetComponent<SelectorBehaviour>().CharHover();
                             selectors[0].SetActive(true);
                             StartCoroutine(SuspendControl(0));
+                            aud.Play();
                         }
                     }
                     if (Input.GetKeyDown(KeyCode.Joystick1Button1))
@@ -238,6 +242,7 @@ public class SelectionInputManager : MonoBehaviour
                             selectors[1].GetComponent<SelectorBehaviour>().CharHover();
                             selectors[1].SetActive(true);
                             StartCoroutine(SuspendControl(1));
+                            aud.Play();
                         }
                     }
                     if (Input.GetKeyDown(KeyCode.Joystick2Button3))
@@ -251,7 +256,6 @@ public class SelectionInputManager : MonoBehaviour
                     {
                         if (selectors[1].GetComponent<SelectorBehaviour>().ready)
                         {
-                            selectors[1].GetComponent<SelectorBehaviour>().SetCursorPos(0, false);
                             selectors[1].GetComponent<SelectorBehaviour>().CharDeselect();
                         }
                         else
@@ -336,6 +340,7 @@ public class SelectionInputManager : MonoBehaviour
                             selectors[2].GetComponent<SelectorBehaviour>().CharHover();
                             selectors[2].SetActive(true);
                             StartCoroutine(SuspendControl(2));
+                            aud.Play();
                         }
                     }
                     if (Input.GetKeyDown(KeyCode.Joystick3Button3))
@@ -349,7 +354,6 @@ public class SelectionInputManager : MonoBehaviour
                     {
                         if (selectors[2].GetComponent<SelectorBehaviour>().ready)
                         {
-                            selectors[2].GetComponent<SelectorBehaviour>().SetCursorPos(0, false);
                             selectors[2].GetComponent<SelectorBehaviour>().CharDeselect();
                         }
                         else
@@ -434,6 +438,7 @@ public class SelectionInputManager : MonoBehaviour
                             selectors[3].GetComponent<SelectorBehaviour>().CharHover();
                             selectors[3].SetActive(true);
                             StartCoroutine(SuspendControl(3));
+                            aud.Play();
                         }
                     }
                     if (Input.GetKeyDown(KeyCode.Joystick4Button3))
@@ -447,7 +452,6 @@ public class SelectionInputManager : MonoBehaviour
                     {
                         if (selectors[3].GetComponent<SelectorBehaviour>().ready)
                         {
-                            selectors[3].GetComponent<SelectorBehaviour>().SetCursorPos(0, false);
                             selectors[3].GetComponent<SelectorBehaviour>().CharDeselect();
                         }
                         else

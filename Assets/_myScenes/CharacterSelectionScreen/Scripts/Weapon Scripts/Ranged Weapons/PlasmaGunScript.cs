@@ -21,7 +21,12 @@ public class PlasmaGunScript : RangedWeaponScript
         yield return new WaitForSeconds(windUpTime);
         aud.Stop();
 
-        float sign = Mathf.Sign(weaponHolderCollider.gameObject.transform.rotation.y);
+        float sign;
+        if (weaponHolderCollider)
+            sign = Mathf.Sign(weaponHolderCollider.gameObject.transform.rotation.y);
+        else
+            yield break;
+
         base.Fire(damageMod, sign);
         if (ammo > 0)
         {

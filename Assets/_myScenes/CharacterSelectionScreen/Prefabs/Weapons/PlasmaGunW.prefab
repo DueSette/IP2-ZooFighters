@@ -19703,9 +19703,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pooler: {fileID: 0}
   weaponDamage: 40
-  rateOfFire: 3
+  rateOfFire: 0.3
   ammo: 5
-  weaponSprite: {fileID: 21300000, guid: 9aad592c25b40f740933f57e3f796aff, type: 3}
+  weaponSprite: {fileID: 21300000, guid: 7763cfc4497404d41bb482725d1fc43d, type: 3}
   weaponHolderCollider: {fileID: 0}
   isEquipped: 0
   canBeCollected: 1
@@ -19716,13 +19716,13 @@ MonoBehaviour:
   rb: {fileID: 0}
   audioClips:
   - {fileID: 8300000, guid: b4e5a841e18e4164d9a76ca3864b1c18, type: 3}
-  - {fileID: 8300000, guid: b4aac8c54b3f7f8449015ffece9677d2, type: 3}
-  - {fileID: 8300000, guid: 672f6f69824c87f44bec581a753ae079, type: 3}
+  - {fileID: 8300000, guid: a3b61aeb7e4dfc24e9b7cb0f849f7a2a, type: 3}
+  - {fileID: 8300000, guid: 942a9b933c1a8014ea20363f07ce9dd9, type: 3}
   aud: {fileID: 0}
   anim: {fileID: 0}
   recoilKnockback: {x: 55, y: 5}
-  windUpTime: 3
-  windUp: {fileID: 8300000, guid: 03e3bd08a6e70684dbe299a3e185fdd2, type: 3}
+  windUpTime: 0.8
+  windUp: {fileID: 8300000, guid: 57ea921cd0beac4459b061e58ed2429c, type: 3}
   emissionObjects:
   - {fileID: 2136629645}
   - {fileID: 461846536}

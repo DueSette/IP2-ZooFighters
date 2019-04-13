@@ -33,6 +33,8 @@ public class BaseCharacterBehaviour : MonoBehaviour
 
     private enum CharacterStates { Unarmed, Melee, Pistol, Rifle };
     CharacterStates charState;
+    private enum CharTypes { Kangaroo, Cheetah };
+    [SerializeField] CharTypes charType;
 
     private GameManagerScript gmScript;
     public Animator anim;
@@ -119,6 +121,10 @@ public class BaseCharacterBehaviour : MonoBehaviour
     AudioSource aud;
 
     Rigidbody rb;
+    [SerializeField]
+    SkinnedMeshRenderer outfit;
+    [SerializeField]
+    Material[] outfitType = new Material[4];
     #endregion
 
     //Makes the character able to be controlled only by the passed joystick
@@ -166,7 +172,8 @@ public class BaseCharacterBehaviour : MonoBehaviour
         anim = GetComponent<Animator>();
         anim.SetBool("Unarmed", true);
 
-        //equippedWeaponInventory.SetActive(false); //this might come in handy but is unnecessary as of now
+        //Sets outfit color to the color associated with the joystick
+        DefineMaterial(charType);
 
         //Inventory system initialisation
         foreach (GameObject weapon in weaponArray)
@@ -282,7 +289,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
                     if (rangedWeaponScript.canShoot) //when there's ammo left
                     {
                         rangedWeaponScript.Fire(damageMod, Mathf.Sign(transform.rotation.y));
-                       // anim.SetTrigger("Shoot");
+                        // anim.SetTrigger("Shoot");
                     }
                 }
 
@@ -673,7 +680,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
             rangedWeaponScript.canBeCollected = false;
             rangedWeaponScript.weaponHolderCollider = GetComponent<Collider>();
 
-            if(rangedWeaponScript.anim != null)
+            if (rangedWeaponScript.anim != null)
                 rangedWeaponScript.anim.enabled = false;
 
             equippedWeaponSprite = rangedWeaponScript.weaponSprite;
@@ -681,7 +688,10 @@ public class BaseCharacterBehaviour : MonoBehaviour
             if (weapon.tag == "Asparagun")
                 SoundEvent(audioClips[2]);
             else if (weapon.tag == "PlasmaRifle")
+            {
+                SoundEvent(audioClips[6]);
                 rangedWeaponScript.GetComponent<PlasmaGunScript>().ToggleEmissionObjects(false);
+            }
         }
 
         else if (weapon.GetComponent<MeleeWeaponScript>())
@@ -691,9 +701,9 @@ public class BaseCharacterBehaviour : MonoBehaviour
             meleeWeaponScript.canBeCollected = false;
             meleeWeaponScript.weaponHolderCollider = GetComponent<Collider>();
             equippedWeaponSprite = meleeWeaponScript.weaponSprite;
+            SoundEvent(meleeWeaponScript.audioClips[0]);
             if (weapon.tag == "Lightsaber")
             {
-                SoundEvent(meleeWeaponScript.audioClips[0]);
                 weapon.GetComponent<Animator>().enabled = true;
                 meleeWeaponScript.GetComponent<AudioSource>().loop = true;
                 meleeWeaponScript.GetComponent<AudioSource>().Play();
@@ -832,7 +842,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
             }
 
             equippedWeapon.GetComponent<Rigidbody>().AddForce(new Vector3(80 * Mathf.Sign(transform.rotation.y), 0, 0), ForceMode.VelocityChange);
-        
+
             if (equippedWeapon.GetComponent<RangedWeaponScript>())
             {
                 rangedWeaponScript.actAsBullet = true;
@@ -1002,7 +1012,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
 
         transform.position = gmScript.respawnLocations[(int)jStick].position;
         gmScript.respawnPlatforms[(int)jStick].SetActive(true);
-        //Instantiate(respawnPlatform, new Vector3(transform.position.x, transform.position.y - 1, transform.position.z), Quaternion.identity);
+
         alive = true;
 
         yield return null;
@@ -1046,5 +1056,23 @@ public class BaseCharacterBehaviour : MonoBehaviour
         GetComponent<Animator>().speed = 0.1f;
         yield return new WaitForSeconds(time);
         GetComponent<Animator>().speed = 1;
+    }
+
+    private void DefineMaterial(CharTypes type)
+    {
+        Material[] mats = outfit.materials;
+
+        switch (type)
+        {
+            case CharTypes.Kangaroo:
+                mats[0] = outfitType[(int)jStick];
+                break;
+            case CharTypes.Cheetah:
+                 mats[1] = outfitType[(int)jStick];
+                break;
+            default:
+                break;
+        }
+        outfit.materials = mats;
     }
 }

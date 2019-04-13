@@ -433,7 +433,7 @@ RectTransform:
   m_GameObject: {fileID: 4854920906239728565}
   m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.62, y: 0.62, z: 1}
   m_Children:
   - {fileID: 8580107061202568677}
   - {fileID: 4025692810615977547}
@@ -465,13 +465,6 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 88c83dfc5807f21499533319995c713c, type: 3}
   - {fileID: 21300000, guid: f310fcc2857634d47934608d90959614, type: 3}
   charPointer: {fileID: 4208102335237582439}
-  lifeLossAnims:
-  - {fileID: 7400000, guid: 1562b68b5b420f44fb12cf8280f8f834, type: 2}
-  - {fileID: 7400000, guid: 8a8aaf47f76ac62428c72e001c2d9a77, type: 2}
-  - {fileID: 7400000, guid: e925b0624173c064f826110fc4409f79, type: 2}
-  - {fileID: 7400000, guid: 35db27329e4f5954396350416ebf87ca, type: 2}
-  - {fileID: 7400000, guid: 67eb55bc9a2abe94887bce5365baf12d, type: 2}
-  - {fileID: 7400000, guid: e99a1fbb682092e48bf4b509fd3c8c95, type: 2}
   slider: {fileID: 8221210307842628489}
   fillImage: {fileID: 7178173876429834969}
   lifePoints:

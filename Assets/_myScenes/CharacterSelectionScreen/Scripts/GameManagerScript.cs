@@ -103,7 +103,7 @@ public class GameManagerScript : MonoBehaviour
                 //Should ready the UI to work with each portrait
                 InitialiseInGameUI();
 
-                ////Music Change
+                //Music Change
                 //bgm.GetComponent<BGMScript>().GameStart();
 
                 //Waits until the coroutine below returns, which happens only when one character is left
@@ -177,8 +177,9 @@ public class GameManagerScript : MonoBehaviour
             if (selector.activeSelf)
             {
                 //Creates and positions the UI objects, then it communicates to them the character they are portraying
-                inGameUIObjects[i] = Instantiate(inGameUIObj, transform.position + new Vector3 (canvas.pixelRect.width * 0.1f + (i * 375), //X axis
-                    canvas.pixelRect.height * 0.85f, 0),    //Y axis
+                inGameUIObjects[i] = Instantiate(inGameUIObj, transform.position + new Vector3
+                    (canvas.pixelRect.width * 0.07f + (i * inGameUIObj.GetComponent<RectTransform>().rect.size.x * 1.85f), //X axis
+                    canvas.pixelRect.height * 0.90f, 0),    //Y axis
                     Quaternion.Euler(0, 0, -90));   //Rotation
                 inGameUIObjects[i].transform.SetParent(canvas.transform);
                 inGameUIObjects[i].GetComponent<InGameUIScript>().representedCharacter = selector.GetComponent<SelectorBehaviour>().chosenCharacter;

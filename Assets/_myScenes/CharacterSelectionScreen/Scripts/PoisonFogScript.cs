@@ -8,7 +8,7 @@ public class PoisonFogScript : MonoBehaviour
     private GameManagerScript gmScript;
 
     public bool acidRain = false;
-    public bool enable = false;
+    public bool enable = true;
 
     public int wall = 0;
     
@@ -21,6 +21,8 @@ public class PoisonFogScript : MonoBehaviour
     void Start()
     {
         gmScript = GameManagerScript.gmInstance;
+
+        wall = Random.Range(1, 100);
     }
 
     // Update is called once per frame
@@ -28,29 +30,19 @@ public class PoisonFogScript : MonoBehaviour
     {
         if (gmScript.GetGameState() == GameManagerScript.GameState.inGame)
         {
-            if (Input.GetKeyDown(KeyCode.P))
+            if (wall <= 49 && wall > 0)
             {
-                if (!enable)
+                for (int i = 0; i < 3; i++)
                 {
-                    wall = Random.Range(1, 100);
+                    StartCoroutine(HazardLeft());
                 }
-
-
-                if (wall <= 49 && wall > 0)
+            }
+            else if (wall >= 50)
+            {
+                for (int i = 0; i < 3; i++)
                 {
-                    for (int i = 0; i < 3; i++)
-                    {
-                        StartCoroutine(HazardLeft());
-                    }
+                    StartCoroutine(HazardRight());
                 }
-                else if (wall >= 50)
-                {
-                    for (int i = 0; i < 3; i++)
-                    {
-                        StartCoroutine(HazardRight());
-                    }
-                }
-
             }
 
             if (wall <= 49 && wall > 0)
@@ -98,7 +90,7 @@ public class PoisonFogScript : MonoBehaviour
 
             if (!enable)
             {
-                acidRain = false;
+                Destroy(gameObject);
             }
         }
            

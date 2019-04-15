@@ -14,6 +14,7 @@ public class WeaponSpawn : MonoBehaviour
     private float maxSpawnTime = 24;
     [SerializeField]
     private List<GameObject> inGameWeapons = new List<GameObject>();
+    string lastSpawnedWeapon;
 
     // Start is called before the first frame update
     void OnEnable()
@@ -96,10 +97,17 @@ public class WeaponSpawn : MonoBehaviour
         if (canSpawn)
         {
             int num = Random.Range(0, weaponsToSpawn.Length);
-
             transf = PickLocation();
 
             GameObject newWeapon = Instantiate(weaponsToSpawn[num], transf, Quaternion.Euler(0, 90, 0));
+            if (newWeapon.name == lastSpawnedWeapon)
+            {
+                Destroy(newWeapon);
+                AlterValue(ref timeBetweenSpawns, -timeBetweenSpawns + 0.05f);
+                return;
+            }
+            lastSpawnedWeapon = newWeapon.name;
+
             newWeapon.name = weaponsToSpawn[num].name;
             inGameWeapons.Add(newWeapon);
         }

@@ -1089,6 +1089,9 @@ MonoBehaviour:
   - {fileID: 8300000, guid: fec68bcb6347cc748827c83d5b167914, type: 3}
   - {fileID: 8300000, guid: 5d83874607bf26945815c1d5dd602c35, type: 3}
   - {fileID: 8300000, guid: ad34a21201f29bb4690dcc5c59a37b55, type: 3}
+  - {fileID: 8300000, guid: 5d83874607bf26945815c1d5dd602c35, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
   outfit: {fileID: 7051647}
   outfitType:
   - {fileID: 2100000, guid: 77766fec1e1754c4bb54a55d272399bb, type: 2}

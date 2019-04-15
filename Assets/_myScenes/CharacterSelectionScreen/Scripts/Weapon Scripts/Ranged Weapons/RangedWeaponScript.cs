@@ -18,8 +18,6 @@ public class RangedWeaponScript : MonoBehaviour
     [HideInInspector]
     public bool canBeCollected = true;
     [HideInInspector]
-    public bool canSpin = false;
-    [HideInInspector]
     public bool canShoot = true;
     [HideInInspector]
     public bool actAsBullet = false;
@@ -90,7 +88,6 @@ public class RangedWeaponScript : MonoBehaviour
         }
         weaponHolderCollider.GetComponent<BaseCharacterBehaviour>().anim.SetTrigger("Shoot");
         ammo--;
-        //TO ADD: stuff about the shot: sound, muzzle flash? animation
     }
 
     //manages the rate of fire
@@ -156,7 +153,6 @@ public class RangedWeaponScript : MonoBehaviour
         rb.isKinematic = true;
 
         canBeCollected = true;
-        canSpin = true;
     }
 
     //when this is called, it makes the weapon unable to instantly collide again with the player

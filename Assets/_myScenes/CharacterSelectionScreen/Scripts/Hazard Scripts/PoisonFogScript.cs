@@ -11,8 +11,8 @@ public class PoisonFogScript : MonoBehaviour
     public bool enable = true;
 
     public int wall = 0;
-    
-    //public GameObject poisonWallLeft;
+
+    public GameObject poisonTrigger;
     //public GameObject poisonWallRight;
 
     public RawImage[] hazard;
@@ -23,6 +23,8 @@ public class PoisonFogScript : MonoBehaviour
         gmScript = GameManagerScript.gmInstance;
 
         wall = Random.Range(1, 100);
+
+        enable = true;
     }
 
     // Update is called once per frame
@@ -30,22 +32,22 @@ public class PoisonFogScript : MonoBehaviour
     {
         if (gmScript.GetGameState() == GameManagerScript.GameState.inGame)
         {
-            if (wall <= 49 && wall > 0)
+            if (enable)
             {
-                for (int i = 0; i < 3; i++)
+                if (wall <= 49 && wall > 0)
                 {
                     StartCoroutine(HazardLeft());
+
                 }
-            }
-            else if (wall >= 50)
-            {
-                for (int i = 0; i < 3; i++)
+                else if (wall >= 50)
                 {
                     StartCoroutine(HazardRight());
+
                 }
             }
+            
 
-            if (wall <= 49 && wall > 0)
+            /*if (wall <= 49 && wall > 0)
             {
                 if (acidRain && enable)
                 {
@@ -91,7 +93,7 @@ public class PoisonFogScript : MonoBehaviour
             if (!enable)
             {
                 Destroy(gameObject);
-            }
+            }*/
         }
            
     }
@@ -138,6 +140,7 @@ public class PoisonFogScript : MonoBehaviour
 
     public IEnumerator HazardLeft()
     {
+        enable = false;
         for (int i = 0; i < 4; i++)
         {
             hazard[0].gameObject.SetActive(false);
@@ -154,11 +157,18 @@ public class PoisonFogScript : MonoBehaviour
             yield return new WaitForSeconds(0.25f);
         }
 
-        PoisonLeft();
+        if (GameObject.FindWithTag("PoisonFog") == null)
+        {
+            hazard[0].gameObject.SetActive(false);
+            Instantiate(poisonTrigger, new Vector3(-50, 25, 0), Quaternion.identity);
+        }
+        
     }
 
     public IEnumerator HazardRight()
     {
+        enable = false;
+
         for (int i = 0; i < 4; i++)
         {
             hazard[1].gameObject.SetActive(false);
@@ -175,6 +185,12 @@ public class PoisonFogScript : MonoBehaviour
             yield return new WaitForSeconds(0.25f);
         }
 
-        PoisonRight();
+        if (GameObject.FindWithTag("PoisonFog") == null)
+        {
+            hazard[1].gameObject.SetActive(false);
+            Instantiate(poisonTrigger, new Vector3(50, 25, 0), Quaternion.identity);
+
+        }
+        gameObject.SetActive(false);
     }
 }

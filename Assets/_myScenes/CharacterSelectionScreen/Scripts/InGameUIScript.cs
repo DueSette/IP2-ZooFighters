@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class InGameUIScript : MonoBehaviour
 {
@@ -16,6 +17,7 @@ public class InGameUIScript : MonoBehaviour
     public GameObject[] lifePoints = new GameObject[6];
     [HideInInspector]
     public GameObject equippedWeaponImage;
+    public TextMeshProUGUI grenadeAmount;
 
     [HideInInspector]
     public int theHealth;
@@ -42,6 +44,7 @@ public class InGameUIScript : MonoBehaviour
         {
             equippedWeaponImage.GetComponent<Image>().color = new Color(0, 0, 0, 0);
         }
+        grenadeAmount.text = charBehaviour.grenades.ToString();
         UpdateHPColor();       
     }
     

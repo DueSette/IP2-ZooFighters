@@ -67,6 +67,8 @@ public class BaseCharacterBehaviour : MonoBehaviour
     public float bodyMass;
     [Tooltip("Set 1 for default damage, go below one for below average damage and vice versa")]
     public float damageMod = 1;
+    public float originalMoveSpeed;
+    public float slowedMoveSpeed;
 
     //Weapon related variables
     public bool isArmed = false;
@@ -172,6 +174,9 @@ public class BaseCharacterBehaviour : MonoBehaviour
         anim = GetComponent<Animator>();
         anim.SetBool("Unarmed", true);
 
+        originalMoveSpeed = movSpeed;
+        slowedMoveSpeed = movSpeed / 2;
+
         //Sets outfit color to the color associated with the joystick
         DefineMaterial(charType);
 
@@ -258,6 +263,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
             }
             else if (lBumperUp && chargingBomb)
             {
+                grenades--;
                 ThrowGrenade(bombTossPower);
                 bombTossPower = 25;
             }
@@ -516,7 +522,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
     public void OnCollisionEnter(Collision other)
     {
         //when touching a platform (but not with the "head" of the character)
-        if (other.gameObject.tag == "Floor" && other.GetContact(0).point.y < transform.position.y)
+        if (other.gameObject.tag.Contains("Floor") && other.GetContact(0).point.y < transform.position.y)
         {
             canExtraJump = true;
         }
@@ -525,16 +531,17 @@ public class BaseCharacterBehaviour : MonoBehaviour
     //grounded checking
     public void OnCollisionStay(Collision other)
     {
-        if (other.collider.tag == "Floor" && other.GetContact(0).point.y < transform.position.y)
+        if (other.gameObject.tag.Contains("Floor") && other.GetContact(0).point.y < transform.position.y)
         {
             grounded = true;
+
         }
     }
 
     //Coyote time activation
     public void OnCollisionExit(Collision other)
     {
-        if (other.collider.tag == "Floor" && !coyoteOverride)
+        if (other.collider.tag.Contains("Floor") && !coyoteOverride)
         {
             StartCoroutine(CoyoteTime());
         }
@@ -601,6 +608,19 @@ public class BaseCharacterBehaviour : MonoBehaviour
                 }
             }
         }
+        //Grenade
+        else if (coll.gameObject.layer == 13 && coll.gameObject.GetComponent<GrenadePickUpScript>() != null && grenades < 9)
+        {
+            Destroy(coll.transform.parent.gameObject);
+            grenades = grenades + 3 <= 9 ? grenades + 3 : 9;
+            SoundEvent(audioClips[7]);
+        }
+    }
+
+    private IEnumerator poisonDamage()
+    {
+        TakeDamage(10);
+        yield return new WaitForSeconds(2);
     }
 
     //Happens when calling RT while unarmed
@@ -1013,8 +1033,8 @@ public class BaseCharacterBehaviour : MonoBehaviour
         transform.position = gmScript.respawnLocations[(int)jStick].position;
         gmScript.respawnPlatforms[(int)jStick].SetActive(true);
 
+        grenades = 2;
         alive = true;
-
         yield return null;
     }
 
@@ -1075,4 +1095,18 @@ public class BaseCharacterBehaviour : MonoBehaviour
         }
         outfit.materials = mats;
     }
+    #region Miro's Additions
+    void OnParticleCollision(GameObject Darts)
+    {
+        TakeDamage(2);
+    }
+
+    void OnTriggerEnter(Collider heart)
+    {
+        if (heart.name == "Heart")
+        {
+            SetHealth(100);
+        }
+    }
+    #endregion
 }

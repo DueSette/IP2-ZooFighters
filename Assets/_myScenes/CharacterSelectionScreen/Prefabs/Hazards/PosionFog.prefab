@@ -46,6 +46,7 @@ MonoBehaviour:
   acidRain: 0
   enable: 0
   wall: 0
+  poisonTrigger: {fileID: 0}
   hazard:
   - {fileID: 0}
   - {fileID: 0}

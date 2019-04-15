@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HazardScript : MonoBehaviour
+public class HazardManagerScript : MonoBehaviour
 {
     private GameManagerScript gmScript;
 
@@ -31,7 +31,14 @@ public class HazardScript : MonoBehaviour
         {
             hazardChoice = Random.Range(0, hazards.Length);
 
-            Instantiate(hazards[hazardChoice], new Vector3(0, 0, 0), Quaternion.identity);
+            if (hazardChoice == 0)
+            {
+                hazards[0].gameObject.SetActive(true);
+            }
+            else
+            {
+                Instantiate(hazards[hazardChoice], new Vector3(0, 0, 0), Quaternion.identity);
+            }
 
             timer = 0;
         }

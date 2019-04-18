@@ -66,7 +66,7 @@ public class GameManagerScript : MonoBehaviour
         {
             StartCoroutine(RestartGame());
         }
-        if(GetGameState() == GameState.victoryScreen)
+        else if(GetGameState() == GameState.victoryScreen)
         {
             UpdateInGameUI();
         }
@@ -92,7 +92,7 @@ public class GameManagerScript : MonoBehaviour
             {
                 //shifts the UI away
                 StartCoroutine(LerpUI(portraitsHolder, -400));
-                StartCoroutine(LerpUI(selectedPortraits, canvas.pixelRect.height + 300));
+                StartCoroutine(LerpUI(selectedPortraits, canvas.pixelRect.height + 600));
 
                 //waits until every char is spawned
                 yield return StartCoroutine(SpawnCharacters());
@@ -102,9 +102,6 @@ public class GameManagerScript : MonoBehaviour
                               
                 //Should ready the UI to work with each portrait
                 InitialiseInGameUI();
-
-                //Music Change
-                //bgm.GetComponent<BGMScript>().GameStart();
 
                 //Waits until the coroutine below returns, which happens only when one character is left
                 yield return StartCoroutine(GameOngoing());

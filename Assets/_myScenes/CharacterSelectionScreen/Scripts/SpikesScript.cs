@@ -6,6 +6,7 @@ public class SpikesScript : MonoBehaviour
 {
     public Vector3 push;
     public int damage;
+    [SerializeField] float stopDuration;
 
     void OnCollisionEnter(Collision collision)
     {
@@ -15,6 +16,7 @@ public class SpikesScript : MonoBehaviour
             if (collision.gameObject.GetComponent<BaseCharacterBehaviour>().GetHealth() > 0)
             {
                 collision.gameObject.GetComponent<BaseCharacterBehaviour>().TakeDamage(damage);
+                collision.gameObject.GetComponent<BaseCharacterBehaviour>().SetDisablingMovementTime(stopDuration);
 
                 if (!collision.gameObject.GetComponent<BaseCharacterBehaviour>().alive)
                 {
@@ -22,6 +24,7 @@ public class SpikesScript : MonoBehaviour
                 }
                 else
                 {
+                    collision.rigidbody.velocity = Vector3.zero;
                     collision.rigidbody.AddForce(push, ForceMode.Impulse);
                     GetComponent<AudioSource>().Play();
                 }
@@ -52,8 +55,6 @@ public class SpikesScript : MonoBehaviour
             
             else if (other.gameObject.GetComponent<RangedWeaponScript>() != null && !other.gameObject.GetComponent<RangedWeaponScript>().isEquipped)
                     Destroy(other.gameObject);
-
-            //SOUND
         }
     }
 

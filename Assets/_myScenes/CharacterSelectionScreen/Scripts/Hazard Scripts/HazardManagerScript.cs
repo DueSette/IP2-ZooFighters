@@ -7,7 +7,7 @@ public class HazardManagerScript : MonoBehaviour
     private GameManagerScript gmScript;
 
     public float timer = 0;
-    public float timeBetweenHazards = 20;
+    public float timeBetweenHazards = 30;
 
     public int hazardChoice = 0;
 
@@ -29,7 +29,7 @@ public class HazardManagerScript : MonoBehaviour
 
         if (timer >= timeBetweenHazards)
         {
-            hazardChoice = Random.Range(0, hazards.Length);
+            hazardChoice = Random.Range(0, hazards.Length - 1);
 
             if (hazardChoice == 0)
             {

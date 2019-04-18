@@ -4766,7 +4766,7 @@ ParticleSystem:
 --- !u!199 &7463561113018097976
 ParticleSystemRenderer:
   serializedVersion: 6
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -9523,7 +9523,7 @@ ParticleSystem:
 --- !u!199 &987668402687151918
 ParticleSystemRenderer:
   serializedVersion: 6
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -14297,7 +14297,7 @@ ParticleSystem:
 --- !u!199 &5993999431808456495
 ParticleSystemRenderer:
   serializedVersion: 6
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -19085,7 +19085,7 @@ ParticleSystem:
 --- !u!199 &1041891875130555817
 ParticleSystemRenderer:
   serializedVersion: 6
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -23841,7 +23841,7 @@ ParticleSystem:
 --- !u!199 &3174429621515862358
 ParticleSystemRenderer:
   serializedVersion: 6
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -23918,7 +23918,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &3867837760689535658
 Transform:
   m_ObjectHideFlags: 0
@@ -23962,6 +23962,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cf49a9abf8fdc0469e65aced17ced00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  exploded: 0
   fuseSeconds: 0.6
   damage: 33
   radius: 20
@@ -28814,7 +28815,7 @@ ParticleSystem:
 --- !u!199 &5488778716921832408
 ParticleSystemRenderer:
   serializedVersion: 6
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -33597,7 +33598,7 @@ ParticleSystem:
 --- !u!199 &866661827419899884
 ParticleSystemRenderer:
   serializedVersion: 6
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}

@@ -1044,7 +1044,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 88c83dfc5807f21499533319995c713c, type: 3}
   - {fileID: 21300000, guid: 8f781c17dee0d8744a0b1d9572330388, type: 3}
   grenades: 2
-  characterSprite: {fileID: 21300000, guid: 12b033009f5518843a643612c3d476e7, type: 3}
+  characterSprite: {fileID: 21300000, guid: 3140faf64b0017242a56f6fe2248c196, type: 3}
   maxHealth: 100
   displayedHealth: 100
   currentHealth: 100
@@ -1056,6 +1056,8 @@ MonoBehaviour:
   bombTossPower: 25
   bodyMass: 1
   damageMod: 1
+  originalMoveSpeed: 0
+  slowedMoveSpeed: 0
   isArmed: 0
   flingPower: {x: 30, y: 25}
   equippedWeapon: {fileID: 0}

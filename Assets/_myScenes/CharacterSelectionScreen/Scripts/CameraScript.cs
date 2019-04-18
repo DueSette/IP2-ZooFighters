@@ -41,23 +41,7 @@ public class CameraScript : MonoBehaviour
     public float distanceBetweenX;
     public float distanceBetweenY;
     public float dampTimeChange;
-
-    IEnumerator LerpCamera(Vector3 endPosition)
-    {
-        float t = 0;
-
-        while (t < 1)
-        {
-            t += Time.deltaTime;
-            Debug.Log(t);
-            transform.position = new Vector3(transform.position.x + (endPosition.x - transform.position.x) * (1 - (1 - t) * (1 - t)), 31, -44);
-            if (t >= 1)
-            {
-                transform.position = endPosition;
-            }
-            yield return null;
-        }
-    }
+    
 
     #region Singleton
     public static CameraScript instance;
@@ -106,7 +90,6 @@ public class CameraScript : MonoBehaviour
             transform.position = Vector3.SmoothDamp(transform.position, new Vector3(centrePos.x, centrePos.y, transform.position.z), ref moveVelocity, dampTime);
         }
 
-        //may want to add a little zoom-in here if needed   
         if (gmScript.GetGameState() == GameManagerScript.GameState.inGame)
         {
             //if there's only one character alive keep the camera from zooming, so it doesn't go crazy

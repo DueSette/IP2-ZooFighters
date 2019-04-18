@@ -13,7 +13,7 @@ public class ObjectPooler : MonoBehaviour
         public int size;    //its size - tells it when to start reusing objects instead of spawning new ones
     }
 
-    #region Singletonz 
+    #region Singleton
     //quick static function to have access to this class
     public static ObjectPooler instance;
 
@@ -35,7 +35,7 @@ public class ObjectPooler : MonoBehaviour
         {
             Queue<GameObject> objectPool = new Queue<GameObject>();     //...create a Queue of GameObjects
 
-            for(int i = 0; i < pool.size; i++)  //then, for as many times as we set size to be (size is set in the inspector!)
+            for(int i = 0; i < pool.size; i++)  //then, for as many times as we decided (size is set in the inspector!)
             {
                 GameObject obj = Instantiate(pool.prefab); //set an object called obj as a new obj, which is instantiated on the moment
                 obj.SetActive(false);   //deactivate obj

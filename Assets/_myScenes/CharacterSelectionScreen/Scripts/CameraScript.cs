@@ -78,7 +78,17 @@ public class CameraScript : MonoBehaviour
             Shake();
         }
 
-        if (gmScript.GetGameState() == GameManagerScript.GameState.inGame)
+        if (gmScript.GetGameState() == GameManagerScript.GameState.mainMenu)
+        {
+            transform.position = Vector3.SmoothDamp(transform.position, new Vector3(0, 27, 27), ref moveVelocity, dampTime);
+        }
+
+        else if (gmScript.GetGameState() == GameManagerScript.GameState.charSelect)
+        {
+            transform.position = Vector3.SmoothDamp(transform.position, new Vector3(0, 27, -50), ref moveVelocity, dampTime);
+        }
+
+        else if (gmScript.GetGameState() == GameManagerScript.GameState.inGame)
         {
             FindCentre();
             transform.position = Vector3.SmoothDamp(transform.position, new Vector3(centrePos.x, centrePos.y, transform.position.z), ref moveVelocity, dampTime);

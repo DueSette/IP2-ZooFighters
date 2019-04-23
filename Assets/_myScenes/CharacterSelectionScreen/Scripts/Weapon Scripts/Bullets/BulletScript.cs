@@ -55,7 +55,7 @@ public class BulletScript : MonoBehaviour
         if (collider.gameObject.layer != 11 && !collider.name.Contains("Destroyer"))
         {
             //HITTING A CHARACTER
-            if (collider.gameObject.GetComponent<BaseCharacterBehaviour>() && !collider.gameObject.GetComponent<BaseCharacterBehaviour>().respawned)
+            if (collider.gameObject.GetComponent<BaseCharacterBehaviour>() && !collider.gameObject.GetComponent<BaseCharacterBehaviour>().respawned && collider.gameObject.GetComponent<BaseCharacterBehaviour>().GetHealth() > 0)
             {
                 charScript = collider.gameObject.GetComponent<BaseCharacterBehaviour>();
 

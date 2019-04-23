@@ -17,6 +17,10 @@ public class GameManagerScript : MonoBehaviour
     public GameObject UI3DTexts;
     public GameObject bgm;
 
+    public GameObject mainMenu;
+    public GameObject backDropObj;
+    public Button playButton;
+    public GameObject pausePanel; 
     public GameObject weaponSpawner;
     public GameObject portraitsHolder;
     public GameObject selectedPortraits;
@@ -74,7 +78,7 @@ public class GameManagerScript : MonoBehaviour
 
     private void Start()
     {
-        SetGameState(GameState.charSelect);
+        //SetGameState(GameState.charSelect);
 
         //populates the selectors array
         for (int i = 0; i < selectors.Length; i++)
@@ -228,7 +232,7 @@ public class GameManagerScript : MonoBehaviour
         return x;
     }
 
-    //moves the UI pieces from view to outside view or viceversa
+    //moves the UI pieces from view to outside view or viceversa, on the Y axis
     private IEnumerator LerpUI(GameObject theObject, float destination)
     {
         float t = 0;
@@ -267,21 +271,15 @@ public class GameManagerScript : MonoBehaviour
             }
         }
 
-        //cannot start if no one joined the game/only one person started the game (implement this at the last moment)
-        if (playersActive == playersReady && playersActive > 0)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return playersActive == playersReady && playersReady > 1;
     }
 
     public IEnumerator TogglePause()
     {
+        yield return new WaitForEndOfFrame();
         if (!paused)
-        {         
+        {
+            /* === UNCOMMENT THIS TO MAKE IT LERP INTO PAUSE (IT DOESN'T REALLY MAKE SENSE IN RETROSPECTIVE, ACTUALLY THIS IS PRETTY DUMB)
             float t = 0.4f;
             float startTime = Time.timeScale;
            
@@ -296,17 +294,25 @@ public class GameManagerScript : MonoBehaviour
                     Time.timeScale = 0;
                 }
                 yield return null;
-            }       
+            }
             yield return null;
+            */
+            Time.timeScale = 0;
+            pausePanel.SetActive(true);
+            pausePanel.transform.GetChild(1).gameObject.GetComponent<Button>().Select();
+            pausePanel.transform.GetChild(0).gameObject.GetComponent<Button>().Select();
         }
+
         else
         {
             Time.timeScale = 1;
+            pausePanel.SetActive(false);
         }
         paused = !paused;
+        yield return null;
     }
 
-    private IEnumerator RestartGame()
+    public IEnumerator RestartGame()
     {
         yield return new WaitForSeconds(3);
         SceneManager.LoadScene("CharacterSelection");
@@ -320,5 +326,27 @@ public class GameManagerScript : MonoBehaviour
     public void SetGameState(GameState gs)
     {
         theGameState = gs;
+        switch (gs)
+        {
+            case GameState.mainMenu:
+                UI3DTexts.SetActive(false);
+                StartCoroutine(LerpUI(mainMenu, 540));
+                StartCoroutine(LerpUI(portraitsHolder, -400));
+                StartCoroutine(LerpUI(selectedPortraits, canvas.pixelRect.height + 600));
+                break;
+                
+            case GameState.charSelect:
+                //mainMenu.SetActive(false);
+
+                UI3DTexts.SetActive(true);
+                StartCoroutine(LerpUI(mainMenu, canvas.pixelRect.height + 1000));
+                StartCoroutine(LerpUI(portraitsHolder, 235));
+                StartCoroutine(LerpUI(selectedPortraits, canvas.pixelRect.height - 450));
+                cam.transform.position = Vector3.Lerp(cam.transform.position, new Vector3(cam.transform.position.x, cam.transform.position.y, -53), Time.deltaTime);
+                break;
+
+            default:
+                break;
+        }
     }
 }

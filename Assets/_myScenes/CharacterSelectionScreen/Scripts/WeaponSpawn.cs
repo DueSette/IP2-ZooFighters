@@ -46,19 +46,16 @@ public class WeaponSpawn : MonoBehaviour
                 }
             }
 
-            if (UpdateWeaponList() < gm.CountCharacters())
-            {
+            if (UpdateWeaponList() < gm.CountCharacters())           
                 SpawnRandomWeapon();
-            }
+            
 
-            if(UpdateWeaponList() >= gm.CountCharacters() * 2.5f)
-            {
+            else if(UpdateWeaponList() >= gm.CountCharacters() * 2.5f)          
                 canSpawn = false;
-            }
-            else
-            {
+            
+            else          
                 canSpawn = true;
-            }
+            
         }
     }
 

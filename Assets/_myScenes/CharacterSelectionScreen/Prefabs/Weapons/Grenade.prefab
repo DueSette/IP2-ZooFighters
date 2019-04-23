@@ -4766,7 +4766,7 @@ ParticleSystem:
 --- !u!199 &7463561113018097976
 ParticleSystemRenderer:
   serializedVersion: 6
-  m_ObjectHideFlags: 2
+  m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -9523,7 +9523,7 @@ ParticleSystem:
 --- !u!199 &987668402687151918
 ParticleSystemRenderer:
   serializedVersion: 6
-  m_ObjectHideFlags: 2
+  m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -14297,7 +14297,7 @@ ParticleSystem:
 --- !u!199 &5993999431808456495
 ParticleSystemRenderer:
   serializedVersion: 6
-  m_ObjectHideFlags: 2
+  m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -19085,7 +19085,7 @@ ParticleSystem:
 --- !u!199 &1041891875130555817
 ParticleSystemRenderer:
   serializedVersion: 6
-  m_ObjectHideFlags: 2
+  m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -23841,7 +23841,7 @@ ParticleSystem:
 --- !u!199 &3174429621515862358
 ParticleSystemRenderer:
   serializedVersion: 6
-  m_ObjectHideFlags: 2
+  m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -23965,7 +23965,7 @@ MonoBehaviour:
   exploded: 0
   fuseSeconds: 0.6
   damage: 33
-  radius: 20
+  radius: 25
   explosionPower: {x: 70, y: 70, z: 0}
   direction: 0
   shooterCollider: {fileID: 0}
@@ -28815,7 +28815,7 @@ ParticleSystem:
 --- !u!199 &5488778716921832408
 ParticleSystemRenderer:
   serializedVersion: 6
-  m_ObjectHideFlags: 2
+  m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -33598,7 +33598,7 @@ ParticleSystem:
 --- !u!199 &866661827419899884
 ParticleSystemRenderer:
   serializedVersion: 6
-  m_ObjectHideFlags: 2
+  m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -33735,7 +33735,7 @@ PrefabInstance:
     - target: {fileID: 2300000, guid: 3881778a9a7495844a20888886189dc1, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 7e83f2b3d12701648b8ceaa154ad04ac, type: 2}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3881778a9a7495844a20888886189dc1, type: 3}
 --- !u!1 &6598568673102581003 stripped

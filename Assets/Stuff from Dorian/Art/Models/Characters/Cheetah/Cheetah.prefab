@@ -1717,10 +1717,12 @@ MonoBehaviour:
   alive: 1
   totalLives: 3
   movSpeed: 44
-  jumpPower: 61
+  jumpPower: 69
   bombTossPower: 25
   bodyMass: 1
   damageMod: 1
+  originalMoveSpeed: 0
+  slowedMoveSpeed: 0
   isArmed: 0
   flingPower: {x: 20, y: 25}
   equippedWeapon: {fileID: 0}

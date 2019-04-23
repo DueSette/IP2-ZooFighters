@@ -617,12 +617,6 @@ public class BaseCharacterBehaviour : MonoBehaviour
         }
     }
 
-    private IEnumerator poisonDamage()
-    {
-        TakeDamage(10);
-        yield return new WaitForSeconds(2);
-    }
-
     //Happens when calling RT while unarmed
     private IEnumerator Slap(bool inAir)
     {
@@ -821,7 +815,6 @@ public class BaseCharacterBehaviour : MonoBehaviour
             SoundEvent(equippedWeapon.GetComponent<MeleeWeaponScript>().audioClips[6]);
         }
 
-
         //Animator stuff
         anim.SetBool("Unarmed", true);
         anim.SetBool("Melee", false);
@@ -973,8 +966,11 @@ public class BaseCharacterBehaviour : MonoBehaviour
     //use this when doing damage
     public void TakeDamage(int damage)
     {
-        SetHealth(GetHealth() - damage);
-        anim.SetTrigger("GetRekt");
+        if (gmScript.GetGameState() == GameManagerScript.GameState.inGame)
+        {
+            SetHealth(GetHealth() - damage);
+            anim.SetTrigger("GetRekt");
+        }
     }
 
     public IEnumerator CharacterDeath()
@@ -1016,6 +1012,8 @@ public class BaseCharacterBehaviour : MonoBehaviour
         }
         else
         {
+            transform.position = new Vector3(100, 100, 0);
+            grenades = 0;
             anim.SetBool("CanRespawn", false);
         }
     }
@@ -1034,6 +1032,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
         gmScript.respawnPlatforms[(int)jStick].SetActive(true);
 
         grenades = 2;
+        canExtraJump = true;
         alive = true;
         yield return null;
     }
@@ -1096,6 +1095,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
         outfit.materials = mats;
     }
     #region Miro's Additions
+    /*
     void OnParticleCollision(GameObject Darts)
     {
         TakeDamage(2);
@@ -1108,5 +1108,6 @@ public class BaseCharacterBehaviour : MonoBehaviour
             SetHealth(100);
         }
     }
+    */
     #endregion
 }

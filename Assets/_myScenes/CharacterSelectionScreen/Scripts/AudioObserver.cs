@@ -25,7 +25,7 @@ public class AudioObserver : MonoBehaviour
             ChooseSource().PlayOneShot(clip);
     }
 
-    //Selects which source should play the sound based on theri availability
+    //Selects which source should play the sound based on their availability
     private AudioSource ChooseSource()
     {
         foreach(AudioSource source in sources)

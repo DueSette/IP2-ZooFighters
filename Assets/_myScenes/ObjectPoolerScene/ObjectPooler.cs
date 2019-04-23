@@ -42,7 +42,10 @@ public class ObjectPooler : MonoBehaviour
                 obj.transform.SetParent(gameObject.transform);
                 objectPool.Enqueue(obj);    //put it in queue
             }
-            poolDictionary.Add(pool.tag, objectPool); //add the newly created objectpool to the dictionary (previously empty), its name is going to be the content of the pool
+
+            //add the newly created objectpool to the dictionary (previously empty),
+            //its name is going to be the content of the pool
+            poolDictionary.Add(pool.tag, objectPool); 
         }
     }
 

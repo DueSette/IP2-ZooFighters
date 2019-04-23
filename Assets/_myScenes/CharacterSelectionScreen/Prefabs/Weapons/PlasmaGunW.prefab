@@ -19709,7 +19709,6 @@ MonoBehaviour:
   weaponHolderCollider: {fileID: 0}
   isEquipped: 0
   canBeCollected: 1
-  canSpin: 0
   canShoot: 1
   actAsBullet: 0
   bulletName: PlasmaBullet
@@ -19722,7 +19721,7 @@ MonoBehaviour:
   anim: {fileID: 0}
   recoilKnockback: {x: 55, y: 5}
   windUpTime: 0.8
-  windUp: {fileID: 8300000, guid: 57ea921cd0beac4459b061e58ed2429c, type: 3}
+  windUp: {fileID: 8300000, guid: 02c87b54c4b231548b887e5c0b3c864a, type: 3}
   emissionObjects:
   - {fileID: 2136629645}
   - {fileID: 461846536}

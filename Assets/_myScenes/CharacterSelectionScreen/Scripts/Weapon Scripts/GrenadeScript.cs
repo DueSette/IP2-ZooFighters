@@ -111,7 +111,7 @@ public class GrenadeScript : MonoBehaviour
             foreach (Collider coll in caughtInExplosion)
             {
                 coll.gameObject.GetComponent<Rigidbody>().AddExplosionForce(explosionPower.x * 2, pos, radius * 2, 2.5f, ForceMode.Impulse);
-                if (!coll.gameObject.GetComponent<BaseCharacterBehaviour>().respawned)
+                if (!coll.gameObject.GetComponent<BaseCharacterBehaviour>().respawned && coll.gameObject.GetComponent<BaseCharacterBehaviour>().GetHealth() > 0)
                 {
                     coll.gameObject.GetComponent<BaseCharacterBehaviour>().TakeDamage(damage);
                     coll.gameObject.GetComponent<BaseCharacterBehaviour>().SetDisablingMovementTime(0.5f);

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(AudioSource))]
 public class SelectionInputManager : MonoBehaviour
@@ -30,7 +31,7 @@ public class SelectionInputManager : MonoBehaviour
     bool aSuspend = false;
     Coroutine suspendHandle;
 
-    private void Awake()
+    private void OnEnable()
     {
         gameManager = GameManagerScript.gmInstance;
         aud = GetComponent<AudioSource>();
@@ -50,7 +51,7 @@ public class SelectionInputManager : MonoBehaviour
     private IEnumerator SuspendControl()
     {
         aSuspend = true;
-        yield return new WaitForSeconds(0.33f);
+        yield return new WaitForSeconds(0.27f);
         aSuspend = false;
     }
 
@@ -108,6 +109,25 @@ public class SelectionInputManager : MonoBehaviour
                     }
                 }
                 #endregion
+
+                //==========GENERAL==============
+                //To go back to main menu when no selectors are active:
+                if (Input.GetKeyDown(KeyCode.JoystickButton1))
+                {
+                    int i = 0;
+
+                    foreach (GameObject selector in selectors)
+                        if (selector.activeSelf) i++;
+
+                    if (i < 1)
+                    {
+                        gameManager.SetGameState(GameManagerScript.GameState.mainMenu);
+                        gameManager.backDropObj.transform.GetChild(0).gameObject.GetComponent<Button>().Select();
+                        gameManager.playButton.Select();
+                        
+                    }
+                }
+
                 //===========JOYSTICK 1, REMEMBER TO TICK "FLIPPED" IN THE PROJECT INPUT SETTINGS=========
                 #region JOY 1
                 //ACTIVATING THE SELECTOR, SELECTING AND DESELECTING CHARACTER
@@ -332,7 +352,7 @@ public class SelectionInputManager : MonoBehaviour
                     {
                         if (selectors[2].activeSelf)
                         {
-                            if (selectors[2].GetComponent<SelectorBehaviour>().chosenCharacter == null)
+                            if (selectors[2].GetComponent<SelectorBehaviour>().chosenCharacter == null && !aSuspend)
                             {
                                 selectors[2].GetComponent<SelectorBehaviour>().CharSelect();
                                 if (suspendHandle == null)
@@ -439,7 +459,7 @@ public class SelectionInputManager : MonoBehaviour
                     {
                         if (selectors[3].activeSelf)
                         {
-                            if (selectors[3].GetComponent<SelectorBehaviour>().chosenCharacter == null)
+                            if (selectors[3].GetComponent<SelectorBehaviour>().chosenCharacter == null && !aSuspend)
                             {
                                 selectors[3].GetComponent<SelectorBehaviour>().CharSelect();
 

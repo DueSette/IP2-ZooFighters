@@ -5,7 +5,8 @@ using UnityEngine;
 public class GrenadeScript : MonoBehaviour
 {
     #region Data
-    bool ticking = false;
+	[HideInInspector]
+    public bool ticking = false;
     [HideInInspector]
     public bool exploded = false;
 
@@ -77,7 +78,7 @@ public class GrenadeScript : MonoBehaviour
         if (!ticking)
         {
             switch (coll.gameObject.layer)
-            {
+            {				
                 //Ground layer
                 case 9:
                     ticking = true;
@@ -85,10 +86,9 @@ public class GrenadeScript : MonoBehaviour
                 //Player layer
                 case 10:
                     ticking = true;
-                    if (!coll.gameObject.GetComponent<BaseCharacterBehaviour>().respawned)
-                    {
+                    if (coll.gameObject.GetComponent<BaseCharacterBehaviour>().respawned)                  
                         coll.gameObject.GetComponent<BaseCharacterBehaviour>().TakeDamage(5 + (20 * ((int)grenadeSpeed.x / 80)));
-                    }
+                    
                     break;
                 //Traps layer
                 case 12:
@@ -101,7 +101,7 @@ public class GrenadeScript : MonoBehaviour
         }
     }
 
-    void Explode()
+    public void Explode()
     {
         if (!exploded)
         {

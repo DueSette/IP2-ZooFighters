@@ -4768,10 +4768,10 @@ GameObject:
   - component: {fileID: 3635028023511713812}
   - component: {fileID: 3635028023512714196}
   - component: {fileID: 207723336233660061}
-  - component: {fileID: 191365576578031870}
   - component: {fileID: 6512086294886395324}
   - component: {fileID: 3602559524432596878}
-  m_Layer: 0
+  - component: {fileID: 9157871146590098319}
+  m_Layer: 15
   m_Name: PlasmaBullet
   m_TagString: Bullet
   m_Icon: {fileID: 0}
@@ -4854,19 +4854,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!135 &191365576578031870
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3635028023514911764}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 1.4690728
-  m_Center: {x: -0.06280804, y: 0, z: 0}
 --- !u!82 &6512086294886395324
 AudioSource:
   m_ObjectHideFlags: 0
@@ -4984,3 +4971,17 @@ MonoBehaviour:
   pushBack: {x: 225, y: 20}
   bulletSpeed: {x: 300, y: 0}
   stopTargetDuration: 0.5
+--- !u!136 &9157871146590098319
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3635028023514911764}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 2.5086107
+  m_Height: 16.724072
+  m_Direction: 2
+  m_Center: {x: -0.004691601, y: 0, z: 0}

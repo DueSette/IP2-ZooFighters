@@ -78,8 +78,7 @@ public class GameManagerScript : MonoBehaviour
 
     private void Start()
     {
-        //SetGameState(GameState.charSelect);
-
+		CursorHandler.EnableCursor();
         //populates the selectors array
         for (int i = 0; i < selectors.Length; i++)
         {
@@ -94,6 +93,8 @@ public class GameManagerScript : MonoBehaviour
         {
             if (CheckIfReadyToStartGame())
             {
+				//disables cursor
+				CursorHandler.DisableCursor();
                 //shifts the UI away
                 StartCoroutine(LerpUI(portraitsHolder, -400));
                 StartCoroutine(LerpUI(selectedPortraits, canvas.pixelRect.height + 600));
@@ -103,7 +104,7 @@ public class GameManagerScript : MonoBehaviour
 
                 //Activates the object that spawns weapons
                 weaponSpawner.SetActive(true);
-                              
+                
                 //Should ready the UI to work with each portrait
                 InitialiseInGameUI();
 
@@ -194,15 +195,12 @@ public class GameManagerScript : MonoBehaviour
     //Updates the UI for the current frame
     public void UpdateInGameUI()
     {
-        int i = 0;
-        foreach (GameObject uiObj in inGameUIObjects)
-        {
-            if (uiObj != null)
-            {
-                inGameUIObjects[i].GetComponent<InGameUIScript>().UpdateHUD();
-                i++;
-            }
-        }
+		for (int i = 0; i < inGameUIObjects.Length; i++)
+		{
+			if (inGameUIObjects[i] == null)
+				continue;
+			inGameUIObjects[i].GetComponent<InGameUIScript>().UpdateHUD();
+		}
     }
 
     //Counts how many characters are still alive
@@ -300,7 +298,7 @@ public class GameManagerScript : MonoBehaviour
             Time.timeScale = 0;
             pausePanel.SetActive(true);
             pausePanel.transform.GetChild(1).gameObject.GetComponent<Button>().Select();
-            pausePanel.transform.GetChild(0).gameObject.GetComponent<Button>().Select();
+            //pausePanel.transform.GetChild(0).gameObject.GetComponent<Button>().Select();
         }
 
         else

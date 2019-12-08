@@ -199,10 +199,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 0.013
+  m_Radius: 0.023495236
   m_Height: 0.085
   m_Direction: 2
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: -0.01049524, z: 0}
 --- !u!114 &4617865833120467904
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -217,7 +217,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hitPeople: []
   slapPushBack: 20
-  stopTargetDuration: 1
+  slapStopTargetDuration: 0.75
   audioClips:
   - {fileID: 8300000, guid: 8909ccb7e7698194995454fddc5920b2, type: 3}
   - {fileID: 8300000, guid: 49eba14aa483f3a4098b955e8b748cb6, type: 3}
@@ -1707,7 +1707,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: f662f958d7857d14eaba2f89f9055288, type: 3}
   - {fileID: 21300000, guid: 9aad592c25b40f740933f57e3f796aff, type: 3}
   - {fileID: 21300000, guid: 88c83dfc5807f21499533319995c713c, type: 3}
-  - {fileID: 21300000, guid: 8f781c17dee0d8744a0b1d9572330388, type: 3}
+  - {fileID: 21300000, guid: f310fcc2857634d47934608d90959614, type: 3}
   grenades: 2
   characterSprite: {fileID: 21300000, guid: 45d77b1e5dd46c947a3c27a142ba40a6, type: 3}
   maxHealth: 100
@@ -1721,8 +1721,6 @@ MonoBehaviour:
   bombTossPower: 25
   bodyMass: 1
   damageMod: 1
-  originalMoveSpeed: 0
-  slowedMoveSpeed: 0
   isArmed: 0
   flingPower: {x: 20, y: 25}
   equippedWeapon: {fileID: 0}
@@ -1746,6 +1744,7 @@ MonoBehaviour:
   canMove: 0
   stunned: 0
   canExtraJump: 1
+  drag: 0
   moveDisableDuration: 0
   moveDisableTimeElapsed: 0
   audioClips:

@@ -4711,9 +4711,9 @@ GameObject:
   - component: {fileID: 3635028023512714196}
   - component: {fileID: 207723336233660061}
   - component: {fileID: 8231045578364097352}
-  - component: {fileID: 191365576578031870}
   - component: {fileID: 6512086294886395324}
-  m_Layer: 0
+  - component: {fileID: 6403711319526037044}
+  m_Layer: 15
   m_Name: BaseBullet_2
   m_TagString: Bullet
   m_Icon: {fileID: 0}
@@ -4816,19 +4816,6 @@ MonoBehaviour:
   pushBack: {x: 50, y: 10}
   bulletSpeed: {x: 115, y: 3}
   stopTargetDuration: 0.6
---- !u!135 &191365576578031870
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3635028023514911764}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 1
-  m_Center: {x: -0.000000059604645, y: 0, z: 0.000000029802322}
 --- !u!82 &6512086294886395324
 AudioSource:
   m_ObjectHideFlags: 0
@@ -4926,3 +4913,17 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!136 &6403711319526037044
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3635028023514911764}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 3.1543868
+  m_Height: 9.039025
+  m_Direction: 2
+  m_Center: {x: -1.8321005, y: 0, z: 0.2917073}

@@ -67,8 +67,6 @@ public class BaseCharacterBehaviour : MonoBehaviour
     public float bodyMass;
     [Tooltip("Set 1 for default damage, go below one for below average damage and vice versa")]
     public float damageMod = 1;
-    public float originalMoveSpeed;
-    public float slowedMoveSpeed;
 
     //Weapon related variables
     public bool isArmed = false;
@@ -90,15 +88,16 @@ public class BaseCharacterBehaviour : MonoBehaviour
 
     public bool canSlap = true;
 
+	[HideInInspector]
     public bool respawned = false;
 
     //Respawn Platform Prefab
+	[HideInInspector]
     public GameObject respawnPlatform;
 
     //Weapons list data
     public GameObject[] weaponArray;
     public GameObject equippedWeaponInventory;
-
     protected Dictionary<string, GameObject> weaponDictionary = new Dictionary<string, GameObject>();
 
     //Physics related variables
@@ -111,6 +110,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
     [HideInInspector]
     public bool canExtraJump = true;
     protected bool coyoteOverride = false;
+	[SerializeField]
     protected bool drag = false;
 
     protected bool slapping = false;
@@ -120,7 +120,6 @@ public class BaseCharacterBehaviour : MonoBehaviour
     public float moveDisableTimeElapsed = 0;
 
     public AudioClip[] audioClips;
-    AudioSource aud;
 
     Rigidbody rb;
     [SerializeField]
@@ -135,32 +134,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
     {
         print("joystick num \"" + joyNum + "\" selected its character");
 
-        switch (joyNum)
-        {
-            case 0:
-                {
-                    jStick = JoyStick.J1;
-                }
-                break;
-            case 1:
-                {
-                    jStick = JoyStick.J2;
-                }
-                break;
-            case 2:
-                {
-                    jStick = JoyStick.J3;
-                }
-                break;
-            case 3:
-                {
-                    jStick = JoyStick.J4;
-                    //jStick = (JoyStick)joyNum;
-                }
-                break;
-            default:
-                break;
-        }
+		jStick = (JoyStick)joyNum;
         characterPointer.sprite = pointers[joyNum];
         characterPointer.enabled = true;
     }
@@ -170,12 +144,8 @@ public class BaseCharacterBehaviour : MonoBehaviour
         gmScript = GameManagerScript.gmInstance;
         rb = GetComponent<Rigidbody>();
         rb.mass = bodyMass;
-        aud = GetComponent<AudioSource>();
         anim = GetComponent<Animator>();
         anim.SetBool("Unarmed", true);
-
-        originalMoveSpeed = movSpeed;
-        slowedMoveSpeed = movSpeed / 2;
 
         //Sets outfit color to the color associated with the joystick
         DefineMaterial(charType);
@@ -322,29 +292,12 @@ public class BaseCharacterBehaviour : MonoBehaviour
     public virtual void FixedUpdate()
     {
         //Generally makes gravity stronger when already falling
-        if (rb.velocity.y < 0)
-        {
-            rb.AddForce(Physics.gravity * 3);
-        }
-
-        //Mimics air resistance outside of the rigidbody class
-        if (drag)
-        {
-            rb.velocity -= -rb.velocity * 1.5f;
-        }
-
+        if (rb.velocity.y < 0)        
+            rb.AddForce(Physics.gravity * 3);     
+        
         //Determines if the character is NOT on a platform, then adds extra gravity
-        if (!grounded)
-        {
-            if (slowFall && rb.velocity.y > 0)
-            {
-                rb.AddForce(Physics.gravity);
-            }
-            else
-            {
-                rb.AddForce(Physics.gravity * 2);
-            }
-        }
+        if (!grounded)        
+			rb.AddForce(slowFall && rb.velocity.y > 0 ? Physics.gravity : Physics.gravity * 2);        
     }
 
     //Performs some form of command pattern in relation to the current JoyStick Enum and GameState, checking which buttons have been pressed
@@ -371,19 +324,15 @@ public class BaseCharacterBehaviour : MonoBehaviour
 
                         lStickHor = Input.GetAxis("LeftJoyHorizontal");
 
-                        if (Input.GetAxis("J1RT") > 0.4f)
-                        {
+                        if (Input.GetAxis("J1RT") > 0.4f)                        
                             rTrig = true;
-                        }
-
-                        if (Input.GetKeyDown(KeyCode.Joystick1Button0))
-                        {
-                            slowFall = true;
-                        }
-                        if (Input.GetKeyUp(KeyCode.Joystick1Button0))
-                        {
+                        
+                        if (Input.GetKeyDown(KeyCode.Joystick1Button0))                     
+                            slowFall = true;          
+						
+                        if (Input.GetKeyUp(KeyCode.Joystick1Button0))                       
                             slowFall = false;
-                        }
+                        
                     }
                 }
                 break;
@@ -495,13 +444,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
     {
         transform.Translate(new Vector3(1 * Mathf.Sign(stickDirection), 0, 0) * Time.deltaTime * movSpeed, Space.World);
         anim.SetBool("isRunning", true);
-        anim.SetBool("isIdle", false);
-
-
-        if (Mathf.Sign(stickDirection) == rb.velocity.x)
-        {
-            drag = true;
-        }
+        anim.SetBool("isIdle", false);       
 
         transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.x, 90 * Mathf.Sign(stickDirection), transform.rotation.z));
     }
@@ -644,6 +587,7 @@ public class BaseCharacterBehaviour : MonoBehaviour
         //anim.SetBool("swinging", true);
         meleeWeaponScript.Swing();  //Just sets the cooldown
         anim.SetBool("IsSlapping", true);
+
         if (equippedWeapon.tag == "Lightsaber")
         {
             yield return new WaitForSeconds(0.18f);
@@ -926,10 +870,9 @@ public class BaseCharacterBehaviour : MonoBehaviour
     //set how long a character should be stopped upon bullet collision
     public void SetDisablingMovementTime(float duration)
     {
-        if (!canMove)
-        {
+        if (!canMove)       
             duration += duration / 2;
-        }
+        
         canMove = false;
         moveDisableDuration = duration;
     }

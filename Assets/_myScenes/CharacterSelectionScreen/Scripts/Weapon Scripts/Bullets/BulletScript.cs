@@ -54,26 +54,30 @@ public class BulletScript : MonoBehaviour
         //if this collides with something THAT IS NEITHER the weapon or the destroyer volume (since they are almost always going to collide with them)
         if (collider.gameObject.layer != 11 && !collider.name.Contains("Destroyer"))
         {
-            //HITTING A CHARACTER
-            if (collider.gameObject.GetComponent<BaseCharacterBehaviour>() && !collider.gameObject.GetComponent<BaseCharacterBehaviour>().respawned && collider.gameObject.GetComponent<BaseCharacterBehaviour>().GetHealth() > 0)
-            {
-                charScript = collider.gameObject.GetComponent<BaseCharacterBehaviour>();
+			//HITTING A CHARACTER
+			if (collider.gameObject.GetComponent<BaseCharacterBehaviour>() && !collider.gameObject.GetComponent<BaseCharacterBehaviour>().respawned && collider.gameObject.GetComponent<BaseCharacterBehaviour>().GetHealth() > 0)
+			{
+				charScript = collider.gameObject.GetComponent<BaseCharacterBehaviour>();
 
-                charScript.TakeDamage(damage);
-                charScript.GetStopped(direction);
+				charScript.TakeDamage(damage);
+				charScript.GetStopped(direction);
 
-                collider.GetComponent<Rigidbody>().AddForce(new Vector3(pushBack.x * direction, pushBack.y, 0), ForceMode.Impulse);
-                charScript.SetDisablingMovementTime(stopTargetDuration);
-                RaiseSoundEvent(aud.clip);     //sound event
-            }
+				collider.GetComponent<Rigidbody>().AddForce(new Vector3(pushBack.x * direction, pushBack.y, 0), ForceMode.Impulse);
+				charScript.SetDisablingMovementTime(stopTargetDuration);
+				RaiseSoundEvent(aud.clip);     //sound event
+			}
 
-            else if (collider.tag == "SlapObject")
-            {
-                Redirect();
-                Physics.IgnoreCollision(shooterCollider, GetComponent<Collider>(), false);
-                //RaiseSoundEvent(redirectSound); //uncomment when sound is ready
-                return;
-            }
+			//Hitting the slap object (hand/melee weapons)
+			else if (collider.tag == "SlapObject")
+			{
+				Redirect();
+				Physics.IgnoreCollision(shooterCollider, GetComponent<Collider>(), false);
+				//RaiseSoundEvent(redirectSound); //uncomment when sound is ready
+				return;
+			}
+
+			else if (collider.CompareTag("Thrown"))
+				collider.gameObject.GetComponent<GrenadeScript>().Explode();
             OnImpact();        
         }
     }
@@ -97,6 +101,7 @@ public class BulletScript : MonoBehaviour
 
         float x = transform.rotation.y < 0 ? 90 : -90;
         transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.x, x, transform.rotation.z));
+		transform.position += Vector3.down * 3;
         GetComponent<Rigidbody>().velocity *= -1;
         direction *= -1;
 
